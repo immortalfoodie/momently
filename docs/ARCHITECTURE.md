@@ -88,7 +88,9 @@ The LLM layer is strictly an untrusted translation boundary: it converts unstruc
 - **No External Agency**: The LLM NEVER contacts external vendors, places bookings, or executes side-effects.
 - **Strict Defensive Validation**: All provider completions pass through JSON extraction and strict Zod parsing. If an output fails schema validation, the pipeline attempts a single targeted correction retry before returning an explicit error.
 
-### Assistant Orchestration
+---
+
+## 6. Assistant Orchestration (Proposal Bridge)
 
 The assistant engine (`src/engine/assistant/`) provides the pure, non-mutating bridge between validated LLM extractions and approvable engine proposals:
 
@@ -103,37 +105,72 @@ User Text -> LLM (intent task) -> IntentOutput -> resolveIntent -> AssistantOutc
 
 ---
 
-## 6. Security
+## 7. Stateless Server & API Architecture
 
-### Prompt Injection & Untrusted Data Boundaries
-All user input is treated strictly as data, never as prompt instructions. Inputs are sanitized (`sanitizeUserText`) via NFKC Unicode normalization, control character stripping, whitespace trimming, and hard length truncation. Inputs are wrapped in `<user_text>` XML data boundaries with internal delimiter escaping (`wrapUntrusted`). Potential injection attempts are proactively flagged (`detectInjectionAttempt`) via heuristic pattern inspection.
+Momently operates as a strictly stateless API backend:
 
-### Schema-Validated Output
-No raw LLM text is ever passed downstream. Completions must extract a balanced JSON object and parse cleanly against Zod schemas. On failure, a single-shot correction prompt is issued referencing only the schema issue paths and messages, explicitly avoiding echoing untrusted model output.
+```text
+Client (holds plan state) --[Request + Plan Payload]--> Next.js API Route (/api/*)
+                                                            |
+                                                guardRequest (Origin, RateLimit, Size)
+                                                            |
+                                                safeParse (eventPlanSchema)
+                                                            |
+                                                runWithFallback (Primary / Mock)
+                                                            |
+                                                Engine Execution (Pure Function)
+                                                            |
+Client (receives Proposal) <--[Structured Response]---------+
+```
 
-### Server-Only Enforcement
-Client-side components and state stores (`src/components/**`, `src/store/**`) are forbidden by ESLint `no-restricted-imports` from importing `geminiProvider` or provider `factory`. All LLM communication is gated behind server-side API routes, preventing client-side API key leakage or SDK bundling.
-
-### Privacy and Zero-Logging Policy
-Prompts, model responses, and raw user briefs are never logged to console or disk. Injected plan summaries strip all personal identifiers, exposing only aggregate headcount numbers. Error handlers scrub all internal messages to guarantee that API keys, prompt instructions, and user texts never leak into logs or client error payloads.
-
----
-
-## 7. Efficiency
-
-<!-- To be filled as features land -->
-
----
-
-## 8. Accessibility
-
-<!-- To be filled as features land -->
+- **Stateless Principle**: The server holds zero plan data in memory, sessions, or backend databases. The client transmits the active plan with each request, and the server validates every byte it receives.
+- **Thin Route Handlers**: Route files (`src/app/api/*/route.ts`) contain only edge exports (`runtime = "nodejs"`, `dynamic = "force-dynamic"`, `maxDuration = 30`) and delegate immediately to testable handler functions taking `(Request, Deps) => Promise<Response>`.
+- **Architectural Boundary**: ESLint `no-restricted-imports` forbids client-side components (`src/components/**`), stores (`src/store/**`), and utility libraries (`src/lib/**`) from importing server-only modules (`src/server/**`).
 
 ---
 
-## 9. Testing
+## 8. Security
 
-<!-- To be filled as features land -->
+### The Six-Pillar Threat Model & Controls
+
+1. **Prompt Injection & Prompt Leaks**:
+   - *Threat*: Adversarial user input attempting to hijack system prompts, extract hidden model instructions, or bypass safety filters.
+   - *Control*: Untrusted inputs pass through `sanitizeUserText` (NFKC Unicode normalization, control character stripping, newline collapsing, and length truncation). Inputs are bounded in `<user_text>` XML data blocks with delimiter escaping (`wrapUntrusted`) and audited via `detectInjectionAttempt`. Output is strictly constrained to typed JSON schemas.
+
+2. **Malicious & Bloated Payloads (DoS / Memory Exhaustion)**:
+   - *Threat*: Attackers submitting multi-megabyte payloads, deeply nested JSON, or oversized arrays to crash the Node process.
+   - *Control*: Strict body reader `readJsonBody` enforces Content-Type verification (`application/json`), header `Content-Length` checks, and stream byte length enforcement (`MAX_BODY_BYTES_INTAKE 8KB`, `MAX_BODY_BYTES_MESSAGE 200KB`, `MAX_BODY_BYTES_NARRATE 20KB`). Domain schemas enforce hard bounds on arrays (`eventPlanSchema` restricts constraints &le; 40, concepts &le; 3, budget items &le; 60, schedule slots &le; 40, tasks &le; 80, vendors &le; 20, quotes &le; 10, ledger &le; 500).
+
+3. **API Key & Secret Leakage**:
+   - *Threat*: Exposing Gemini API keys or internal credentials to the browser, client telemetry, or error messages.
+   - *Control*: Server-only LLM infrastructure enforced by ESLint architectural restrictions. All error responses return uniform, scrubbed `ApiErrorBody` envelopes with generic error messages. No stack traces, file paths, or internal error text are ever surfaced to clients.
+
+4. **Abuse, Token Depletion & Cost Spikes**:
+   - *Threat*: Automated scripts exhausting API quotas and incurring extreme cloud billing through repeated AI generation requests.
+   - *Control*: Bounded in-memory sliding-window rate limiter per client IP/key (`createRateLimiter`), enforcing 30 requests/minute (configurable 1-120) with HTTP 429 and `Retry-After` headers. Tracks a maximum of 5,000 clients with LRU eviction. The `runWithFallback` pipeline transparently routes provider outages to `MockProvider`, preventing cascading retries.
+
+5. **Cross-Origin Request Forgery (CSRF) & Cross-Origin Abuse**:
+   - *Threat*: Malicious third-party websites issuing unauthorized state mutation requests using victim browser contexts.
+   - *Control*: Strict same-origin validation (`originGuard.checkSameOrigin`). Requests carrying an `Origin` header that does not match the request `Host` or `x-forwarded-host` are rejected with HTTP 403 `forbidden_origin`.
+
+6. **Cross-Site Scripting (XSS) & Clickjacking**:
+   - *Threat*: Injecting malicious scripts into host views or framing the application within transparent overlay clickjack attacks.
+   - *Control*: Comprehensive HTTP security headers (`buildSecurityHeaders`): Content-Security-Policy with `default-src 'self'`, `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`. Disables `unsafe-eval` outside local development. Sets `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and `Permissions-Policy` denying camera, microphone, geolocation, and payment APIs.
+
+### Known Limitations
+
+- **In-Memory Rate Limiter**: The sliding-window rate limiter maintains state in server memory per process instance. In multi-region or distributed serverless environments, an external Redis or edge proxy limiter (e.g. Cloudflare WAF) should be placed in front.
+- **Client IP Extraction**: Behind unproxied direct connections, `x-forwarded-for` and `x-real-ip` headers can be spoofed by callers. Production deployments must run behind a trusted reverse proxy that strips untrusted client headers.
+- **Inline Script CSP**: Next.js App Router relies on inline scripts for client hydration and bootstrap without a nonce setup, necessitating `'unsafe-inline'` for `script-src`. A nonce-based CSP configuration via Next.js middleware is recommended for future hardening.
+
+---
+
+## 9. Efficiency
+
+- **Zero Server State**: Eliminating server sessions and plan caching on the server eliminates database sync overhead, memory leaks, and complex cache invalidation bugs.
+- **In-Memory LLM LRU Cache**: `LlmCache` computes deterministic SHA-256 hashes of task inputs (`stableStringify`), caching validated responses with TTL expiration to prevent duplicate provider round-trips.
+- **Client-Side Engine Computations**: Dynamic budget totals, schedule cascading, cost-saving levers, and risk scoring execute purely on the client inside Zustand stores without server network latency.
+- **Resilient Fallback Gating**: `runWithFallback` detects provider-level downtime, rate limits, or persistent schema validation errors, immediately degrading to `MockProvider` and avoiding repeated failing network calls.
 
 ---
 
@@ -152,3 +189,16 @@ Prompts, model responses, and raw user briefs are never logged to console or dis
 - **Schedule Delay Planning (`src/engine/scheduleDelay.ts`, `src/engine/scheduleDelayStrategies.ts`)**: Validates timeline gaps, overlaps, and buffers. Proposes cascade, absorb (slot shrinking and optional drops), and slot swapping strategies for unexpected delays.
 - **Chaos Score & Risk (`src/engine/risk.ts`)**: Computes a transparent, weighted 0-100 risk score and categorizes event readiness into calm, manageable, exposed, and fragile bands.
 - **Chaos Lab Scenarios (`src/engine/chaos/`)**: Simulates crisis situations (sudden rain, budget cuts, guest surges, vendor cancellations, late starts, missing inventory) producing structured recovery proposals without side-effects.
+
+---
+
+## 11. Accessibility & Design
+
+<!-- To be filled as UI lands -->
+
+---
+
+## 12. Testing & Quality Standards
+
+<!-- To be filled as UI lands -->
+

@@ -136,4 +136,22 @@ describe('Assistant: buildPlanFromIntake', () => {
     expect(fit.fits).toBe(false);
     expect(fit.total).toBeGreaterThan(5000);
   });
+
+  it('accepts optional user hostBrief and sanitizes it to 1000 chars', () => {
+    const ctx = makeCtx();
+    const rawBrief = 'Celebrating 25 years with vintage music!\u0000\u0007' + 'A'.repeat(1200);
+
+    const { plan } = buildPlanFromIntake(
+      deepFreeze(demoIntakeOutput),
+      ctx,
+      '2026-10-21',
+      rawBrief,
+    );
+
+    expect(plan.meta.hostBrief).toBeDefined();
+    expect(plan.meta.hostBrief.length).toBe(1000);
+    expect(plan.meta.hostBrief).not.toContain('\u0000');
+    expect(plan.meta.hostBrief.startsWith('Celebrating 25 years with vintage music!')).toBe(true);
+  });
 });
+

@@ -1,7 +1,8 @@
 import type { NextConfig } from 'next';
+import { buildSecurityHeaders } from './src/server/securityHeaders';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  poweredByHeader: false,
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
@@ -12,6 +13,15 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: buildSecurityHeaders(),
+      },
+    ];
+  },
 };
 
 export default nextConfig;
+

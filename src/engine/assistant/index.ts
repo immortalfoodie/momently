@@ -19,9 +19,11 @@ export function handleIntake(
   intake: IntakeOutput,
   ctx: EngineContext,
   today: string,
+  hostBrief?: string,
 ): PlanFromIntakeResult {
-  return buildPlanFromIntake(intake, ctx, today);
+  return buildPlanFromIntake(intake, ctx, today, hostBrief);
 }
+
 
 /**
  * High-level pure message handler evaluating host follow-up intents against the active plan.

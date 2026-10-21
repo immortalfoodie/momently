@@ -44,7 +44,26 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  // Architectural boundary: Client code (components/store/lib) must NEVER import server-only code (src/server/**).
+  {
+    files: ['src/components/**', 'src/store/**', 'src/lib/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/server', '@/server/**', '**/server', '**/server/**'],
+              message:
+                'Client code (components/store/lib) must never import from src/server. Server-only logic must remain on the server.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   prettier,
+
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

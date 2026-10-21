@@ -118,7 +118,7 @@ export const vendorNeedSchema = z.object({
   category: budgetCategorySchema,
   requirements: z.array(z.string().min(1)),
   questionsToAsk: z.array(z.string().min(1)),
-  quotes: z.array(vendorQuoteSchema),
+  quotes: z.array(vendorQuoteSchema).max(10),
   status: vendorNeedStatusSchema,
 });
 
@@ -171,13 +171,14 @@ export const eventPlanSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
   meta: eventMetaSchema,
-  constraints: z.array(constraintSchema),
-  concepts: z.array(conceptSchema),
+  constraints: z.array(constraintSchema).max(40),
+  concepts: z.array(conceptSchema).max(3),
   selectedConceptId: z.string().nullable(),
-  budgetItems: z.array(budgetItemSchema),
-  schedule: z.array(scheduleSlotSchema),
-  tasks: z.array(taskSchema),
-  vendors: z.array(vendorNeedSchema),
+  budgetItems: z.array(budgetItemSchema).max(60),
+  schedule: z.array(scheduleSlotSchema).max(40),
+  tasks: z.array(taskSchema).max(80),
+  vendors: z.array(vendorNeedSchema).max(20),
   guestNeeds: guestNeedsSchema,
-  ledger: z.array(decisionRecordSchema),
+  ledger: z.array(decisionRecordSchema).max(500),
 });
+

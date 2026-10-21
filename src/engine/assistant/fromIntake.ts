@@ -2,6 +2,7 @@ import type { Constraint, EventMeta, EventPlan, GuestNeeds } from '@/domain/type
 import type { EngineContext } from '@/engine/context';
 import type { FitReport } from '@/engine/planFactory';
 import { createPlan } from '@/engine/planFactory';
+import { sanitizeUserText } from '@/llm/sanitize';
 import type { IntakeOutput, MissingInfoItem } from '@/llm/schemas/intake';
 
 const DEFAULT_GUEST_NEEDS: GuestNeeds = {
@@ -31,12 +32,15 @@ export interface PlanFromIntakeResult {
  * @param intake - Validated structured intake data.
  * @param ctx - Injected engine context (ID generator and clock).
  * @param today - Current reference date in YYYY-MM-DD format for validating schedule dates.
+ * @param hostBrief - Optional original raw user prompt string to preserve on event meta.
  * @returns Resulting plan, budget fit report, recorded assumptions, and remaining missing info questions.
  */
+// eslint-disable-next-line complexity
 export function buildPlanFromIntake(
   intake: IntakeOutput,
   ctx: EngineContext,
   today: string,
+  hostBrief?: string,
 ): PlanFromIntakeResult {
   const assumptions: string[] = [];
 
@@ -100,6 +104,8 @@ export function buildPlanFromIntake(
     ...intake.guestNeeds,
   };
 
+  const brief = hostBrief ? sanitizeUserText(hostBrief, 1000).text : intake.title;
+
   const meta: EventMeta = {
     title: intake.title,
     type: intake.type,
@@ -107,8 +113,9 @@ export function buildPlanFromIntake(
     dateIso,
     guestCount,
     setting,
-    hostBrief: intake.title,
+    hostBrief: brief,
   };
+
 
   const { plan, fit } = createPlan({
     meta,
