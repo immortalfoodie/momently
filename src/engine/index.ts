@@ -1,3 +1,4 @@
+export * from './assistant';
 export * from './budget';
 export * from './chaos';
 export * from './conflicts';
@@ -16,6 +17,7 @@ export * from './planFactory';
 export * from './preview';
 export * from './pricing';
 export * from './propagate';
+export * from './qualityOps';
 export * from './risk';
 export * from './schedule';
 export * from './scheduleDelay';

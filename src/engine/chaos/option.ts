@@ -55,6 +55,7 @@ export function buildOption(
   meta: { id: string; label: string; tradeoff: string; notes?: string[] },
   ctx: EngineContext,
   isVendorScenario = false,
+  source: 'user' | 'ai' | 'chaos' = 'chaos',
 ): RecoveryOption | undefined {
   const preview = previewOps(plan, ops, ctx);
   if (!preview.ok) return undefined;
@@ -63,7 +64,7 @@ export function buildOption(
   const scoreBefore = scoreRisks(plan, ctx).score;
   const scoreAfter = scoreRisks(projectedPlan, ctx).score;
 
-  const patch = createPatch(ops, meta.label, 'chaos', ctx.ids, ctx.clock, 'proposed');
+  const patch = createPatch(ops, meta.label, source, ctx.ids, ctx.clock, 'proposed');
 
   const cap = getBudgetCap(plan.constraints);
   const meetsCap = cap === null || impact.budgetTotalAfter <= cap;

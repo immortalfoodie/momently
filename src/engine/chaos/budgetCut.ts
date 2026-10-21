@@ -10,7 +10,7 @@ import { formatInr } from '@/lib/format';
 import { buildOption } from './option';
 import type { RecoveryOption, ScenarioResult } from './types';
 
-function findMaxGuestsForCap(plan: EventPlan, newCap: Money, ctx: EngineContext): number {
+export function findMaxGuestsForCap(plan: EventPlan, newCap: Money, ctx: EngineContext): number {
   let low = 1;
   let high = plan.meta.guestCount - 1;
   let best = 0;
@@ -34,13 +34,14 @@ function findMaxGuestsForCap(plan: EventPlan, newCap: Money, ctx: EngineContext)
   return best;
 }
 
-function buildProtectOption(
+export function buildProtectOption(
   plan: EventPlan,
   targetSavings: Money,
   newCap: Money,
   cap: Money,
   percent: number,
   ctx: EngineContext,
+  source: 'user' | 'ai' | 'chaos' = 'chaos',
 ): RecoveryOption | undefined {
   const plans = suggestSavings(
     plan,
@@ -65,14 +66,17 @@ function buildProtectOption(
       ],
     },
     ctx,
+    false,
+    source,
   );
 }
 
-function buildFewestOption(
+export function buildFewestOption(
   plan: EventPlan,
   targetSavings: Money,
   newCap: Money,
   ctx: EngineContext,
+  source: 'user' | 'ai' | 'chaos' = 'chaos',
 ): RecoveryOption | undefined {
   const plans = suggestSavings(plan, targetSavings, {}, ctx);
   const sp = plans.find((p) => p.id === 'fewest_changes') ?? plans[0];
@@ -91,13 +95,16 @@ function buildFewestOption(
       ],
     },
     ctx,
+    false,
+    source,
   );
 }
 
-function buildResizeOption(
+export function buildResizeOption(
   plan: EventPlan,
   newCap: Money,
   ctx: EngineContext,
+  source: 'user' | 'ai' | 'chaos' = 'chaos',
 ): RecoveryOption | undefined {
   const maxGuests = findMaxGuestsForCap(plan, newCap, ctx);
   if (maxGuests <= 0 || maxGuests >= plan.meta.guestCount) return undefined;
@@ -119,6 +126,8 @@ function buildResizeOption(
       ],
     },
     ctx,
+    false,
+    source,
   );
 }
 

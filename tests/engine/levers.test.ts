@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { DEMO_SCENARIO } from '@/data/demoScenario';
 import type { BudgetItem, EventPlan } from '@/domain/types';
-import { buildSavingLevers, qualityOfItem, stepItemQuality } from '@/engine/levers';
+import {
+  buildSavingLevers,
+  qualityOfItem,
+  setItemQuality,
+  stepItemQuality,
+} from '@/engine/levers';
 import { createPlan } from '@/engine/planFactory';
 import { createIdFactory } from '@/lib/id';
 
@@ -63,6 +68,34 @@ describe('Saving Levers Engine', () => {
     expect(stepUp).toBeDefined();
     expect(stepUp?.changes.rateKey).toBe('decor_theme.premium');
     expect(stepUp?.newTotal).toBeGreaterThan(decorItem.unitCost);
+  });
+
+  it('jumps directly to any target quality tier with setItemQuality', () => {
+    const plan = deepFreeze(makeBaseline());
+    const decorItem = plan.budgetItems.find((i) => i.rateKey?.startsWith('decor_theme.'));
+    expect(decorItem).toBeDefined();
+    if (!decorItem) return;
+
+    // Direct jump to premium
+    const jumpPremium = setItemQuality(plan, decorItem, 'premium');
+    expect(jumpPremium).toBeDefined();
+    expect(jumpPremium?.changes.rateKey).toBe('decor_theme.premium');
+    expect(jumpPremium?.newTotal).toBeGreaterThan(decorItem.unitCost);
+
+    // Direct jump to essential
+    const jumpEssential = setItemQuality(plan, decorItem, 'essential');
+    expect(jumpEssential).toBeDefined();
+    expect(jumpEssential?.changes.rateKey).toBe('decor_theme.essential');
+    expect(jumpEssential?.newTotal).toBeLessThan(decorItem.unitCost);
+
+    // Rejects locked item
+    expect(setItemQuality(plan, { ...decorItem, locked: true }, 'premium')).toBeUndefined();
+
+    // Rejects user provenance item
+    expect(setItemQuality(plan, { ...decorItem, provenance: 'user' }, 'premium')).toBeUndefined();
+
+    // Rejects missing rateKey
+    expect(setItemQuality(plan, { ...decorItem, rateKey: undefined }, 'premium')).toBeUndefined();
   });
 
   it('never touches locked, user-provenance or contingency items', () => {

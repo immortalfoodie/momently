@@ -88,9 +88,18 @@ The LLM layer is strictly an untrusted translation boundary: it converts unstruc
 - **No External Agency**: The LLM NEVER contacts external vendors, places bookings, or executes side-effects.
 - **Strict Defensive Validation**: All provider completions pass through JSON extraction and strict Zod parsing. If an output fails schema validation, the pipeline attempts a single targeted correction retry before returning an explicit error.
 
-### Offline Demo-Mode Fallback
+### Assistant Orchestration
 
-Momently includes a complete, deterministic, offline `MockProvider`. If `GEMINI_API_KEY` is absent, or if `LLM_PROVIDER="mock"` is specified, the system automatically runs in demo mode. The mock provider evaluates the benchmark milestone anniversary brief into verified domain entities and maps conversational queries across all 18 intent kinds without network latency or API dependencies.
+The assistant engine (`src/engine/assistant/`) provides the pure, non-mutating bridge between validated LLM extractions and approvable engine proposals:
+
+```text
+User Text -> LLM (intent task) -> IntentOutput -> resolveIntent -> AssistantOutcome (proposal) -> User Approval -> applyPatch
+```
+
+- **Intake Synthesis (`fromIntake.ts`)**: Converts structured briefs into an initialized `EventPlan`. Every default (e.g. 50 guests, tier-2 city pricing, undecided setting) is explicitly recorded in `assumptions`, and past dates relative to the reference date are omitted.
+- **Concept Operations (`concepts.ts`)**: Applies concept quality profiles (`selectConceptOps`), computes true previewed totals with dynamic contingency (`priceConcept`), and supports hybrid combination with target savings (`combineConcepts`).
+- **Intent Resolution (`resolveIntent.ts`)**: Dispatches all 18 intent kinds through focused pure resolvers without side-effects. Conflicting requests return structured conflict explanations and funding paths rather than silent compromises.
+- **Approvable Proposals**: Nothing in the assistant layer directly mutates plan state. Every actionable response is returned as an approvable `RecoveryOption` (source `'user'`), maintaining the strict invariant: *LLM proposes, engine decides, user approves*.
 
 ---
 

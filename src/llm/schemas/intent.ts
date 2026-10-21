@@ -148,3 +148,22 @@ export const intentOutputSchema = z.discriminatedUnion('kind', [
 
 export type IntentOutput = z.infer<typeof intentOutputSchema>;
 export type IntentKind = IntentOutput['kind'];
+
+export type ChangeGuestCountIntent = z.infer<typeof changeGuestCountIntentSchema>;
+export type ChangeBudgetIntent = z.infer<typeof changeBudgetIntentSchema>;
+export type AdjustCategoryIntent = z.infer<typeof adjustCategoryIntentSchema>;
+export type UpgradeIntent = z.infer<typeof upgradeIntentSchema>;
+export type DowngradeIntent = z.infer<typeof downgradeIntentSchema>;
+export type SaveMoneyIntent = z.infer<typeof saveMoneyIntentSchema>;
+export type AffordCheckIntent = z.infer<typeof affordCheckIntentSchema>;
+export type FindForgottenIntent = z.infer<typeof findForgottenIntentSchema>;
+export type MakeItPremiumIntent = z.infer<typeof makeItPremiumIntentSchema>;
+export type SimulateIntent = z.infer<typeof simulateIntentSchema>;
+export type SelectConceptIntent = z.infer<typeof selectConceptIntentSchema>;
+export type CombineConceptsIntent = z.infer<typeof combineConceptsIntentSchema>;
+export type AddPreferenceIntent = z.infer<typeof addPreferenceIntentSchema>;
+export type SetSettingIntent = z.infer<typeof setSettingIntentSchema>;
+export type SetDateIntent = z.infer<typeof setDateIntentSchema>;
+export type AnswerIntent = z.infer<typeof answerIntentSchema>;
+export type ClarifyIntent = z.infer<typeof clarifyIntentSchema>;
+export type DeclineIntent = z.infer<typeof declineIntentSchema>;
