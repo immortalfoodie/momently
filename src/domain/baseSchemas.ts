@@ -58,6 +58,10 @@ export const guestNeedsSchema = z
   })
   .strict();
 
+export const QUALITY_ORDER = ['essential', 'standard', 'premium'] as const;
+export const qualityLevelSchema = z.enum(QUALITY_ORDER);
+export type QualityLevel = z.infer<typeof qualityLevelSchema>;
+
 export const conceptSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(1).max(100),
@@ -72,6 +76,7 @@ export const conceptSchema = z.object({
   tradeoffs: z.array(z.string().min(1)).min(1).max(4),
   whyItFits: z.string().min(1),
   tags: z.array(z.string().min(1)).max(5),
+  qualityProfile: z.record(z.string(), qualityLevelSchema).optional(),
 });
 
 export const schedulePrioritySchema = z.enum(SCHEDULE_PRIORITIES);

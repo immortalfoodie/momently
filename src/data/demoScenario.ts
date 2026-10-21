@@ -89,6 +89,12 @@ const concepts: Concept[] = [
     whyItFits:
       'Directly fulfills the parents passion for old Bollywood melodies while remaining strictly inside the ₹1.5L cap.',
     tags: ['bollywood', 'retro', 'music', 'nostalgia'],
+    qualityProfile: {
+      decor: 'standard',
+      entertainment_music: 'standard',
+      photo_video: 'essential',
+      catering_buffet: 'standard',
+    },
   }),
   conceptSchema.parse({
     id: 'concept_golden_celebration',
@@ -111,6 +117,12 @@ const concepts: Concept[] = [
     whyItFits:
       'Creates a visually stunning milestone milestone celebration matching the host desire for tasteful elegance.',
     tags: ['golden', 'elegant', 'formal', 'milestone'],
+    qualityProfile: {
+      decor: 'premium',
+      catering_buffet: 'standard',
+      entertainment_music: 'essential',
+      photo_video: 'essential',
+    },
   }),
   conceptSchema.parse({
     id: 'concept_memory_lane',
@@ -133,6 +145,12 @@ const concepts: Concept[] = [
     whyItFits:
       'Provides maximum emotional connection with the lowest financial stress, saving over ₹24,000 below budget cap.',
     tags: ['intimate', 'family', 'storytelling', 'budget-friendly'],
+    qualityProfile: {
+      photo_video: 'premium',
+      decor: 'essential',
+      entertainment_music: 'essential',
+      catering_buffet: 'standard',
+    },
   }),
 ];
 

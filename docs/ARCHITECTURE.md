@@ -66,31 +66,69 @@ UI -> store -> engine; UI -> /api route -> LLM provider -> zod validation -> Pla
 
 ---
 
-## 5. Security
+---
+
+## 5. LLM Layer
+
+The LLM layer is strictly an untrusted translation boundary: it converts unstructured natural language into validated structured data, or transforms verified engine facts into warm, conversational text.
+
+### The Task Table
+
+| Task Name | Purpose | Temperature | Max Tokens | Timeout | Output Validation |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `intake` | Extracts event type, city, date, guest count, budget cap, setting, and style preferences from initial host brief | 0.1 | 2048 | 15s | `intakeOutputSchema` (rejects budget_cap and guest_count in constraints) |
+| `concepts` | Synthesizes 3 genuinely distinct celebration concepts (budget-lean, balanced, signature) with rate-card quality profiles | 0.7 | 3000 | 20s | `conceptsOutputSchema` (enforces exactly 3 concepts, validated quality profiles) |
+| `intent` | Classifies host follow-up requests against the active plan into typed action intents | 0.1 | 1024 | 10s | `intentOutputSchema` (discriminated union of 18 typed intents) |
+| `narrate` | Generates short, warm narrative summaries grounded purely in verified engine facts | 0.4 | 1024 | 10s | `narrateOutputSchema` (max 700 chars, up to 4 key highlights) |
+
+### The Trust Boundary
+
+- **No State Mutation**: The LLM NEVER touches active plan state. It produces candidate data that must be converted into engine `PlanPatch` operations.
+- **No Financial Math**: The LLM NEVER calculates monetary totals, discounts, or rate calculations. All arithmetic is performed by deterministic pure engine functions.
+- **No External Agency**: The LLM NEVER contacts external vendors, places bookings, or executes side-effects.
+- **Strict Defensive Validation**: All provider completions pass through JSON extraction and strict Zod parsing. If an output fails schema validation, the pipeline attempts a single targeted correction retry before returning an explicit error.
+
+### Offline Demo-Mode Fallback
+
+Momently includes a complete, deterministic, offline `MockProvider`. If `GEMINI_API_KEY` is absent, or if `LLM_PROVIDER="mock"` is specified, the system automatically runs in demo mode. The mock provider evaluates the benchmark milestone anniversary brief into verified domain entities and maps conversational queries across all 18 intent kinds without network latency or API dependencies.
+
+---
+
+## 6. Security
+
+### Prompt Injection & Untrusted Data Boundaries
+All user input is treated strictly as data, never as prompt instructions. Inputs are sanitized (`sanitizeUserText`) via NFKC Unicode normalization, control character stripping, whitespace trimming, and hard length truncation. Inputs are wrapped in `<user_text>` XML data boundaries with internal delimiter escaping (`wrapUntrusted`). Potential injection attempts are proactively flagged (`detectInjectionAttempt`) via heuristic pattern inspection.
+
+### Schema-Validated Output
+No raw LLM text is ever passed downstream. Completions must extract a balanced JSON object and parse cleanly against Zod schemas. On failure, a single-shot correction prompt is issued referencing only the schema issue paths and messages, explicitly avoiding echoing untrusted model output.
+
+### Server-Only Enforcement
+Client-side components and state stores (`src/components/**`, `src/store/**`) are forbidden by ESLint `no-restricted-imports` from importing `geminiProvider` or provider `factory`. All LLM communication is gated behind server-side API routes, preventing client-side API key leakage or SDK bundling.
+
+### Privacy and Zero-Logging Policy
+Prompts, model responses, and raw user briefs are never logged to console or disk. Injected plan summaries strip all personal identifiers, exposing only aggregate headcount numbers. Error handlers scrub all internal messages to guarantee that API keys, prompt instructions, and user texts never leak into logs or client error payloads.
+
+---
+
+## 7. Efficiency
 
 <!-- To be filled as features land -->
 
 ---
 
-## 6. Efficiency
+## 8. Accessibility
 
 <!-- To be filled as features land -->
 
 ---
 
-## 7. Accessibility
+## 9. Testing
 
 <!-- To be filled as features land -->
 
 ---
 
-## 8. Testing
-
-<!-- To be filled as features land -->
-
----
-
-## 9. Engine Overview
+## 10. Engine Overview
 
 ### Core Invariant
 

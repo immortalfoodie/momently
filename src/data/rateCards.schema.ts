@@ -1,15 +1,14 @@
 import { z } from 'zod';
 import { CITY_TIERS, type CityTier } from '@/domain/constants';
-import { budgetCategorySchema, moneySchema } from '@/domain/schemas';
+import {
+  budgetCategorySchema,
+  moneySchema,
+  QUALITY_ORDER,
+  qualityLevelSchema,
+  type QualityLevel,
+} from '@/domain/schemas';
 
-/**
- * Quality tiers for service and material delivery.
- * WHY: Enables the engine to scale costs up or down deterministically based on host budget constraints.
- */
-export const QUALITY_ORDER = ['essential', 'standard', 'premium'] as const;
-
-export const qualityLevelSchema = z.enum(QUALITY_ORDER);
-export type QualityLevel = z.infer<typeof qualityLevelSchema>;
+export { QUALITY_ORDER, qualityLevelSchema, type QualityLevel };
 
 /**
  * Guest attendance band with capped attendance and corresponding flat fee.

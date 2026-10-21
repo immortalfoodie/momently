@@ -57,4 +57,36 @@ describe('Demo Scenario Data Layer', () => {
       'step_6_final_checklist',
     ]);
   });
+
+  it('verifies qualityProfile is present and properly mapped on demo concepts', () => {
+    const bollywood = DEMO_SCENARIO.concepts.find(
+      (c) => c.id === 'concept_vintage_bollywood',
+    );
+    expect(bollywood?.qualityProfile).toEqual({
+      decor: 'standard',
+      entertainment_music: 'standard',
+      photo_video: 'essential',
+      catering_buffet: 'standard',
+    });
+
+    const golden = DEMO_SCENARIO.concepts.find(
+      (c) => c.id === 'concept_golden_celebration',
+    );
+    expect(golden?.qualityProfile).toEqual({
+      decor: 'premium',
+      catering_buffet: 'standard',
+      entertainment_music: 'essential',
+      photo_video: 'essential',
+    });
+
+    const memory = DEMO_SCENARIO.concepts.find(
+      (c) => c.id === 'concept_memory_lane',
+    );
+    expect(memory?.qualityProfile).toEqual({
+      photo_video: 'premium',
+      decor: 'essential',
+      entertainment_music: 'essential',
+      catering_buffet: 'standard',
+    });
+  });
 });

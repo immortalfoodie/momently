@@ -31,6 +31,7 @@ import type {
   vendorQuoteSchema,
 } from './schemas';
 
+export type { QualityLevel } from './schemas';
 export type Money = z.infer<typeof moneySchema>;
 export type Provenance = z.infer<typeof provenanceSchema>;
 export type BudgetCategory = z.infer<typeof budgetCategorySchema>;

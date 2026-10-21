@@ -15,6 +15,35 @@ const eslintConfig = defineConfig([
       complexity: ['warn', 10],
     },
   },
+  // Architectural boundary: Client-side components and state stores must NEVER import
+  // server-only LLM infrastructure (geminiProvider or provider factory). This prevents
+  // leaking API keys, pulling Node-only SDKs into client bundles, or bypassing API routes.
+  {
+    files: ['src/components/**', 'src/store/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@/llm/geminiProvider',
+                '@/llm/geminiProvider/*',
+                '**/llm/geminiProvider',
+                '**/llm/geminiProvider/*',
+                '@/llm/factory',
+                '@/llm/factory/*',
+                '**/llm/factory',
+                '**/llm/factory/*',
+              ],
+              message:
+                'Client code (components/store) must never import server-only LLM providers or factories. Use API endpoints instead.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   prettier,
   // Override default ignores of eslint-config-next.
   globalIgnores([
