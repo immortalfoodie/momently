@@ -57,18 +57,21 @@ export function checkMustHaveConflicts(plan: EventPlan, ctx: EngineContext): Con
   return conflicts;
 }
 
-function checkAccessibilityConflict(
-  plan: EventPlan,
-  ctx: EngineContext,
-): Conflict | null {
+export function isAccessUnconfirmed(plan: EventPlan): boolean {
   const needsAccess =
     (plan.guestNeeds?.wheelchairUsers ?? 0) > 0 ||
     plan.constraints.some((c) => c.kind === 'accessibility');
   const hasAccessTask = plan.tasks.some(
     (t) => t.category === 'accessibility' && t.status === 'done',
   );
+  return Boolean(needsAccess && !hasAccessTask);
+}
 
-  if (!needsAccess || hasAccessTask) return null;
+function checkAccessibilityConflict(
+  plan: EventPlan,
+  ctx: EngineContext,
+): Conflict | null {
+  if (!isAccessUnconfirmed(plan)) return null;
 
   const addOp: PlanPatchOp = {
     type: 'add_task',

@@ -1,4 +1,5 @@
 export * from './budget';
+export * from './chaos';
 export * from './conflicts';
 export * from './constraints';
 export * from './context';
@@ -15,4 +16,6 @@ export * from './planFactory';
 export * from './preview';
 export * from './pricing';
 export * from './propagate';
+export * from './risk';
 export * from './schedule';
+export * from './scheduleDelay';
