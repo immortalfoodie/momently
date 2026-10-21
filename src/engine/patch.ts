@@ -7,16 +7,16 @@ import type {
 } from '@/domain/types';
 import type { Result } from '@/lib/result';
 import { err, ok } from '@/lib/result';
+import type { EngineContext } from './context';
 import { findViolations } from './constraints';
 import { computeImpact } from './impact';
 import type { PatchError } from './patchOps';
 import { reducePatchOp } from './patchOps';
+import { contingencyPercent, refreshContingency } from './budget';
 
 export type { PatchError } from './patchOps';
 
-export interface PatchContext {
-  ids: (prefix?: string) => string;
-  clock: () => Date;
+export interface PatchContext extends EngineContext {
   allowHardViolations?: boolean;
 }
 
@@ -95,6 +95,13 @@ export function applyPatch(
     workingCopy = stepResult.value.plan;
     accumulatedNotes.push(...stepResult.value.notes);
   }
+
+  const pct = contingencyPercent(workingCopy.meta.type, workingCopy.meta.setting);
+  workingCopy.budgetItems = refreshContingency(
+    workingCopy.budgetItems,
+    workingCopy.meta.guestCount,
+    pct,
+  );
 
   const violations = findViolations(workingCopy);
   if (violations.length > 0 && ctx.allowHardViolations !== true) {

@@ -17,9 +17,9 @@ export function createId(prefix?: string): string {
  * @param seed - Seed value to initialize the pseudo-random generator sequence.
  * @returns A deterministic ID generation function taking an optional prefix.
  */
-export function createIdFactory(
-  seed: string | number = 'test',
-): (prefix?: string) => string {
+export type IdFactory = (prefix?: string) => string;
+
+export function createIdFactory(seed: string | number = 'test'): IdFactory {
   let state =
     typeof seed === 'number'
       ? Math.floor(Math.abs(seed)) || 1

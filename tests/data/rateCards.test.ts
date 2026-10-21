@@ -106,6 +106,14 @@ describe('Rate Cards Data Layer', () => {
     const byKey = getRateByKey('venue_hall.standard');
     expect(byKey).toEqual(venue);
 
+    const weatherCover = getRate('weather_cover', 'standard');
+    expect(weatherCover).toBeDefined();
+    expect(weatherCover?.category).toBe('venue');
+    expect(weatherCover?.basis).toBe('flat');
+
+    expect(RATE_CARDS).toHaveLength(39);
+    expect(listFamilies()).toHaveLength(13);
+
     expect(getRate('unknown_family', 'essential')).toBeUndefined();
     expect(getRateByKey('invalid.key')).toBeUndefined();
   });

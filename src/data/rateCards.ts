@@ -50,6 +50,12 @@ const FLAT_FAMILIES: FlatFamilyConfig[] = [
     costs: { essential: 20000, standard: 30000, premium: 55000 },
   },
   {
+    family: 'weather_cover',
+    category: 'venue',
+    label: 'Weather cover (tent or canopy)',
+    costs: { essential: 8000, standard: 16000, premium: 32000 },
+  },
+  {
     family: 'decor_theme',
     category: 'decor',
     label: 'Theme Decor & Florals',
