@@ -192,13 +192,91 @@ Client (receives Proposal) <--[Structured Response]---------+
 
 ---
 
-## 11. Accessibility & Design
+## 11. Accessibility & Design System
 
-<!-- To be filled as UI lands -->
+### Design Philosophy: "The Elegant Event-Planning Studio"
+
+Momently avoids cold corporate AI dashboard aesthetics in favor of a warm, distinguished studio atmosphere. Warm ivory backdrops, deep imperial plum primary accents, golden highlights, and refined serif typography evoke the celebratory gravitas of milestone event planning while rigorously enforcing WCAG 2.1 AA accessibility.
+
+### Design Tokens & Palette
+
+- **Surfaces**:
+  - Main Background (`--color-bg`): `#FBF7F2` (Warm ivory)
+  - Surface Card (`--color-surface`): `#FFFFFF` (Pure white)
+  - Surface Muted (`--color-surface-muted`): `#F4EDE6` (Soft alabaster)
+  - Surface Border (`--color-border`): `#E6DCD2` (Subtle warm stone)
+- **Typography & Ink**:
+  - Primary Ink (`--color-ink`): `#2B1B2E` (Deep plum charcoal)
+  - Secondary Ink (`--color-ink-muted`): `#5B4A5E` (Warm slate plum)
+  - Display Headings: `ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif`
+  - Body Copy: `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif` (16px base, line-height 1.6)
+- **Brand Identity**:
+  - Primary (`--color-primary`): `#6B2D5C` (Deep royal plum)
+  - Primary Hover (`--color-primary-hover`): `#55224A`
+  - On-Primary (`--color-on-primary`): `#FFFFFF`
+  - Gold Accent (`--color-gold`): `#D4A24C` (*strictly decorative*; never used as text)
+  - Gold Text (`--color-gold-text`): `#8A5A00` (High-contrast amber gold)
+- **Semantic Status**:
+  - Success: `#1F6F54` on `#E7F4EE`
+  - Warning: `#8A5A00` on `#FFF4DC`
+  - Danger: `#A12B3A` on `#FBE9EB`
+  - Info: `#2B5C8A` on `#E8F0F8`
+- **Global Focus Ring**:
+  - `:focus-visible`: `3px solid #1D4F91` with `2px` offset globally enforced across all interactive controls.
+
+### Calculated Contrast Ratios (WCAG 2.1 Audit)
+
+All core text and button foreground/background pairings exceed the WCAG AA minimum threshold of 4.5:1:
+
+| Element Pairing | Foreground | Background | Calculated Ratio | WCAG Compliance |
+| :--- | :--- | :--- | :--- | :--- |
+| **Primary Ink on Canvas** | `#2B1B2E` | `#FBF7F2` | **15.16:1** | Pass (AAA) |
+| **Primary Ink on Surface** | `#2B1B2E` | `#FFFFFF` | **16.17:1** | Pass (AAA) |
+| **Primary Ink on Muted** | `#2B1B2E` | `#F4EDE6` | **13.94:1** | Pass (AAA) |
+| **Secondary Ink on Canvas** | `#5B4A5E` | `#FBF7F2` | **7.61:1** | Pass (AAA) |
+| **Secondary Ink on Surface** | `#5B4A5E` | `#FFFFFF` | **8.12:1** | Pass (AAA) |
+| **White on Primary Button** | `#FFFFFF` | `#6B2D5C` | **9.74:1** | Pass (AAA) |
+| **White on Primary Hover** | `#FFFFFF` | `#55224A` | **12.25:1** | Pass (AAA) |
+| **Gold Text on Canvas** | `#8A5A00` | `#FBF7F2` | **5.56:1** | Pass (AA) |
+| **Success Text on Soft Bg** | `#1F6F54` | `#E7F4EE` | **5.37:1** | Pass (AA) |
+| **Warning Text on Soft Bg** | `#8A5A00` | `#FFF4DC` | **5.43:1** | Pass (AA) |
+| **Danger Text on Soft Bg** | `#A12B3A` | `#FBE9EB` | **6.15:1** | Pass (AA) |
+| **Info Text on Soft Bg** | `#2B5C8A` | `#E8F0F8` | **6.08:1** | Pass (AA) |
+| **Focus Ring on Surface** | `#1D4F91` | `#FFFFFF` | **8.14:1** | Pass (AAA) |
+
+### Accessibility Architectural Principles
+
+1. **Semantic Landmark Architecture**:
+   - `header` (Banner landmark: brand wordmark, demo mode badge, mobile nav trigger).
+   - `nav[aria-label="Main"]` (Primary application navigation).
+   - `main#main-content` (Target of keyboard `SkipLink`).
+   - `aside[aria-label="Assistant"]` (Complementary AI event co-pilot dock).
+2. **Keyboard Navigation & Roving Tabindex**:
+   - `Tabs` implement the WAI-ARIA Tabs pattern with roving tabindex (`tabindex="0"` for the active tab, `"-1"` for others). Arrow keys traverse tabs with wraparound; `Home` and `End` jump to the first and last tabs.
+   - `Dialog` and `Drawer` utilize the native HTML `<dialog>` element. Focus is captured on open and returned directly to the initiating trigger upon closure. The `cancel` event dismisses on Escape.
+3. **Screen Reader Live Announcements**:
+   - `LiveRegionProvider` hosts an unobtrusive, polite `aria-live="polite"` region dispatched via the `useAnnouncer()` hook for runtime plan events.
+   - `TextArea` character counter suppresses noisy per-keystroke announcements, triggering announcements only when crossing 80%, 90%, and 100% capacity thresholds.
+4. **No Color-Only State Indicators (WCAG 1.4.1)**:
+   - `ProgressMeter`, `ProvenanceBadge`, `DecisionStatusPill`, and `Badge` always pair distinct icon glyphs (`check`, `alert`, `lock`, `sparkle`) and explicit textual status alongside background hues.
+5. **Reduced Motion & Print Optimization**:
+   - `@media (prefers-reduced-motion: reduce)` resets all transitions and animations to 0.01ms and halts button loading spinners.
+   - `@media print` suppresses headers, navigation sidebars, and assistant docks, yielding an ink-friendly high-contrast layout for on-site event day execution.
+6. **44px Target Size**:
+   - All standard touch targets (`Button` md, inputs, selects, textareas) enforce a minimum 44x44px boundary per WCAG 2.5.8.
+
+### Why Zero Web Fonts & Zero External Images
+
+- **Instant Zero-Layout-Shift Loading**: Using system display serif and sans-serif stacks eliminates Flash of Invisible Text (FOIT), Flash of Unstyled Text (FOUT), and layout shifts without external HTTP roundtrips.
+- **Privacy & Security**: Zero third-party web font trackers or image CDNs ensure host data and IP addresses remain private.
+- **Lightweight Standalone Visuals**: `CoverArt` provides deterministic, seed-hashed layered SVG covers standing in for stock photos while keeping bundle size compact and 100% offline-ready.
 
 ---
 
 ## 12. Testing & Quality Standards
 
-<!-- To be filled as UI lands -->
+- **Zero-Warning Pipeline**: Strict enforcement of `tsc --noEmit`, ESLint with architectural boundary rules, Prettier, and Vitest.
+- **Automated Accessibility Testing**: Every primitive, shell landmark, and route skeleton is verified with `expectNoAxeViolations()` powered by `axe-core`.
+- **Heading Order Verification**: All views enforce exactly one `<h1>` per route with strictly sequential heading hierarchies (`h1` -> `h2`).
+- **Pure Unit Tests**: Deterministic clock and ID injection ensures tests execute reliably across local and CI environments without network dependencies.
 

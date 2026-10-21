@@ -1,1 +1,146 @@
 @import 'tailwindcss';
+
+/*
+  =============================================================================
+  MOMENTLY DESIGN SYSTEM - WCAG AA CONTRAST AUDIT (Calculated relative luminance)
+  All text/background pairings meet or exceed WCAG 2.1 AA (4.5:1 for normal text).
+  =============================================================================
+  Pairing                              Colors               Ratio    Standard
+  -----------------------------------------------------------------------------
+  Ink on Background                    #2B1B2E on #FBF7F2   15.16:1  Pass (AAA)
+  Ink on Surface                       #2B1B2E on #FFFFFF   16.17:1  Pass (AAA)
+  Ink on Surface-Muted                 #2B1B2E on #F4EDE6   13.94:1  Pass (AAA)
+  Ink-Muted on Background              #5B4A5E on #FBF7F2    7.61:1  Pass (AAA)
+  Ink-Muted on Surface                 #5B4A5E on #FFFFFF    8.12:1  Pass (AAA)
+  Ink-Muted on Surface-Muted           #5B4A5E on #F4EDE6    7.00:1  Pass (AAA)
+  On-Primary on Primary                #FFFFFF on #6B2D5C    9.74:1  Pass (AAA)
+  On-Primary on Primary-Hover          #FFFFFF on #55224A   12.25:1  Pass (AAA)
+  Gold-Text on Surface                 #8A5A00 on #FFFFFF    5.93:1  Pass (AA)
+  Gold-Text on Background              #8A5A00 on #FBF7F2    5.56:1  Pass (AA)
+  Success Text on Soft Green Bg        #1F6F54 on #E7F4EE    5.37:1  Pass (AA)
+  Warning Text on Soft Amber Bg        #8A5A00 on #FFF4DC    5.43:1  Pass (AA)
+  Danger Text on Soft Red Bg           #A12B3A on #FBE9EB    6.15:1  Pass (AA)
+  Info Text on Soft Blue Bg            #2B5C8A on #E8F0F8    6.08:1  Pass (AA)
+  Focus Ring on Surface                #1D4F91 on #FFFFFF    8.14:1  Pass (AAA)
+  Focus Ring on Background             #1D4F91 on #FBF7F2    7.63:1  Pass (AAA)
+  =============================================================================
+  Note: Gold (#D4A24C) is decorative only (accents/dividers/icons) and never used as text.
+*/
+
+@theme {
+  --color-bg: #FBF7F2;
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #F4EDE6;
+  --color-border: #E6DCD2;
+
+  --color-ink: #2B1B2E;
+  --color-ink-muted: #5B4A5E;
+
+  --color-primary: #6B2D5C;
+  --color-primary-hover: #55224A;
+  --color-on-primary: #FFFFFF;
+  --color-gold: #D4A24C;
+  --color-gold-text: #8A5A00;
+
+  --color-success: #1F6F54;
+  --color-success-bg: #E7F4EE;
+  --color-warning: #8A5A00;
+  --color-warning-bg: #FFF4DC;
+  --color-danger: #A12B3A;
+  --color-danger-bg: #FBE9EB;
+  --color-info: #2B5C8A;
+  --color-info-bg: #E8F0F8;
+
+  --color-focus: #1D4F91;
+
+  --font-display: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  --shadow-soft-sm: 0 1px 3px rgba(43, 27, 46, 0.05);
+  --shadow-soft-md: 0 4px 12px rgba(43, 27, 46, 0.08);
+  --shadow-soft-lg: 0 8px 24px rgba(43, 27, 46, 0.12);
+}
+
+:root {
+  color-scheme: light;
+  --bg: #FBF7F2;
+  --surface: #FFFFFF;
+  --surface-muted: #F4EDE6;
+  --border: #E6DCD2;
+  --ink: #2B1B2E;
+  --ink-muted: #5B4A5E;
+  --primary: #6B2D5C;
+  --primary-hover: #55224A;
+  --on-primary: #FFFFFF;
+  --gold: #D4A24C;
+  --gold-text: #8A5A00;
+  --success: #1F6F54;
+  --success-bg: #E7F4EE;
+  --warning: #8A5A00;
+  --warning-bg: #FFF4DC;
+  --danger: #A12B3A;
+  --danger-bg: #FBE9EB;
+  --info: #2B5C8A;
+  --info-bg: #E8F0F8;
+  --focus: #1D4F91;
+}
+
+html {
+  font-size: 16px;
+  background-color: #FBF7F2;
+  color: #2B1B2E;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  background-color: #FBF7F2;
+  color: #2B1B2E;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessible global focus ring: 3px solid #1D4F91 with 2px offset */
+:focus-visible {
+  outline: 3px solid #1D4F91 !important;
+  outline-offset: 2px !important;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Base print stylesheet for event kits and schedules */
+@media print {
+  header,
+  nav,
+  aside,
+  [aria-label="Assistant"],
+  .no-print {
+    display: none !important;
+  }
+
+  main {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+}
