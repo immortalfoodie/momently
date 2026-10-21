@@ -15,7 +15,7 @@ import {
   rateEntrySchema,
 } from './rateCards.schema';
 
-export { CITY_TIER_MULTIPLIERS };
+export { CITY_TIER_MULTIPLIERS, type GuestBand, type QualityLevel, type RateEntry };
 
 function createBands(anchor100: number): GuestBand[] {
   return [
