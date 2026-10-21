@@ -35,8 +35,10 @@ describe('Domain Zod Schemas - Valid Samples', () => {
       provenance: 'estimate',
       locked: false,
       note: 'Includes dessert counter',
+      rateKey: 'catering_buffet.standard',
     });
     expect(item.id).toBe('bi_1');
+    expect(item.rateKey).toBe('catering_buffet.standard');
 
     const constraint = constraintSchema.parse({
       id: 'c_1',

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  budgetItemSchema,
   conceptSchema,
   eventMetaSchema,
   guestNeedsSchema,
@@ -107,6 +108,22 @@ describe('Domain Zod Schemas - Strict Rejection Rules', () => {
         quietSpaceNeeded: false,
         languages: ['English'],
         names: ['John Doe', 'Jane Doe'],
+      }),
+    ).toThrow();
+  });
+
+  it('rejects budget items with rateKey exceeding 60 characters', () => {
+    expect(() =>
+      budgetItemSchema.parse({
+        id: 'bi_long',
+        category: 'venue',
+        label: 'Hall',
+        basis: 'flat',
+        unitCost: 20000,
+        quantity: 1,
+        provenance: 'estimate',
+        locked: false,
+        rateKey: 'a'.repeat(61),
       }),
     ).toThrow();
   });

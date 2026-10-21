@@ -17,6 +17,7 @@ export const budgetItemSchema = z.object({
   provenance: provenanceSchema,
   locked: z.boolean(),
   note: z.string().max(200).optional(),
+  rateKey: z.string().max(60).optional(),
 });
 
 export const constraintKindSchema = z.enum([
