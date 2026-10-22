@@ -4,7 +4,8 @@ import { err, ok } from '@/lib/result';
 import { contingencyPercent, refreshContingency } from './budget';
 import type { BudgetPatchOp } from './patchBudgetOps';
 import { handleBudgetItemOps } from './patchBudgetOps';
-import { reestimateForGuestCount } from './propagate';
+import { reestimateEstimates, reestimateForGuestCount } from './propagate';
+import { tierForCity } from './pricing';
 import { shiftSlots } from './schedule';
 
 export interface PatchError {
@@ -15,7 +16,8 @@ export interface PatchError {
     | 'concept_not_found'
     | 'slot_not_found'
     | 'schedule_overflow'
-    | 'hard_constraint_violation';
+    | 'hard_constraint_violation'
+    | 'invalid_change';
   message: string;
   impact?: PlanImpact;
 }
@@ -123,17 +125,48 @@ function handleMetaOps(plan: EventPlan, op: MetaPatchOp): OpResult {
       notes: [],
     });
   }
-  if (
-    typeof op.changes.guestCount === 'number' &&
-    op.changes.guestCount !== plan.meta.guestCount
-  ) {
-    const interim = handleGuestCountChange(plan, op.changes.guestCount);
-    return ok({
-      plan: { ...interim.plan, meta: { ...interim.plan.meta, ...op.changes } },
-      notes: interim.notes,
+
+  if (op.changes.type !== undefined && op.changes.type !== plan.meta.type) {
+    return err({
+      code: 'invalid_change',
+      message: "The event type can't be changed after planning starts; create a new event instead",
     });
   }
-  return ok({ plan: { ...plan, meta: { ...plan.meta, ...op.changes } }, notes: [] });
+
+  let workingPlan = plan;
+  const accumulatedNotes: string[] = [];
+
+  if (
+    typeof op.changes.guestCount === 'number' &&
+    op.changes.guestCount !== workingPlan.meta.guestCount
+  ) {
+    const interim = handleGuestCountChange(workingPlan, op.changes.guestCount);
+    workingPlan = interim.plan;
+    accumulatedNotes.push(...interim.notes);
+  }
+
+  if (op.changes.city !== undefined && op.changes.city !== workingPlan.meta.city) {
+    const oldTier = tierForCity(workingPlan.meta.city);
+    const newTier = tierForCity(op.changes.city);
+    if (oldTier !== newTier) {
+      const planWithNewCity: EventPlan = {
+        ...workingPlan,
+        meta: { ...workingPlan.meta, ...op.changes, city: op.changes.city },
+      };
+      const reestimate = reestimateEstimates(planWithNewCity);
+      workingPlan = {
+        ...planWithNewCity,
+        budgetItems: reestimate.items,
+      };
+      accumulatedNotes.push(`Prices re-estimated for ${newTier} city rates`);
+      return ok({
+        plan: { ...workingPlan, meta: { ...workingPlan.meta, ...op.changes } },
+        notes: accumulatedNotes,
+      });
+    }
+  }
+
+  return ok({ plan: { ...workingPlan, meta: { ...workingPlan.meta, ...op.changes } }, notes: accumulatedNotes });
 }
 
 function handleMiscOps(plan: EventPlan, op: PlanPatchOp): OpResult {

@@ -64,22 +64,10 @@ export interface EventsState {
   outcomes: Record<string, AssistantOutcome>;
   chatDraft: string;
   hydrate: () => void;
-  createEvent: (
-    plan: EventPlan,
-    extras?: { assumptions?: string[]; missingInfo?: MissingInfoItem[] },
-  ) => string;
+  createEvent: (plan: EventPlan, extras?: { assumptions?: string[]; missingInfo?: MissingInfoItem[] }) => string;
   createDemoEvent: () => string;
-  approveAndApply: (
-    eventId: string,
-    patch: PlanPatch,
-    options: { basedOnVersion: number; recordSnapshot?: boolean },
-  ) => Result<PlanImpact, StoreError | PatchError>;
-  applyUserEdit: (
-    eventId: string,
-    ops: PlanPatchOp[],
-    reason: string,
-    options?: { recordSnapshot?: boolean },
-  ) => Result<PlanImpact, StoreError | PatchError>;
+  approveAndApply: (eventId: string, patch: PlanPatch, options: { basedOnVersion: number; recordSnapshot?: boolean }) => Result<PlanImpact, StoreError | PatchError>;
+  applyUserEdit: (eventId: string, ops: PlanPatchOp[], reason: string, options?: { recordSnapshot?: boolean }) => Result<PlanImpact, StoreError | PatchError>;
   restoreVersion: (eventId: string, version: number) => Result<EventPlan, StoreError>;
   setConcepts: (eventId: string, concepts: Concept[]) => void;
   deleteEvent: (id: string) => void;

@@ -83,10 +83,12 @@ function reestimateSingleItem(item: BudgetItem, ctx: ReestimateContext): BudgetI
   }
 
   if (item.locked || item.provenance !== 'estimate') {
-    const currentCost = itemTotal(item, ctx.oldGuestCount);
-    ctx.notes.push(
-      `${item.label} is locked at ${formatInr(currentCost)}; confirm it can seat ${ctx.newGuestCount} guests.`,
-    );
+    if (ctx.oldGuestCount !== ctx.newGuestCount) {
+      const currentCost = itemTotal(item, ctx.oldGuestCount);
+      ctx.notes.push(
+        `${item.label} is locked at ${formatInr(currentCost)}; confirm it can seat ${ctx.newGuestCount} guests.`,
+      );
+    }
     return item;
   }
 
@@ -103,6 +105,35 @@ function reestimateSingleItem(item: BudgetItem, ctx: ReestimateContext): BudgetI
   }
 
   return repriceEstimatedItem(item, rateEntry, ctx);
+}
+
+/**
+ * Purely re-evaluates plan budget items using the city tier and guest count from plan.meta.
+ * WHY: Dynamically updates unlocked estimates when city rates or headcount change while preserving locks.
+ *
+ * @param plan - Current EventPlan.
+ * @returns Updated array of budget items along with audit notes.
+ */
+export function reestimateEstimates(plan: EventPlan): ReestimateResult {
+  const notes: string[] = [];
+  const tier = tierForCity(plan.meta.city);
+  const template = getTemplate(plan.meta.type);
+  const guestCount = plan.meta.guestCount;
+
+  const ctx: ReestimateContext = {
+    oldGuestCount: guestCount,
+    newGuestCount: guestCount,
+    tier,
+    template,
+    notes,
+  };
+
+  const updatedItems = plan.budgetItems.map((item) => reestimateSingleItem(item, ctx));
+
+  const pct = contingencyPercent(plan.meta.type, plan.meta.setting);
+  const items = refreshContingency(updatedItems, guestCount, pct);
+
+  return { items, notes };
 }
 
 /**

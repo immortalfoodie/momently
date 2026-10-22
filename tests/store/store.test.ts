@@ -219,24 +219,8 @@ describe('Store: Client State & Persistence', () => {
 
     // Create a very large dummy snapshot string payload
     const largeDummyNote = 'A'.repeat(500_000);
-    const giantSnapshot = {
-      version: 1,
-      savedAt: '2026-10-21T10:00:00.000Z',
-      label: 'Giant 1',
-      plan: {
-        ...plan,
-        meta: { ...plan.meta, hostBrief: largeDummyNote },
-      },
-    };
-    const giantSnapshot2 = {
-      version: 2,
-      savedAt: '2026-10-21T11:00:00.000Z',
-      label: 'Giant 2',
-      plan: {
-        ...plan,
-        meta: { ...plan.meta, hostBrief: largeDummyNote },
-      },
-    };
+    const giantSnapshot = { version: 1, savedAt: '2026-10-21T10:00:00.000Z', label: 'Giant 1', plan: { ...plan, meta: { ...plan.meta, hostBrief: largeDummyNote } } };
+    const giantSnapshot2 = { version: 2, savedAt: '2026-10-21T11:00:00.000Z', label: 'Giant 2', plan: { ...plan, meta: { ...plan.meta, hostBrief: largeDummyNote } } };
 
     const currentEvent = useEventsStore.getState().events[eventId]!;
     currentEvent.history = [giantSnapshot, giantSnapshot2];
