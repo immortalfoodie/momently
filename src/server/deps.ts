@@ -37,11 +37,14 @@ function parseRateLimitEnv(envValue?: string): number {
 // eslint-disable-next-line complexity
 export function createDeps(overrides?: Partial<Deps>): Deps {
   const factoryResult = createProviderFromEnv(process.env);
-  const limitPerMinute = parseRateLimitEnv(process.env.RATE_LIMIT_PER_MINUTE);
+  const configuredLimit = parseRateLimitEnv(process.env.RATE_LIMIT_PER_MINUTE);
+  const mode = overrides?.mode ?? factoryResult.mode;
+  const limitPerMinute =
+    mode === 'demo' ? Math.max(configuredLimit, 120) : configuredLimit;
 
   return {
     provider: overrides?.provider ?? factoryResult.provider,
-    mode: overrides?.mode ?? factoryResult.mode,
+    mode,
     modeNote: overrides?.modeNote ?? factoryResult.note,
     cache: overrides?.cache ?? new LlmCache(),
     rateLimiter: overrides?.rateLimiter ?? createRateLimiter({ limitPerMinute }),

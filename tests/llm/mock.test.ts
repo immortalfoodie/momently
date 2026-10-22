@@ -45,6 +45,18 @@ describe('Offline Mock LLM Provider (Demo Mode)', () => {
     expect(output.guestCount).toBe(80);
     expect(output.budgetCap).toBe(150000);
     expect(output.budgetIsHard).toBe(true);
+    expect(output.setting).toBe('undecided');
+  });
+
+  it('determines setting as undecided unless explicit outdoor or indoor keywords exist', () => {
+    const today = '2026-10-21';
+    expect(mockIntake({ text: 'Anniversary in Mumbai for 50 people, lawn venue', today }).setting).toBe('outdoor');
+    expect(mockIntake({ text: 'Wedding in Delhi on a terrace with 100 guests', today }).setting).toBe('outdoor');
+    expect(mockIntake({ text: 'Birthday celebration in open-air garden in Pune', today }).setting).toBe('outdoor');
+    expect(mockIntake({ text: 'Community gathering in society hall in Bangalore', today }).setting).toBe('indoor');
+    expect(mockIntake({ text: 'Dinner in hotel banquet with 80 guests', today }).setting).toBe('indoor');
+    expect(mockIntake({ text: 'Concert in college auditorium', today }).setting).toBe('indoor');
+    expect(mockIntake({ text: 'Intimate celebration with family and friends', today }).setting).toBe('undecided');
   });
 
   it('maps at least 15 table-driven intent phrases to expected kinds and payloads', () => {

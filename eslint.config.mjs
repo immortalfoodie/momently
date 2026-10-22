@@ -62,6 +62,32 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  // Architectural boundary: Only src/store may call the engine's applyPatch directly.
+  // Components and pages must go through the store (approveAndApply or applyUserEdit). Previews through previewOps are allowed.
+  {
+    files: ['src/components/**', 'src/app/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@/engine/patch',
+              importNames: ['applyPatch'],
+              message:
+                'applyPatch can only be called from src/store. Components and pages must go through the store.',
+            },
+            {
+              name: '@/engine',
+              importNames: ['applyPatch'],
+              message:
+                'applyPatch can only be called from src/store. Components and pages must go through the store.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   prettier,
 
   // Override default ignores of eslint-config-next.

@@ -122,11 +122,12 @@ export function applyPatch(
     status: 'approved',
   };
 
+  const nextLedger = [...workingCopy.ledger, ledgerEntry];
   const finalPlan: EventPlan = {
     ...workingCopy,
     version: plan.version + 1,
     updatedAt: ctx.clock().toISOString(),
-    ledger: [...workingCopy.ledger, ledgerEntry],
+    ledger: nextLedger.length > 500 ? nextLedger.slice(nextLedger.length - 500) : nextLedger,
   };
 
   const impact = computeImpact(plan, finalPlan, accumulatedNotes);

@@ -9,6 +9,8 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
     testTimeout: 15000,
+    pool: 'threads',
+    maxWorkers: 2,
   },
   resolve: {
     alias: {

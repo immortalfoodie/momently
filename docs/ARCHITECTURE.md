@@ -280,3 +280,48 @@ All core text and button foreground/background pairings exceed the WCAG AA minim
 - **Heading Order Verification**: All views enforce exactly one `<h1>` per route with strictly sequential heading hierarchies (`h1` -> `h2`).
 - **Pure Unit Tests**: Deterministic clock and ID injection ensures tests execute reliably across local and CI environments without network dependencies.
 
+---
+
+## 13. Client State Architecture
+
+Momently's client-side state is managed through Zustand (`src/store/eventsStore.ts`) paired with the deterministic engine (`src/engine/`):
+
+### The Single Write Path
+
+All plan modifications strictly follow a single, validated write path:
+```text
+User Gesture in UI
+       │
+       ▼
+store.approveAndApply(eventId, patch, { basedOnVersion })
+       │
+       ├─► 1. Staleness Check: plan.version === basedOnVersion
+       │
+       ├─► 2. Audit Snapshot: createSnapshot(preChangePlan, reason) (max 25)
+       │
+       ├─► 3. Engine Invocation: engine.applyPatch(preChangePlan, patch, ctx)
+       │
+       └─► 4. Store Update & Recency Reorder: moves updated event to head of order
+```
+Direct user mutations (such as checklist toggles, quote entries, or budget tweaks) build a user-sourced patch via `createPatch` and route through `store.applyUserEdit`, which delegates directly to the exact same write path. ESLint architectural boundaries (`no-restricted-imports`) strictly forbid UI components (`src/components/**`) and App Router pages (`src/app/**`) from invoking `engine.applyPatch` directly. Read-only previews (`previewOps`) remain permitted for speculative what-if calculations.
+
+### Staleness Protection
+
+In collaborative or multi-turn conversational workflows, an assistant proposal might be based on an earlier plan revision (e.g., version 2). If the host manually edits guest counts or renames items in the interim (advancing the plan to version 3), applying the older proposal could silently overwrite concurrent user edits.
+To guarantee consistency, `approveAndApply` takes `{ basedOnVersion }` and rejects stale proposals with error code `"stale_plan"` if `plan.version !== basedOnVersion`, leaving store state untouched.
+
+### Persistence with Validation on Load
+
+Persistence is managed using Zustand's `persist` middleware backed by a resilient wrapper (`safeStorage.ts`):
+- **Resilient Storage**: `safeStorage` wraps `window.localStorage` in `try/catch` handlers for every read, write, and removal, gracefully degrading to an in-memory storage map in environments where `localStorage` throws (e.g. Safari private browsing, disabled cookies, storage quota exceeded, or SSR).
+- **Strict Validation on Hydration**: `hydrate()` loads stored data from key `"momently.v1"` and validates every saved event against `eventRecordSchema` (which validates the complete `eventPlanSchema`, capped history snapshots, and messages). If corrupt or outdated schema items are encountered, they are dropped and an accessible user notice is displayed (`"N saved event(s) couldn't be loaded"`). The application never crashes on corrupted data.
+- **Quota & Size Guard**: If the serialized storage footprint exceeds 2,500,000 characters (~2.5 MB), the store automatically prunes the oldest historical plan snapshots (`PlanSnapshot`) across events before persisting, guaranteeing that active celebration plans are never dropped or truncated due to browser storage limits.
+
+### Local-Only Architecture Rationale
+
+Celebration plans are stored exclusively within the user's browser, by deliberate architectural design:
+1. **Privacy First**: Celebration plans contain intimate personal details—guest headcounts, financial budgets, religious traditions, family milestones, and venue choices. Storing data locally ensures hosts maintain full ownership and privacy over their personal celebrations without creating tracking profiles.
+2. **Zero Database Operational Footprint**: Eliminating cloud databases eliminates database breaches, credential exposure, synchronization latency, and server infrastructure costs.
+3. **Instant Offline Readiness**: Hosts can draft, inspect, and fine-tune celebrations with zero latency, even on flaky event-venue Wi-Fi or offline mobile connections.
+
+

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { IconName } from '@/components/ui/Icon';
 import { Icon } from '@/components/ui/Icon';
+import { useEventsStore } from '@/store/eventsStore';
 
 export interface NavItem {
   label: string;
@@ -45,6 +46,7 @@ function SidebarContent({ className = '', onNavigate }: SidebarProps) {
   const eventId = eventMatch?.[1];
   const isEventScope = typeof eventId === 'string' && eventId.length > 0;
   const eventNavItems = isEventScope ? getEventNavItems(eventId) : [];
+  const eventTitle = useEventsStore((s) => (eventId ? s.events[eventId]?.plan.meta.title : undefined));
 
   return (
     <nav
@@ -86,9 +88,20 @@ function SidebarContent({ className = '', onNavigate }: SidebarProps) {
 
       {isEventScope ? (
         <div data-testid="event-nav-group">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-[#5B4A5E] px-3 mb-2">
-            This Event
-          </h2>
+          <div className="px-3 mb-2">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-[#5B4A5E]">
+              This Event
+            </h2>
+            {eventTitle ? (
+              <p
+                data-testid="sidebar-event-title"
+                className="text-sm font-semibold text-[#2B1B2E] truncate mt-1"
+                title={eventTitle}
+              >
+                {eventTitle}
+              </p>
+            ) : null}
+          </div>
           <ul role="list" className="flex flex-col gap-1 p-0 m-0 list-none">
             {eventNavItems.map((item) => {
               const isActive = pathname === item.href;

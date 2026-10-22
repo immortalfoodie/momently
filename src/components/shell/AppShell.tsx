@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from 'react';
 import { Drawer } from '@/components/ui/Dialog';
+import { useHydrateStore } from '@/store/useHydrateStore';
 import { ChatDock } from './ChatDock';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
@@ -19,6 +20,7 @@ export interface AppShellProps {
  * 3. Responsive Layout: Operates cleanly from 360px to 1440px without horizontal scroll.
  */
 export function AppShell({ children }: AppShellProps) {
+  useHydrateStore();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   return (

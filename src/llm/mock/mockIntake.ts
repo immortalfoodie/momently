@@ -55,13 +55,25 @@ function extractCity(lower: string): string | null {
   return null;
 }
 
-function extractSetting(lower: string): EventSetting | null {
-  if (lower.includes('outdoor') || lower.includes('lawn') || lower.includes('garden') || lower.includes('terrace')) {
+function extractSetting(lower: string): EventSetting {
+  if (
+    lower.includes('outdoor') ||
+    lower.includes('lawn') ||
+    lower.includes('garden') ||
+    lower.includes('terrace') ||
+    lower.includes('open-air')
+  ) {
     return 'outdoor';
   }
-  if (lower.includes('hall') || lower.includes('banquet') || lower.includes('indoor')) return 'indoor';
-  if (lower.includes('mixed')) return 'mixed';
-  return null;
+  if (
+    lower.includes('hall') ||
+    lower.includes('banquet') ||
+    lower.includes('indoor') ||
+    lower.includes('auditorium')
+  ) {
+    return 'indoor';
+  }
+  return 'undecided';
 }
 
 function extractDate(text: string): string | null {

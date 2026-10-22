@@ -56,3 +56,24 @@ export function formatMinuteOfDay(minute: number): string {
   const paddedMinutes = minutes.toString().padStart(2, '0');
   return `${hours12}:${paddedMinutes} ${period}`;
 }
+
+/**
+ * Formats a YYYY-MM-DD ISO string into a human-friendly date string.
+ *
+ * @param dateIso - ISO date string in YYYY-MM-DD format.
+ * @returns Formatted date string (e.g. "15 Dec 2026") or "Date not set" if missing.
+ */
+export function formatIsoDate(dateIso?: string | null): string {
+  if (!dateIso) return 'Date not set';
+  const parts = dateIso.split('-');
+  if (parts.length !== 3) return dateIso;
+  const year = parts[0];
+  const monthIdx = parseInt(parts[1] ?? '1', 10) - 1;
+  const day = parseInt(parts[2] ?? '1', 10);
+  const monthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
+  const month = monthNames[monthIdx] ?? parts[1];
+  return `${day} ${month} ${year}`;
+}

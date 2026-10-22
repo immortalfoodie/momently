@@ -1,25 +1,24 @@
 import type { Metadata } from 'next';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { Icon } from '@/components/ui/Icon';
+import { IntakeForm } from '@/components/intake';
 import { PageHeader } from '@/components/ui/PageHeader';
 
 export const metadata: Metadata = {
-  title: 'New Event',
+  title: 'Plan a New Event',
+  description:
+    'Describe your celebration in plain words. Momently synthesizes a complete, constraint-checked plan with tailored options.',
 };
 
 export default function NewEventPage() {
   return (
-    <div className="py-2">
+    <div className="py-2 max-w-3xl mx-auto">
       <PageHeader
-        title="Create New Event"
-        description="Share a few details about your celebration vision. Momently synthesizes a complete, constraint-checked plan."
+        title="Vibe-to-Vision Intake"
+        description="Share a few details about your celebration vision. Momently balances your guest count, city pricing, and creative aesthetic into an executable plan."
       />
 
-      <EmptyState
-        icon={<Icon name="sparkle" size={28} aria-hidden="true" />}
-        title="Host Intake Studio"
-        description="The natural language intake form will synthesize your event date, city, guest count, and creative priorities into a balanced plan."
-      />
+      <div className="bg-white rounded-[20px] border border-[#E6DCD2] p-6 sm:p-8 shadow-xs">
+        <IntakeForm />
+      </div>
     </div>
   );
 }
