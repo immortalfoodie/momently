@@ -9,6 +9,7 @@ import { Icon } from '@/components/ui/Icon';
 import { Skeleton } from '@/components/ui/Skeleton';
 import type { LinkTabItem } from '@/components/ui/Tabs';
 import { LinkTabs } from '@/components/ui/Tabs';
+import { PlanHealthStrip } from '@/components/plan/PlanHealthStrip';
 import { useEvent, useEventDerived, useStoreReady } from '@/store/selectors';
 
 export interface EventLayoutProps {
@@ -81,6 +82,7 @@ export default function EventLayout({ children }: EventLayoutProps) {
         <Suspense fallback={<div className="h-11 border-b border-[#E6DCD2]" />}>
           <EventSubnav eventId={id} />
         </Suspense>
+        <PlanHealthStrip eventId={id} />
         <div>{children}</div>
       </div>
     </EventContextProvider>

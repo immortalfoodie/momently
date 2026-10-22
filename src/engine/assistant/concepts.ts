@@ -53,7 +53,7 @@ export function selectConceptOps(
 ): PlanPatchOp[] {
   void ctx;
   const ops: PlanPatchOp[] = [];
-  if ('id' in concept && concept.id) {
+  if ('id' in concept && concept.id && plan.concepts.some((c) => c.id === concept.id)) {
     ops.push({ type: 'select_concept', conceptId: concept.id });
   }
 

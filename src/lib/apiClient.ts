@@ -1,4 +1,7 @@
+import type { EventPlan } from '@/domain/types';
 import type {
+  ConceptsRequest,
+  ConceptsResponse,
   HealthResponse,
   IntakeRequest,
   IntakeResponse,
@@ -134,4 +137,15 @@ export async function requestNarration(
   options?: ApiClientOptions,
 ): Promise<Result<NarrateResponse, ClientError>> {
   return executeJsonRequest<NarrateResponse>('/api/narrate', 'POST', request, options);
+}
+
+/**
+ * Requests fresh celebration concepts for an active plan.
+ */
+export async function requestConcepts(
+  plan: EventPlan,
+  options?: ApiClientOptions,
+): Promise<Result<ConceptsResponse, ClientError>> {
+  const payload: ConceptsRequest = { plan };
+  return executeJsonRequest<ConceptsResponse>('/api/concepts', 'POST', payload, options);
 }

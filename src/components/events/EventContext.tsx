@@ -37,3 +37,10 @@ export function useCurrentEvent(): EventContextValue {
   }
   return context;
 }
+
+/**
+ * Optional variant of useCurrentEvent that returns null if outside provider.
+ */
+export function useOptionalCurrentEvent(): EventContextValue | null {
+  return useContext(EventContext);
+}

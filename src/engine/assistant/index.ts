@@ -10,6 +10,7 @@ export * from './concepts';
 export * from './fromIntake';
 export * from './resolveIntent';
 export * from './types';
+export * from './withFunding';
 
 /**
  * High-level pure intake handler translating structured LLM intake output into an initialized EventPlan.
