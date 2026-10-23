@@ -529,4 +529,27 @@ Event hosts frequently check the run of show while walking across venues:
 - **Lifecycle Management**: Acquires a screen sentinel when toggled, safely re-requests the lock when returning from background visibility (`visibilitychange`), and automatically releases the sentinel on unmount or toggle off.
 - **Non-Throwing Resilience**: Rejections due to system battery-saver mode or browser security policies display an inline status warning and never throw or crash the UI.
 
+## 20. Guests and Vendors
+
+Momently treats guest hospitality and vendor selection as high-stakes personal coordinator decisions, governed by strict privacy isolation and deterministic, evidence-only analysis.
+
+### Privacy Design (Zero PII, Counts Only)
+Celebration hosts manage intimate guest demographics and sensitive vendor communications:
+- **Demographics as Aggregate Counts**: Guest hospitality requirements (`src/domain/baseSchemas.ts`, `GuestNeeds`) are modeled strictly as anonymous counts (vegetarians, Jain, vegans, gluten-free, allergy alerts, wheelchair users, elderly, children, quiet space) and languages. No guest names, email addresses, or phone numbers are ever stored in the plan.
+- **Vendor Quotes Isolated from AI**: While vendor category status (`not_started`, `comparing`, `booked`) is summarized for LLM context, `summarizePlanForLlm(plan)` strictly strips all vendor quotes, vendor business names, prices, and answer text. The AI never sees commercial terms or candidate vendor identities.
+- **Inquiry Brief Excludes Budget**: The host-facing inquiry brief (`src/lib/vendorBrief.ts`) compiles event metadata, requirements, and screening questions into plain text for hosts to send directly to vendors. To protect the host's negotiation leverage, the brief **never includes the budget, budget cap, contact names, or host notes**.
+
+### Evidence-Only Comparison (No Invented Ratings or Scores)
+Unlike commercial lead-generation platforms, Momently does not maintain vendor affiliate networks, sponsored rankings, or speculative quality scores:
+- **Factual Analysis Only**: `compareQuotes` (`src/engine/quoteComparison.ts`) evaluates only the data the host explicitly inputs: quoted price, answered questions count, question completeness percentage, and percentage variance against the allocated budget line.
+- **Transparent Observations**: Observations highlight factual gaps and math (e.g. *"The lowest price (₹X) hasn't answered N of your questions: ask before paying"*, *"Vendor is more than 40% away from your budget line: check what's included"*).
+- **Explicit Fixed Disclaimer**: The UI explicitly informs hosts: *"Based only on what you entered. Momently has no vendor ratings, reviews or availability data, and doesn't invent any."*
+
+### Quote to Budget Path with Provenance Tracking
+When a host selects a quote, `quoteToBudgetOps` (`src/engine/quoteToBudget.ts`) provides a single, audited write-path directly into the active plan budget:
+- **Locked Line Protection**: If the target budget item is locked by the host, the engine immediately rejects the change with an explicit instruction: *"Unlock this budget line first"*.
+- **Provenance Integrity**: If the host checks *"This is a confirmed written quote"*, the budget item provenance is marked as `'verified'`. Otherwise, it is marked as `'user'`.
+- **Hard Cap Interception**: Applying a quote routes through `useUserEdit`. If the quote pushes the overall plan beyond a hard budget cap, the mutation is blocked and converted into an approvable funding rebalance option.
+
+
 

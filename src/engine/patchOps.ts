@@ -4,9 +4,14 @@ import { err, ok } from '@/lib/result';
 import { contingencyPercent, refreshContingency } from './budget';
 import type { BudgetPatchOp } from './patchBudgetOps';
 import { handleBudgetItemOps } from './patchBudgetOps';
+import {
+  clampGuestNeedsToCount,
+  handleSetGuestNeeds,
+  handleVendorOps,
+} from './patchGuestVendorOps';
+import { handleScheduleOps, isScheduleOp } from './patchScheduleOps';
 import { reestimateEstimates, reestimateForGuestCount } from './propagate';
 import { tierForCity } from './pricing';
-import { shiftSlots } from './schedule';
 
 export interface PatchError {
   code:
@@ -16,6 +21,7 @@ export interface PatchError {
     | 'concept_not_found'
     | 'slot_not_found'
     | 'task_not_found'
+    | 'vendor_not_found'
     | 'schedule_overflow'
     | 'hard_constraint_violation'
     | 'invalid_change';
@@ -25,23 +31,15 @@ export interface PatchError {
 
 export type OpResult = Result<{ plan: EventPlan; notes: string[] }, PatchError>;
 
-type ScheduleOpType = 'add_slot' | 'update_slot' | 'remove_slot' | 'shift_schedule';
 type MetaOpType = 'set_meta' | 'set_setting';
-
-type SchedulePatchOp = Extract<PlanPatchOp, { type: ScheduleOpType }>;
 type MetaPatchOp = Extract<PlanPatchOp, { type: MetaOpType }>;
 
 function isBudgetOp(op: PlanPatchOp): op is BudgetPatchOp {
   return (
-    op.type === 'add_budget_item' || op.type === 'update_budget_item' ||
-    op.type === 'remove_budget_item' || op.type === 'scale_category'
-  );
-}
-
-function isScheduleOp(op: PlanPatchOp): op is SchedulePatchOp {
-  return (
-    op.type === 'add_slot' || op.type === 'update_slot' ||
-    op.type === 'remove_slot' || op.type === 'shift_schedule'
+    op.type === 'add_budget_item' ||
+    op.type === 'update_budget_item' ||
+    op.type === 'remove_budget_item' ||
+    op.type === 'scale_category'
   );
 }
 
@@ -57,14 +55,20 @@ function handleGuestCountChange(
   const updatedConstraints = plan.constraints.map((c) =>
     c.kind === 'guest_count' ? { ...c, numericValue: newCount } : c,
   );
+  const { needs, clampedFields } = clampGuestNeedsToCount(plan.guestNeeds, newCount);
+  const notes = [...reestimate.notes];
+  if (clampedFields.length > 0) {
+    notes.push(`Guest needs clamped to new count: ${clampedFields.join(', ')}`);
+  }
   return {
     plan: {
       ...plan,
       meta: { ...plan.meta, guestCount: newCount },
+      guestNeeds: needs,
       constraints: updatedConstraints,
       budgetItems: reestimate.items,
     },
-    notes: reestimate.notes,
+    notes,
   };
 }
 
@@ -87,40 +91,6 @@ function handleBudgetCapChange(
       )
     : [...plan.constraints, capConstraint];
   return { plan: { ...plan, constraints }, notes: [] };
-}
-
-function handleScheduleOps(plan: EventPlan, op: SchedulePatchOp): OpResult {
-  if (op.type === 'shift_schedule') {
-    const shifted = shiftSlots(plan.schedule, op.fromMinute, op.deltaMinutes);
-    if (!shifted.ok) {
-      return err({
-        code: 'schedule_overflow',
-        message: 'Shifted schedule slots would breach 00:00 to 24:00 boundary',
-      });
-    }
-    return ok({ plan: { ...plan, schedule: shifted.value }, notes: [] });
-  }
-  if (op.type === 'add_slot') {
-    if (op.slot.startMinute + op.slot.durationMinutes > 1440) {
-      return err({ code: 'schedule_overflow', message: "A session can't run past midnight" });
-    }
-    return ok({ plan: { ...plan, schedule: [...plan.schedule, op.slot] }, notes: [] });
-  }
-  const existing = plan.schedule.find((s) => s.id === op.id);
-  if (!existing) return err({ code: 'slot_not_found', message: `Slot ${op.id} not found` });
-
-  if (op.type === 'update_slot') {
-    const start = op.changes.startMinute ?? existing.startMinute;
-    const dur = op.changes.durationMinutes ?? existing.durationMinutes;
-    if (start + dur > 1440) {
-      return err({ code: 'schedule_overflow', message: "A session can't run past midnight" });
-    }
-    const schedule = plan.schedule.map((s) => (s.id === op.id ? { ...s, ...op.changes } : s));
-    return ok({ plan: { ...plan, schedule }, notes: [] });
-  }
-
-  const schedule = plan.schedule.filter((s) => s.id !== op.id);
-  return ok({ plan: { ...plan, schedule }, notes: [] });
 }
 
 function handleMetaOps(plan: EventPlan, op: MetaPatchOp): OpResult {
@@ -239,6 +209,15 @@ export function reducePatchOp(
     return ok(handleGuestCountChange(plan, op.guestCount));
   if (op.type === 'set_budget_cap')
     return ok(handleBudgetCapChange(plan, op.amount, ids));
+  if (op.type === 'set_guest_needs')
+    return handleSetGuestNeeds(plan, op.changes);
+  if (
+    op.type === 'update_vendor_need' ||
+    op.type === 'upsert_vendor_quote' ||
+    op.type === 'remove_vendor_quote'
+  ) {
+    return handleVendorOps(plan, op);
+  }
   if (isBudgetOp(op)) return handleBudgetItemOps(plan, op);
   if (isScheduleOp(op)) return handleScheduleOps(plan, op);
   if (isMetaOp(op)) return handleMetaOps(plan, op);

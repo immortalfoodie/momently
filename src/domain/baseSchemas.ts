@@ -106,9 +106,13 @@ export const taskSchema = z.object({
 });
 
 export const vendorQuoteSchema = z.object({
-  vendorName: z.string().min(1).max(100),
+  vendorName: z.string().min(1).max(80),
   price: moneySchema,
-  answers: z.record(z.string(), z.string()),
+  answers: z
+    .record(z.string().min(1).max(160), z.string().max(200))
+    .refine((rec) => Object.keys(rec).length <= 12, {
+      message: 'At most 12 answer entries are allowed',
+    }),
 });
 
 export const vendorNeedStatusSchema = z.enum(['not_started', 'comparing', 'booked']);

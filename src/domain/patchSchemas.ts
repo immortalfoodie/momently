@@ -5,9 +5,12 @@ import {
   constraintSchema,
   eventMetaSchema,
   eventSettingSchema,
+  guestNeedsSchema,
   moneySchema,
   scheduleSlotSchema,
   taskSchema,
+  vendorNeedStatusSchema,
+  vendorQuoteSchema,
 } from './baseSchemas';
 
 export const planPatchOpSchema = z.discriminatedUnion('type', [
@@ -87,6 +90,25 @@ export const planPatchOpSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('set_meta'),
     changes: eventMetaSchema.partial(),
+  }),
+  z.object({
+    type: z.literal('set_guest_needs'),
+    changes: guestNeedsSchema.partial().strict(),
+  }),
+  z.object({
+    type: z.literal('update_vendor_need'),
+    category: budgetCategorySchema,
+    status: vendorNeedStatusSchema,
+  }),
+  z.object({
+    type: z.literal('upsert_vendor_quote'),
+    category: budgetCategorySchema,
+    quote: vendorQuoteSchema,
+  }),
+  z.object({
+    type: z.literal('remove_vendor_quote'),
+    category: budgetCategorySchema,
+    vendorName: z.string().min(1).max(80),
   }),
 ]);
 

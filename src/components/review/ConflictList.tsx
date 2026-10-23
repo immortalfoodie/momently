@@ -6,6 +6,7 @@ import { ConflictCard } from './ConflictCard';
 
 export interface ConflictListProps {
   eventId: string;
+  conflicts?: Conflict[];
   onAskToRelax?: (conflict: Conflict, resolution: ResolutionOption) => void;
   className?: string;
 }
@@ -17,9 +18,14 @@ export interface ConflictListProps {
  * Renders an accessible list landmark with unique ConflictCard items, exposing
  * clear non-visual statuses when zero conflicts remain.
  */
-export function ConflictList({ eventId, onAskToRelax, className = '' }: ConflictListProps) {
+export function ConflictList({
+  eventId,
+  conflicts: conflictsProp,
+  onAskToRelax,
+  className = '',
+}: ConflictListProps) {
   const derived = useEventDerived(eventId);
-  const conflicts = derived?.findConflicts ?? [];
+  const conflicts = conflictsProp ?? derived?.findConflicts ?? [];
 
   if (conflicts.length === 0) {
     return (
