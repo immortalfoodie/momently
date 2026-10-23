@@ -6,7 +6,7 @@ import { handleIntake } from '@/server/handlers/intake';
 import { handleNarrate } from '@/server/handlers/narrate';
 
 describe('Server: Security - Error Leak Prevention', () => {
-  const SECRET_API_KEY = 'sk-proj-secret-gemini-live-key-xyz12345';
+  const SECRET_API_KEY = 'test-only-credential-xyz';
   const INTERNAL_PATH = 'c:/Users/Yash/momently/src/server/secretKeys.ts';
   const STACK_SNIPPET = 'Error: Connection lost\n    at dispatchInternal (c:/Users/Yash/momently/src/server/secretKeys.ts:88:12)';
 

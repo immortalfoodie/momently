@@ -3,7 +3,7 @@ import { GeminiProvider, type GeminiClientLike } from '@/llm/geminiProvider';
 import type { LlmRequest } from '@/llm/types';
 
 describe('GeminiProvider (Official SDK Wrapper)', () => {
-  const secretKey = 'SECRET_KEY_AIzaSy_MOMENTLY_TOP_SECRET_123';
+  const secretKey = 'test-fixture-credential-123';
 
   const sampleRequest: LlmRequest = {
     task: 'intake',

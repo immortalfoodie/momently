@@ -208,7 +208,7 @@ describe('Engine: Quote Comparison, Budget Ops & Vendor Brief', () => {
     it('summarizePlanForLlm never contains a quote vendorName or answer text', () => {
       const plan = makeBasePlan();
       const secretVendorName = 'SuperSecretPhotoCo_XYZ';
-      const secretAnswer = 'ConfidentialSpecialAccessSecretCode_98765';
+      const secretAnswer = 'PrivateVendorNote_98765';
 
       const planWithSecretQuote: EventPlan = {
         ...plan,

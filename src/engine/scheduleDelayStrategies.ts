@@ -5,6 +5,10 @@ import type { ScheduleOutcome } from './scheduleDelayTypes';
 
 export { absorbStrategy } from './scheduleDelayAbsorb';
 
+/**
+ * Shifts the delayed anchor slot and all subsequent activities forward by the full delay duration.
+ * WHY: Preserves every activity's full planned duration when the venue curfew permits a later finish.
+ */
 export function cascadeStrategy(
   sortedSlots: readonly ScheduleSlot[],
   anchor: ScheduleSlot,
@@ -109,6 +113,10 @@ function executeSwap(
   return { swappedSlots, moved, ops };
 }
 
+/**
+ * Swaps a delayed flexible session with the immediately following flexible session.
+ * WHY: Keeps guests engaged with the next ready activity while the delayed session prepares.
+ */
 export function swapStrategy(
   sortedSlots: readonly ScheduleSlot[],
   anchor: ScheduleSlot,

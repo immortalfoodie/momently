@@ -1,19 +1,42 @@
 import type { StateStorage } from 'zustand/middleware';
 
 const inMemoryMap = new Map<string, string>();
+let fallbackTriggered = false;
+let suppressWriteDepth = 0;
+let suppressNextWrites = 0;
 
 /**
- * Accessor for the in-memory fallback storage map (used for test assertions and SSR isolation).
- */
-export function getInMemoryStore(): Map<string, string> {
-  return inMemoryMap;
-}
-
-/**
- * Clears the in-memory fallback store.
+ * Clears the in-memory fallback store and resets fallback tracking.
+ * WHY: Provides clean isolation between test runs.
  */
 export function clearInMemoryStore(): void {
   inMemoryMap.clear();
+  fallbackTriggered = false;
+  suppressWriteDepth = 0;
+  suppressNextWrites = 0;
+}
+
+/**
+ * Suppresses the next N safeStorage.setItem calls.
+ * WHY: Prevents Zustand persist.rehydrate() from overwriting incompatible raw storage after migrate().
+ */
+export function suppressNextStorageWrite(count = 1): void {
+  if (suppressWriteDepth === 0) {
+    suppressNextWrites += count;
+  }
+}
+
+/**
+ * Executes a callback while suppressing safeStorage.setItem writes.
+ * WHY: Prevents hydration or version-mismatch notices from overwriting raw persisted data in storage.
+ */
+export function withSuppressedStorageWrite<T>(fn: () => T): T {
+  suppressWriteDepth++;
+  try {
+    return fn();
+  } finally {
+    suppressWriteDepth = Math.max(0, suppressWriteDepth - 1);
+  }
 }
 
 function isStorageAvailable(): boolean {
@@ -31,6 +54,19 @@ function isStorageAvailable(): boolean {
 }
 
 /**
+ * Reports whether browser localStorage is currently available and persistent.
+ * WHY: Enables the application shell to warn the host when storage falls back to volatile memory.
+ */
+export function isPersistent(): boolean {
+  if (fallbackTriggered) return false;
+  return isStorageAvailable();
+}
+
+export interface SafeStateStorage extends StateStorage {
+  isPersistent: () => boolean;
+}
+
+/**
  * Resilient StateStorage wrapper around localStorage.
  *
  * ARCHITECTURAL DECISION (WHY):
@@ -39,7 +75,9 @@ function isStorageAvailable(): boolean {
  * safeStorage intercepts every call with try/catch and falls back transparently to an in-memory map.
  * It NEVER throws an exception under any circumstance.
  */
-export const safeStorage: StateStorage = {
+export const safeStorage: SafeStateStorage = {
+  isPersistent,
+
   getItem: (name: string): string | null => {
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
@@ -49,12 +87,19 @@ export const safeStorage: StateStorage = {
         }
       }
     } catch {
-      // Storage access blocked or threw
+      fallbackTriggered = true;
     }
     return inMemoryMap.get(name) ?? null;
   },
 
   setItem: (name: string, value: string): void => {
+    if (suppressWriteDepth > 0) {
+      return;
+    }
+    if (suppressNextWrites > 0) {
+      suppressNextWrites--;
+      return;
+    }
     try {
       if (isStorageAvailable()) {
         window.localStorage.setItem(name, value);
@@ -63,6 +108,7 @@ export const safeStorage: StateStorage = {
     } catch {
       // Storage quota exceeded or blocked
     }
+    fallbackTriggered = true;
     inMemoryMap.set(name, value);
   },
 
@@ -72,7 +118,7 @@ export const safeStorage: StateStorage = {
         window.localStorage.removeItem(name);
       }
     } catch {
-      // Storage access blocked or threw
+      fallbackTriggered = true;
     }
     inMemoryMap.delete(name);
   },

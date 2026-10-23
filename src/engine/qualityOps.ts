@@ -5,6 +5,10 @@ import type { BudgetItem, EventPlan, Money } from '@/domain/types';
 import { itemTotal } from './budget';
 import { itemFromRate, tierForCity } from './pricing';
 
+/**
+ * Extracts the rate-card quality tier from a budget item's rateKey.
+ * WHY: Determines whether an item can be stepped up or down in quality without hardcoding family names.
+ */
 export function qualityOfItem(item: BudgetItem): QualityLevel | undefined {
   if (!item.rateKey) return undefined;
   const parts = item.rateKey.split('.');

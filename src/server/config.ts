@@ -13,5 +13,3 @@ export const MAX_RATE_LIMIT_PER_MINUTE = 120;
 
 export const MAX_TRACKED_CLIENTS = 5000;
 
-export const ROUTE_TIMEOUT_SECONDS = 30;
-export const CLIENT_FETCH_TIMEOUT_MS = 45_000;

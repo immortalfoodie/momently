@@ -14,7 +14,12 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { engineContext } from './engineContext';
 import type { EventRecord } from './persistSchema';
 import { safeStorage } from './safeStorage';
-import { applyImportEvents, enforceSizeGuard, runHydrateValidation } from './storeValidation';
+import {
+  applyImportEvents,
+  enforceSizeGuard,
+  migratePersistedState,
+  runHydrateValidation,
+} from './storeValidation';
 import { useTourStore } from './tourStore';
 
 export interface StoreError {
@@ -213,6 +218,7 @@ export const useEventsStore = create<EventsState>()(
       skipHydration: true,
       storage: createJSONStorage(() => safeStorage),
       partialize: (state) => ({ events: state.events, order: state.order }),
+      migrate: (persistedState, version) => migratePersistedState(persistedState, version),
     },
   ),
 );

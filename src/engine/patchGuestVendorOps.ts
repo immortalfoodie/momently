@@ -45,6 +45,10 @@ export function clampGuestNeedsToCount(
   return { needs: updated, clampedFields };
 }
 
+/**
+ * Applies partial guest needs updates while validating that no demographic count exceeds total headcount.
+ * WHY: Rejects impossible demographic counts at the engine boundary with field-specific user feedback.
+ */
 export function handleSetGuestNeeds(
   plan: EventPlan,
   changes: Partial<GuestNeeds>,
@@ -80,6 +84,10 @@ type VendorPatchOp = Extract<
   | { type: 'remove_vendor_quote' }
 >;
 
+/**
+ * Applies vendor status updates and quote additions/removals against matching vendor categories.
+ * WHY: Enforces case-insensitive vendor matching and the 10-quote-per-category cap inside the pure patch reducer.
+ */
 export function handleVendorOps(plan: EventPlan, op: VendorPatchOp): OpResult {
   const opCategoryLower = op.category.toLowerCase();
   const needIdx = plan.vendors.findIndex(

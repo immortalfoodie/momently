@@ -41,34 +41,19 @@ const META_FIELDS_TO_COMPARE: Array<keyof EventMeta> = [
   'setting',
 ];
 
-/**
- * Computes the full structural and financial diff between two versions of an EventPlan.
- * WHY: Powers Version History audit tables and comparison dialogs without mutating inputs.
- *
- * @param before - Baseline EventPlan snapshot.
- * @param after - Current or comparative EventPlan state.
- * @returns Complete PlanDiff record.
- */
-// eslint-disable-next-line complexity
-export function diffPlans(before: EventPlan, after: EventPlan): PlanDiff {
-  const budgetTotalBefore = budgetTotal(before.budgetItems, before.meta.guestCount);
-  const budgetTotalAfter = budgetTotal(after.budgetItems, after.meta.guestCount);
-
-  // 1. Meta differences
+function diffMetaFields(before: EventPlan, after: EventPlan): PlanMetaDiff[] {
   const meta: PlanMetaDiff[] = [];
   for (const field of META_FIELDS_TO_COMPARE) {
     const bVal = before.meta[field] ?? null;
     const aVal = after.meta[field] ?? null;
     if (bVal !== aVal) {
-      meta.push({
-        field,
-        before: bVal,
-        after: aVal,
-      });
+      meta.push({ field, before: bVal, after: aVal });
     }
   }
+  return meta;
+}
 
-  // 2. Budget items: added, removed, changed (matching by ID)
+function diffBudgetItems(before: EventPlan, after: EventPlan): PlanDiff['items'] {
   const beforeMap = new Map(before.budgetItems.map((i) => [i.id, i]));
   const afterMap = new Map(after.budgetItems.map((i) => [i.id, i]));
 
@@ -79,17 +64,12 @@ export function diffPlans(before: EventPlan, after: EventPlan): PlanDiff {
   for (const [id, afterItem] of afterMap) {
     const afterCost = itemTotal(afterItem, after.meta.guestCount);
     const beforeItem = beforeMap.get(id);
-
     if (!beforeItem) {
       added.push({ label: afterItem.label, total: afterCost });
     } else {
       const beforeCost = itemTotal(beforeItem, before.meta.guestCount);
       if (beforeCost !== afterCost) {
-        changed.push({
-          label: afterItem.label,
-          before: beforeCost,
-          after: afterCost,
-        });
+        changed.push({ label: afterItem.label, before: beforeCost, after: afterCost });
       }
     }
   }
@@ -103,83 +83,84 @@ export function diffPlans(before: EventPlan, after: EventPlan): PlanDiff {
     }
   }
 
-  // 3. Concept change
-  let concept: PlanDiff['concept'] = null;
-  if (before.selectedConceptId !== after.selectedConceptId) {
-    const beforeTitle =
-      before.concepts.find((c) => c.id === before.selectedConceptId)?.title ??
-      before.selectedConceptId ??
-      null;
-    const afterTitle =
-      after.concepts.find((c) => c.id === after.selectedConceptId)?.title ??
-      after.selectedConceptId ??
-      null;
-    concept = { before: beforeTitle, after: afterTitle };
-  }
+  return { added, removed, changed };
+}
 
-  // 4. Schedule changes count
+function diffConceptSelection(before: EventPlan, after: EventPlan): PlanDiff['concept'] {
+  if (before.selectedConceptId === after.selectedConceptId) return null;
+  const beforeTitle =
+    before.concepts.find((c) => c.id === before.selectedConceptId)?.title ??
+    before.selectedConceptId ??
+    null;
+  const afterTitle =
+    after.concepts.find((c) => c.id === after.selectedConceptId)?.title ??
+    after.selectedConceptId ??
+    null;
+  return { before: beforeTitle, after: afterTitle };
+}
+
+function countScheduleChanges(before: EventPlan, after: EventPlan): number {
   const beforeSlots = new Map(before.schedule.map((s) => [s.id, s]));
   const afterSlots = new Map(after.schedule.map((s) => [s.id, s]));
-  let scheduleChanges = 0;
+  let changes = 0;
 
   for (const [id, aSlot] of afterSlots) {
     const bSlot = beforeSlots.get(id);
-    if (!bSlot) {
-      scheduleChanges++;
-    } else if (
+    const modified =
+      !bSlot ||
       bSlot.startMinute !== aSlot.startMinute ||
       bSlot.durationMinutes !== aSlot.durationMinutes ||
       bSlot.title !== aSlot.title ||
       bSlot.priority !== aSlot.priority ||
-      bSlot.flexible !== aSlot.flexible
-    ) {
-      scheduleChanges++;
-    }
+      bSlot.flexible !== aSlot.flexible;
+    if (modified) changes++;
   }
 
   for (const id of beforeSlots.keys()) {
-    if (!afterSlots.has(id)) {
-      scheduleChanges++;
-    }
+    if (!afterSlots.has(id)) changes++;
   }
+  return changes;
+}
 
-  // 5. Task changes count
+function countTaskChanges(before: EventPlan, after: EventPlan): number {
   const beforeTasks = new Map(before.tasks.map((t) => [t.id, t]));
   const afterTasks = new Map(after.tasks.map((t) => [t.id, t]));
-  let taskChanges = 0;
+  let changes = 0;
 
   for (const [id, aTask] of afterTasks) {
     const bTask = beforeTasks.get(id);
-    if (!bTask) {
-      taskChanges++;
-    } else if (
+    const modified =
+      !bTask ||
       bTask.title !== aTask.title ||
       bTask.status !== aTask.status ||
       bTask.priority !== aTask.priority ||
       bTask.category !== aTask.category ||
-      bTask.dueDaysBefore !== aTask.dueDaysBefore
-    ) {
-      taskChanges++;
-    }
+      bTask.dueDaysBefore !== aTask.dueDaysBefore;
+    if (modified) changes++;
   }
 
   for (const id of beforeTasks.keys()) {
-    if (!afterTasks.has(id)) {
-      taskChanges++;
-    }
+    if (!afterTasks.has(id)) changes++;
   }
+  return changes;
+}
 
+/**
+ * Computes the full structural and financial diff between two versions of an EventPlan.
+ * WHY: Powers Version History audit tables and comparison dialogs without mutating inputs.
+ *
+ * @param before - Baseline EventPlan snapshot.
+ * @param after - Current or comparative EventPlan state.
+ * @returns Complete PlanDiff record.
+ */
+export function diffPlans(before: EventPlan, after: EventPlan): PlanDiff {
   return {
-    meta,
-    budgetTotalBefore,
-    budgetTotalAfter,
-    items: {
-      added,
-      removed,
-      changed,
-    },
-    concept,
-    scheduleChanges,
-    taskChanges,
+    meta: diffMetaFields(before, after),
+    budgetTotalBefore: budgetTotal(before.budgetItems, before.meta.guestCount),
+    budgetTotalAfter: budgetTotal(after.budgetItems, after.meta.guestCount),
+    items: diffBudgetItems(before, after),
+    concept: diffConceptSelection(before, after),
+    scheduleChanges: countScheduleChanges(before, after),
+    taskChanges: countTaskChanges(before, after),
   };
 }

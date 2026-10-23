@@ -2,6 +2,7 @@ import type { EventPlan } from '@/domain/types';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
+import { formatIsoDate } from '@/lib/format';
 
 export interface EventFactsCardProps {
   plan: EventPlan;
@@ -55,13 +56,7 @@ export function EventFactsCard({ plan, onEdit, className = '' }: EventFactsCardP
           <dt className="text-xs font-semibold text-[#5B4A5E] uppercase tracking-wider">Date</dt>
           <dd className="font-medium text-[#2B1B2E] mt-0.5">
             {meta.dateIso ? (
-              <time dateTime={meta.dateIso}>
-                {new Date(meta.dateIso).toLocaleDateString('en-IN', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric',
-                })}
-              </time>
+              <time dateTime={meta.dateIso}>{formatIsoDate(meta.dateIso)}</time>
             ) : (
               <span className="text-[#8A5A00] italic">Not scheduled yet</span>
             )}

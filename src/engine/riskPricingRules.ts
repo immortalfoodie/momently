@@ -50,6 +50,10 @@ function checkVendorLeadTimes(plan: EventPlan, ctx: EngineContext): EvaluatedRis
   return null;
 }
 
+/**
+ * Evaluates vendor booking lead times, unverified estimate proportions, and unconfirmed accessibility.
+ * WHY: Flags operational and commercial blind spots that increase on-day celebration risk.
+ */
 export function checkVendorAndPricingRisks(
   plan: EventPlan,
   ctx: EngineContext,

@@ -2,10 +2,17 @@ import { prepareImport } from '@/lib/export/backup';
 import type { IdFactory } from '@/lib/id';
 import type { EventRecord } from './persistSchema';
 import { eventRecordSchema } from './persistSchema';
-import { safeStorage } from './safeStorage';
+import {
+  safeStorage,
+  suppressNextStorageWrite,
+  withSuppressedStorageWrite,
+} from './safeStorage';
 
 const MAX_SERIALIZED_CHARS = 2_500_000;
 export const MAX_STORED_EVENTS = 50;
+export const CURRENT_PERSIST_VERSION = 1;
+export const UNKNOWN_VERSION_NOTICE =
+  "Your saved data came from a different version of Momently and couldn't be loaded";
 
 export function applyImportEvents(
   currentEvents: Record<string, EventRecord>,
@@ -58,11 +65,13 @@ export function enforceSizeGuard(
   events: Record<string, EventRecord>,
   order: string[],
 ): Record<string, EventRecord> {
-  let serialized = JSON.stringify({ state: { events, order }, version: 1 });
+  let serialized = JSON.stringify({ state: { events, order }, version: CURRENT_PERSIST_VERSION });
   if (serialized.length <= MAX_SERIALIZED_CHARS) return events;
 
   const updated: Record<string, EventRecord> = {};
-  for (const [id, rec] of Object.entries(events)) updated[id] = { ...rec, history: [...rec.history] };
+  for (const [id, rec] of Object.entries(events)) {
+    updated[id] = { ...rec, history: [...rec.history] };
+  }
 
   while (serialized.length > MAX_SERIALIZED_CHARS) {
     let oldestEventId: string | null = null;
@@ -81,13 +90,16 @@ export function enforceSizeGuard(
 
     if (!oldestEventId) break;
     updated[oldestEventId]?.history.shift();
-    serialized = JSON.stringify({ state: { events: updated, order }, version: 1 });
+    serialized = JSON.stringify({
+      state: { events: updated, order },
+      version: CURRENT_PERSIST_VERSION,
+    });
   }
 
   return updated;
 }
 
-interface HydrateTargetState {
+export interface HydrateTargetState {
   events: Record<string, EventRecord>;
   order: string[];
   hydrated: boolean;
@@ -120,7 +132,9 @@ function validateEventRecords(rawEvents: Record<string, unknown>): {
 function extractStateObject(parsed: unknown): Record<string, unknown> | null {
   if (typeof parsed !== 'object' || parsed === null) return null;
   const stateObj = 'state' in parsed ? (parsed as { state: unknown }).state : parsed;
-  return typeof stateObj === 'object' && stateObj !== null ? (stateObj as Record<string, unknown>) : null;
+  return typeof stateObj === 'object' && stateObj !== null
+    ? (stateObj as Record<string, unknown>)
+    : null;
 }
 
 function reconcileOrder(rawOrder: unknown, validEvents: Record<string, EventRecord>): string[] {
@@ -133,45 +147,96 @@ function reconcileOrder(rawOrder: unknown, validEvents: Record<string, EventReco
   return validOrder;
 }
 
+/**
+ * Zustand persist migrate handler.
+ * WHY: Rejects unknown storage versions without destroying raw stored data and sets a friendly notice.
+ */
+export function migratePersistedState(
+  persistedState: unknown,
+  version: number,
+  onUnknownVersion?: () => void,
+): { events: Record<string, EventRecord>; order: string[]; notice?: string } {
+  if (version !== CURRENT_PERSIST_VERSION) {
+    suppressNextStorageWrite(1);
+    onUnknownVersion?.();
+    return { events: {}, order: [], notice: UNKNOWN_VERSION_NOTICE };
+  }
+  const stateObj = extractStateObject(persistedState);
+  if (!stateObj) return { events: {}, order: [] };
+  const rawEvents = (stateObj.events as Record<string, unknown>) ?? {};
+  const { validEvents } = validateEventRecords(rawEvents);
+  const validOrder = reconcileOrder(stateObj.order, validEvents);
+  return { events: validEvents, order: validOrder };
+}
+
+function isUnknownPersistVersion(parsed: unknown): parsed is { version: unknown } {
+  return (
+    typeof parsed === 'object' &&
+    parsed !== null &&
+    'version' in parsed &&
+    (parsed as { version: unknown }).version !== CURRENT_PERSIST_VERSION
+  );
+}
+
+function applyParsedStorageState(
+  parsed: unknown,
+  set: (fn: (state: HydrateTargetState) => Partial<HydrateTargetState>) => void,
+): void {
+  if (isUnknownPersistVersion(parsed)) {
+    const migrated = migratePersistedState(parsed, Number(parsed.version));
+    set(() => ({
+      events: migrated.events,
+      order: migrated.order,
+      hydrated: true,
+      notice: migrated.notice ?? UNKNOWN_VERSION_NOTICE,
+    }));
+    return;
+  }
+
+  const stateObj = extractStateObject(parsed);
+  if (!stateObj) {
+    set(() => ({ hydrated: true }));
+    return;
+  }
+
+  const rawEvents = (stateObj.events as Record<string, unknown>) ?? {};
+  const { validEvents, invalidCount } = validateEventRecords(rawEvents);
+  const validOrder = reconcileOrder(stateObj.order, validEvents);
+  const notice = invalidCount > 0 ? `${invalidCount} saved event(s) couldn't be loaded` : null;
+
+  set(() => ({
+    events: validEvents,
+    order: validOrder,
+    hydrated: true,
+    ...(notice ? { notice } : {}),
+  }));
+}
+
 export function runHydrateValidation(
   set: (fn: (state: HydrateTargetState) => Partial<HydrateTargetState>) => void,
 ): void {
-  try {
-    let parsed: unknown;
+  withSuppressedStorageWrite(() => {
     try {
-      parsed = parseStoragePayload();
-      if (!parsed) {
-        set(() => ({ hydrated: true }));
+      let parsed: unknown;
+      try {
+        parsed = parseStoragePayload();
+        if (!parsed) {
+          set(() => ({ hydrated: true }));
+          return;
+        }
+      } catch {
+        set(() => ({
+          events: {},
+          order: [],
+          hydrated: true,
+          notice: "Saved events couldn't be loaded: corrupted storage format",
+        }));
         return;
       }
+
+      applyParsedStorageState(parsed, set);
     } catch {
-      set(() => ({
-        events: {},
-        order: [],
-        hydrated: true,
-        notice: "Saved events couldn't be loaded: corrupted storage format",
-      }));
-      return;
-    }
-
-    const stateObj = extractStateObject(parsed);
-    if (!stateObj) {
       set(() => ({ hydrated: true }));
-      return;
     }
-
-    const rawEvents = (stateObj.events as Record<string, unknown>) ?? {};
-    const { validEvents, invalidCount } = validateEventRecords(rawEvents);
-    const validOrder = reconcileOrder(stateObj.order, validEvents);
-    const notice = invalidCount > 0 ? `${invalidCount} saved event(s) couldn't be loaded` : null;
-
-    set(() => ({
-      events: validEvents,
-      order: validOrder,
-      hydrated: true,
-      ...(notice ? { notice } : {}),
-    }));
-  } catch {
-    set(() => ({ hydrated: true }));
-  }
+  });
 }

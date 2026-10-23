@@ -110,6 +110,10 @@ function isEligibleForSavings(item: BudgetItem, protectedFamilies: Set<string>):
   return Boolean(family && !protectedFamilies.has(family));
 }
 
+/**
+ * Enumerates and ranks all valid cost-saving levers (quality downgrades and optional item removals).
+ * WHY: Provides Budget Guardian with deterministic, non-destructive trade-offs ordered from lowest to highest guest experience impact.
+ */
 export function buildSavingLevers(
   plan: EventPlan,
   options?: { protectedFamilies?: string[] },

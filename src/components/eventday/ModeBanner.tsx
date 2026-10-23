@@ -4,7 +4,7 @@ import type { EventPlan } from '@/domain/types';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { formatMinuteOfDay } from '@/lib/format';
+import { formatIsoDate, formatMinuteOfDay } from '@/lib/format';
 import { minuteToTimeInput, parseTimeInput } from '@/lib/time';
 
 export interface ModeBannerProps {
@@ -17,21 +17,6 @@ export interface ModeBannerProps {
   onSetPracticeMinute: (minute: number) => void;
   onNudge: (delta: number) => void;
   className?: string;
-}
-
-function formatDisplayDate(dateIso?: string): string {
-  if (!dateIso) return '';
-  const parts = dateIso.slice(0, 10).split('-').map(Number);
-  const y = parts[0] ?? 2026;
-  const m = parts[1] ?? 1;
-  const d = parts[2] ?? 1;
-  const dateObj = new Date(Date.UTC(y, m - 1, d));
-  return dateObj.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
 }
 
 export function ModeBanner({
@@ -61,7 +46,7 @@ export function ModeBanner({
     );
   }
 
-  const dateFormatted = formatDisplayDate(plan.meta.dateIso);
+  const dateFormatted = plan.meta.dateIso ? formatIsoDate(plan.meta.dateIso) : '';
 
   return (
     <Card className={`p-4 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>

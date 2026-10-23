@@ -3,7 +3,11 @@
 import { Suspense, useState, type ReactNode } from 'react';
 import { ChatProvider } from '@/components/chat/ChatProvider';
 import { TourBar } from '@/components/demo/TourBar';
+import { Alert } from '@/components/ui/Alert';
+import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Dialog';
+import { useEventsStore } from '@/store/eventsStore';
+import { safeStorage } from '@/store/safeStorage';
 import { useTourStore } from '@/store/tourStore';
 import { useHydrateStore } from '@/store/useHydrateStore';
 import { ChatDock } from './ChatDock';
@@ -14,10 +18,19 @@ export interface AppShellProps {
   children: ReactNode;
 }
 
+const STORAGE_FALLBACK_NOTICE =
+  'Your browser is blocking storage, so changes will be lost when you close this tab. Export your data from Settings to keep a copy.';
+
 function AppShellInner({ children }: AppShellProps) {
-  useHydrateStore();
+  const hydrated = useHydrateStore();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [storageNoticeDismissed, setStorageNoticeDismissed] = useState(false);
   const tourActive = useTourStore((s) => s.active);
+  const storeNotice = useEventsStore((s) => s.notice);
+  const dismissNotice = useEventsStore((s) => s.dismissNotice);
+
+  const showStorageFallbackNotice =
+    hydrated && !storageNoticeDismissed && !safeStorage.isPersistent();
 
   return (
     <div className="min-h-screen bg-[#FBF7F2] text-[#2B1B2E] flex flex-col">
@@ -49,7 +62,45 @@ function AppShellInner({ children }: AppShellProps) {
             tourActive ? 'pb-48 sm:pb-40' : ''
           }`}
         >
-          <div className="max-w-5xl mx-auto">{children}</div>
+          <div className="max-w-5xl mx-auto space-y-4">
+            {showStorageFallbackNotice && (
+              <Alert
+                tone="warning"
+                action={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setStorageNoticeDismissed(true)}
+                    aria-label="Dismiss storage notice"
+                  >
+                    Dismiss
+                  </Button>
+                }
+              >
+                {STORAGE_FALLBACK_NOTICE}
+              </Alert>
+            )}
+            {storeNotice && (
+              <Alert
+                tone="warning"
+                action={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={dismissNotice}
+                    aria-label="Dismiss notice"
+                  >
+                    Dismiss
+                  </Button>
+                }
+              >
+                {storeNotice}
+              </Alert>
+            )}
+            {children}
+          </div>
         </main>
 
         {/* Contextual Assistant Complementary Landmark */}

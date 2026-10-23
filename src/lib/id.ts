@@ -10,6 +10,8 @@ export function createId(prefix?: string): string {
   return prefix ? `${prefix}_${shortHex}` : shortHex;
 }
 
+export type IdFactory = (prefix?: string) => string;
+
 /**
  * Creates a deterministic ID generator function seeded for predictable unit testing.
  * WHY: Tests require reproducible snapshots and deterministic assertions without flaky random UUIDs.
@@ -17,8 +19,6 @@ export function createId(prefix?: string): string {
  * @param seed - Seed value to initialize the pseudo-random generator sequence.
  * @returns A deterministic ID generation function taking an optional prefix.
  */
-export type IdFactory = (prefix?: string) => string;
-
 export function createIdFactory(seed: string | number = 'test'): IdFactory {
   let state =
     typeof seed === 'number'

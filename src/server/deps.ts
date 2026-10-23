@@ -30,27 +30,30 @@ function parseRateLimitEnv(envValue?: string): number {
   return Math.min(MAX_RATE_LIMIT_PER_MINUTE, Math.max(MIN_RATE_LIMIT_PER_MINUTE, parsed));
 }
 
+function resolveDefaultRateLimiter(mode: 'live' | 'demo'): RateLimiter {
+  const configuredLimit = parseRateLimitEnv(process.env.RATE_LIMIT_PER_MINUTE);
+  const limitPerMinute = mode === 'demo' ? Math.max(configuredLimit, 120) : configuredLimit;
+  return createRateLimiter({ limitPerMinute });
+}
+
 /**
  * Creates an instance of server dependencies, allowing partial overrides for unit tests.
  * WHY: Decouples server handlers from global process.env or static singletons.
  */
-// eslint-disable-next-line complexity
-export function createDeps(overrides?: Partial<Deps>): Deps {
+export function createDeps(overrides: Partial<Deps> = {}): Deps {
   const factoryResult = createProviderFromEnv(process.env);
-  const configuredLimit = parseRateLimitEnv(process.env.RATE_LIMIT_PER_MINUTE);
-  const mode = overrides?.mode ?? factoryResult.mode;
-  const limitPerMinute =
-    mode === 'demo' ? Math.max(configuredLimit, 120) : configuredLimit;
+  const mode = overrides.mode ?? factoryResult.mode;
 
   return {
-    provider: overrides?.provider ?? factoryResult.provider,
+    provider: factoryResult.provider,
+    modeNote: factoryResult.note,
+    cache: new LlmCache(),
+    rateLimiter: resolveDefaultRateLimiter(mode),
+    clock: () => new Date(),
+    ids: createId,
+    mockProvider: new MockProvider(),
+    ...overrides,
     mode,
-    modeNote: overrides?.modeNote ?? factoryResult.note,
-    cache: overrides?.cache ?? new LlmCache(),
-    rateLimiter: overrides?.rateLimiter ?? createRateLimiter({ limitPerMinute }),
-    clock: overrides?.clock ?? (() => new Date()),
-    ids: overrides?.ids ?? createId,
-    mockProvider: overrides?.mockProvider ?? new MockProvider(),
   };
 }
 

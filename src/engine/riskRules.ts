@@ -23,6 +23,10 @@ export interface EvaluatedRisk {
   risk: Risk;
 }
 
+/**
+ * Evaluates weather exposure risk for outdoor or mixed-setting celebrations lacking rain cover or backup holds.
+ * WHY: Highlights monsoon and open-air vulnerability in the transparent Chaos Score breakdown.
+ */
 export function checkWeatherRisk(plan: EventPlan): EvaluatedRisk | null {
   if (plan.meta.setting === 'indoor') return null;
   const isOutdoor = plan.meta.setting === 'outdoor';
@@ -53,6 +57,10 @@ export function checkWeatherRisk(plan: EventPlan): EvaluatedRisk | null {
   };
 }
 
+/**
+ * Evaluates financial exposure from breached caps, razor-thin margins (<5%), or underfunded contingency reserves.
+ * WHY: Quantifies financial fragility so hosts can rebalance before signing vendor contracts.
+ */
 export function checkBudgetRisks(plan: EventPlan): EvaluatedRisk[] {
   const results: EvaluatedRisk[] = [];
   const total = budgetTotal(plan.budgetItems, plan.meta.guestCount);
@@ -115,6 +123,10 @@ export function checkBudgetRisks(plan: EventPlan): EvaluatedRisk[] {
   return results;
 }
 
+/**
+ * Evaluates venue capacity overruns and tight schedule slack (<30 minutes total buffer).
+ * WHY: Detects logistical bottlenecks where minor delays or extra guests would cause cascade failures.
+ */
 export function checkCapacityAndSchedule(plan: EventPlan): EvaluatedRisk[] {
   const results: EvaluatedRisk[] = [];
 

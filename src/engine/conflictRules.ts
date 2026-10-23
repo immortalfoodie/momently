@@ -57,6 +57,10 @@ export function checkMustHaveConflicts(plan: EventPlan, ctx: EngineContext): Con
   return conflicts;
 }
 
+/**
+ * Evaluates whether the event has mobility requirements that lack a completed verification task.
+ * WHY: Centralizes the unconfirmed accessibility condition across conflict checks, risk scoring, and guest insights.
+ */
 export function isAccessUnconfirmed(plan: EventPlan): boolean {
   const needsAccess =
     (plan.guestNeeds?.wheelchairUsers ?? 0) > 0 ||

@@ -7,36 +7,35 @@ import type { PatchError } from '@/engine/patch';
 import { previewOps } from '@/engine/preview';
 import { err, ok, type Result } from '@/lib/result';
 
-// eslint-disable-next-line complexity
-function getOpTargetKey(op: PlanPatchOp): string | undefined {
-  switch (op.type) {
-    case 'update_budget_item':
-    case 'remove_budget_item':
-      return `budget_item:${op.id}`;
-    case 'add_budget_item':
-      return `budget_item:${op.item.id}`;
-    case 'scale_category':
-      return `scale_category:${op.category}`;
-    case 'set_budget_cap':
-      return 'set_budget_cap';
-    case 'set_guest_count':
-      return 'set_guest_count';
-    case 'set_meta':
-      return 'set_meta';
-    case 'update_slot':
-    case 'remove_slot':
-      return `slot:${op.id}`;
-    case 'add_slot':
-      return `slot:${op.slot.id}`;
-    case 'update_task':
-      return `task:${op.id}`;
-    case 'add_task':
-      return `task:${op.task.id}`;
-    case 'select_concept':
-      return 'select_concept';
-    default:
-      return undefined;
+const SINGLETON_OP_TYPES = new Set([
+  'set_budget_cap',
+  'set_guest_count',
+  'set_meta',
+  'select_concept',
+]);
+
+function getBudgetOpKey(op: PlanPatchOp): string | undefined {
+  if (op.type === 'update_budget_item' || op.type === 'remove_budget_item') {
+    return `budget_item:${op.id}`;
   }
+  if (op.type === 'add_budget_item') return `budget_item:${op.item.id}`;
+  if (op.type === 'scale_category') return `scale_category:${op.category}`;
+  return undefined;
+}
+
+function getScheduleOrTaskOpKey(op: PlanPatchOp): string | undefined {
+  if (op.type === 'update_slot' || op.type === 'remove_slot') return `slot:${op.id}`;
+  if (op.type === 'add_slot') return `slot:${op.slot.id}`;
+  if (op.type === 'update_task' || op.type === 'remove_task') return `task:${op.id}`;
+  if (op.type === 'add_task') return `task:${op.task.id}`;
+  return undefined;
+}
+
+function getOpTargetKey(op: PlanPatchOp): string | undefined {
+  if (SINGLETON_OP_TYPES.has(op.type)) {
+    return op.type;
+  }
+  return getBudgetOpKey(op) ?? getScheduleOrTaskOpKey(op);
 }
 
 /**

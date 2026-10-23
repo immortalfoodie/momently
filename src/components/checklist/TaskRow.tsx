@@ -7,6 +7,7 @@ import { useAnnouncer } from '@/components/ui/LiveRegion';
 import { Badge, type BadgeTone } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { formatIsoDate } from '@/lib/format';
 import { engineContext } from '@/store/engineContext';
 import { useEventsStore } from '@/store/eventsStore';
 
@@ -30,18 +31,7 @@ function formatDueText(plan: EventPlan, task: Task): { text: string; overdue: bo
   const due = taskDueDate(plan, task);
 
   if (due.kind === 'date') {
-    const parts = due.iso.split('-').map(Number);
-    const y = parts[0] ?? 2026;
-    const m = parts[1] ?? 1;
-    const d = parts[2] ?? 1;
-    const dateObj = new Date(Date.UTC(y, m - 1, d));
-    const formatted = dateObj.toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      timeZone: 'UTC',
-    });
-    return { text: `Due ${formatted}`, overdue };
+    return { text: `Due ${formatIsoDate(due.iso)}`, overdue };
   }
 
   return { text: `${task.dueDaysBefore} days before the event`, overdue };

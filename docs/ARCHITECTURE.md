@@ -157,6 +157,11 @@ Client (receives Proposal) <--[Structured Response]---------+
    - *Threat*: Injecting malicious scripts into host views or framing the application within transparent overlay clickjack attacks.
    - *Control*: Comprehensive HTTP security headers (`buildSecurityHeaders`): Content-Security-Policy with `default-src 'self'`, `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`. Disables `unsafe-eval` outside local development. Sets `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and `Permissions-Policy` denying camera, microphone, geolocation, and payment APIs.
 
+### Automated Security Guards & Repository Hygiene
+
+- **Static Security Guard Suite (`tests/security/guards.test.ts`)**: Scans every source file on each test run and fails with exact `file:line` diagnostics if it detects dangerous DOM sinks (`dangerouslySetInnerHTML`, `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write`, `eval(`, `new Function(`), direct `localStorage`/`sessionStorage` access outside `src/store/safeStorage.ts`, `process.env` reads outside `src/server/**`, `src/llm/factory.ts`, and `next.config.ts`, `fetch(` calls outside `src/lib/apiClient.ts`, `console.log`, explicit `any` annotations (`: any`, `as any`, `<any>`), potential API keys or secret tokens across `src/`, `tests/`, `docs/`, and root files, or client-side imports of `src/server` or `geminiProvider`.
+- **Repository Hygiene Check (`scripts/check-repo.mjs` / `npm run check:repo`)**: Built using Node.js built-ins only, verifying that `main` is the sole local branch (and `origin/main` the sole remote branch), total tracked size stays below 5 MB (warning above 3 MB), no tracked file other than `package-lock.json` exceeds 500 KB, no `.env*` file other than `.env.example` or build/dependency directory (`node_modules`, `.next`, `coverage`) is tracked, and `.env.example` contains no real-looking `GEMINI_API_KEY`.
+
 ### Known Limitations
 
 - **In-Memory Rate Limiter**: The sliding-window rate limiter maintains state in server memory per process instance. In multi-region or distributed serverless environments, an external Redis or edge proxy limiter (e.g. Cloudflare WAF) should be placed in front.
@@ -167,9 +172,11 @@ Client (receives Proposal) <--[Structured Response]---------+
 
 ## 9. Efficiency
 
-- **Zero Server State**: Eliminating server sessions and plan caching on the server eliminates database sync overhead, memory leaks, and complex cache invalidation bugs.
-- **In-Memory LLM LRU Cache**: `LlmCache` computes deterministic SHA-256 hashes of task inputs (`stableStringify`), caching validated responses with TTL expiration to prevent duplicate provider round-trips.
-- **Client-Side Engine Computations**: Dynamic budget totals, schedule cascading, cost-saving levers, and risk scoring execute purely on the client inside Zustand stores without server network latency.
+- **What Runs 100% Locally (Zero Network & Zero AI)**: All budget arithmetic, headcount propagation, Budget Guardian tools (`afford_check`, `save_money`, `upgrade`, `make_it_premium`, `find_forgotten`), Chaos Lab scenario simulations and full stress tests (`runStressTest`), timeline delay recovery strategies (`proposeDelayOptions`), guest hospitality insights (`guestInsights`), vendor quote comparisons (`compareQuotes`), and every Event Kit export (CSV, `.ics`, invitation copy, order quantities, printable plan, and JSON backup) execute purely in the browser against local state with zero server round-trips.
+- **What Is Cached & Trimmed Across the Network**:
+  - **In-Memory LLM LRU Cache (`LlmCache`)**: Computes deterministic SHA-256 hashes of normalized task inputs (`stableStringify`), caching validated LLM responses with TTL expiration so repeated or identical prompts never trigger redundant provider calls.
+  - **Slim Request Payloads (`slimPlanForRequest`)**: Strips historical ledger entries down to the 20 most recent items before calling `/api/message` or `/api/concepts`, keeping request bodies under 60 KB while the client applies patches to its full local plan.
+- **Zero Server State**: Eliminating server sessions and backend databases removes synchronization overhead, memory leaks, and cache invalidation bugs.
 - **Resilient Fallback Gating**: `runWithFallback` detects provider-level downtime, rate limits, or persistent schema validation errors, immediately degrading to `MockProvider` and avoiding repeated failing network calls.
 
 ---
@@ -275,10 +282,18 @@ All core text and button foreground/background pairings exceed the WCAG AA minim
 
 ## 12. Testing & Quality Standards
 
-- **Zero-Warning Pipeline**: Strict enforcement of `tsc --noEmit`, ESLint with architectural boundary rules, Prettier, and Vitest.
-- **Automated Accessibility Testing**: Every primitive, shell landmark, and route skeleton is verified with `expectNoAxeViolations()` powered by `axe-core`.
-- **Heading Order Verification**: All views enforce exactly one `<h1>` per route with strictly sequential heading hierarchies (`h1` -> `h2`).
-- **Pure Unit Tests**: Deterministic clock and ID injection ensures tests execute reliably across local and CI environments without network dependencies.
+Momently enforces a multi-layered verification strategy across 115 test suites:
+
+- **Engine Unit Tests (`tests/engine/`, `tests/domain/`, `tests/lib/`)**: Pure, deterministic tests with injected clocks and seeded ID factories (`createIdFactory`) covering pricing, budget math, patch reducers, conflict detection, schedule delay strategies, Chaos Lab scenarios, guest insights, quote comparisons, and local export builders (RFC 4180 CSV with formula neutralization, RFC 5545 `.ics` with 75-octet UTF-8 folding, and backup validation).
+- **Seeded Property Invariants (`tests/engine/invariants.test.ts`)**: Uses a deterministic `mulberry32` PRNG to run 100 random sequences of up to 12 user edits across all 4 event types (`wedding`, `birthday`, `anniversary`, `community`). After every applied patch, it asserts `eventPlanSchema` validity, monotonic `version + 1` increments, locked-item price immutability, single contingency line presence, non-negative integer INR amounts, `0..1439` schedule bounds, and hard budget cap compliance, printing the failing seed for instant reproduction.
+- **Server Handler & LLM Tests (`tests/server/`, `tests/llm/`)**: Verifies origin guards, payload size limits, sliding-window rate limiting, error scrubbing (zero API key or stack leaks), prompt sanitization, and `runWithFallback` resilience.
+- **Component, Route & Offline Resilience Tests (`tests/ui/`)**: Renders every UI primitive, shell landmark, and route with React Testing Library, verifying single-`<h1>` heading hierarchy, keyboard interactions, `axe-core` WCAG 2.1 AA compliance (`expectNoAxeViolations`), storage-blocked fallback notices, version migration protection, and full offline editing when all API calls fail.
+- **End-to-End Journey Integration (`tests/integration/`)**: Exercises full multi-step host journeys (`demoJourney.test.ts`, `chaosLabJourney.test.ts`) from intake to concept selection, budget rebalancing, and crisis recovery.
+- **Static Security & Quality Guards (`tests/security/guards.test.ts`, `tests/quality/jsdoc.test.ts`)**: Enforces DOM/storage/env/fetch boundaries, zero `any`/`console.log`/secrets, and top-level JSDoc coverage across `src/engine` and `src/lib`.
+- **V8 Code Coverage & Thresholds (`npm run test:coverage`)**:
+  - Global coverage: **88.52% statements** (`6351/7174`), **76.24% branches** (`3618/4745`), **87.22% functions** (`1448/1660`), **90.22% lines** (`5879/6516`).
+  - Per-folder statement coverage: `src/domain` **100%**, `src/lib` **96.8%**, `src/engine` **94.1%**, `src/server` **90.5%**, `src/llm` **88.8%**, `src/store` **85.1%**, `src/components` **83.1%**, `src/app` **76.6%**.
+  - Enforced thresholds in `vitest.config.ts`: `85%` statements on `src/engine/**` and `src/lib/**`, plus global floors (`87%` statements, `75%` branches, `86%` functions, `89%` lines).
 
 ---
 

@@ -4,7 +4,7 @@ import { handleHealth } from '@/server/handlers/health';
 
 describe('Server: Health Handler', () => {
   it('returns valid operational mode and never exposes API keys or env secrets', async () => {
-    const fakeKey = 'AIzaSySecretFakeApiKey1234567890';
+    const fakeKey = 'test-fake-credential-123';
     const deps = createDeps({
       mode: 'live',
       modeNote: 'Gemini 2.5 Flash active',

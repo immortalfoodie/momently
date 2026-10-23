@@ -7,7 +7,9 @@ import { contactsGroupedByCategory } from '@/engine/eventDay';
 import { useAnnouncer } from '@/components/ui/LiveRegion';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { CopyFallbackDialog } from '@/components/ui/CopyFallbackDialog';
 import { Dialog } from '@/components/ui/Dialog';
+import { useCopyText } from '@/components/ui/useCopyText';
 import { useEventsStore } from '@/store/eventsStore';
 import { ContactDialog } from './ContactDialog';
 
@@ -124,17 +126,21 @@ export function ContactsPanel({ plan, eventId, className = '' }: ContactsPanelPr
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [removingContact, setRemovingContact] = useState<Contact | null>(null);
+  const {
+    copyText,
+    fallbackOpen,
+    fallbackText,
+    fallbackTitle,
+    fallbackDescription,
+    closeFallback,
+  } = useCopyText();
 
   const handleCopyPhone = async (contact: Contact) => {
     if (!contact.phone) return;
-    try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(contact.phone);
-        announce(`Copied phone number for ${contact.name}`);
-      }
-    } catch {
-      announce(`Phone number: ${contact.phone}`);
-    }
+    await copyText(contact.phone, {
+      announceText: `Copied phone number for ${contact.name}`,
+      title: `Phone number — ${contact.name}`,
+    });
   };
 
   const handleSaveContact = (saved: Contact) => {
@@ -221,6 +227,16 @@ export function ContactsPanel({ plan, eventId, className = '' }: ContactsPanelPr
           open={Boolean(removingContact)}
           onClose={() => setRemovingContact(null)}
           onConfirm={handleConfirmRemove}
+        />
+      )}
+
+      {fallbackOpen && (
+        <CopyFallbackDialog
+          open={fallbackOpen}
+          onClose={closeFallback}
+          title={fallbackTitle}
+          description={fallbackDescription}
+          text={fallbackText}
         />
       )}
     </div>

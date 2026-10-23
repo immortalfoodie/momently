@@ -76,13 +76,51 @@ describe('Store: Hydration Validation & SafeStorage', () => {
     expect(state.notice).toBeDefined();
   });
 
-  it('safeStorage never throws on quota errors or localStorage unavailability', () => {
+  it('safeStorage never throws on quota errors or localStorage unavailability and exposes isPersistent()', () => {
+    expect(safeStorage.isPersistent()).toBe(true);
+
     const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new DOMException('QuotaExceededError');
     });
 
     expect(() => safeStorage.setItem('key', 'value')).not.toThrow();
     expect(safeStorage.getItem('key')).toBe('value');
+    expect(safeStorage.isPersistent()).toBe(false);
     setItemSpy.mockRestore();
+  });
+
+  it('refuses to load state saved with an unknown version, sets version notice, and leaves raw storage untouched', () => {
+    const plan = makeBaseline();
+    const rawFutureVersionPayload = JSON.stringify({
+      state: {
+        events: {
+          [plan.id]: {
+            plan,
+            history: [],
+            messages: [],
+            assumptions: [],
+            missingInfo: [],
+            contacts: [],
+          },
+        },
+        order: [plan.id],
+      },
+      version: 99,
+    });
+
+    useEventsStore.setState({ hydrated: false, events: {}, order: [], notice: null });
+    safeStorage.setItem('momently.v1', rawFutureVersionPayload);
+
+    useEventsStore.getState().hydrate();
+
+    const state = useEventsStore.getState();
+    expect(state.hydrated).toBe(true);
+    expect(state.events).toEqual({});
+    expect(state.order).toEqual([]);
+    expect(state.notice).toBe(
+      "Your saved data came from a different version of Momently and couldn't be loaded",
+    );
+    expect(safeStorage.getItem('momently.v1')).toBe(rawFutureVersionPayload);
+    expect(window.localStorage.getItem('momently.v1')).toBe(rawFutureVersionPayload);
   });
 });

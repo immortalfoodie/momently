@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
+import { formatIsoDate } from '@/lib/format';
 
 export interface NextStepsProps {
   plan: EventPlan;
@@ -25,18 +26,7 @@ export function computeTaskDueDate(task: Task, dateIso?: string) {
   const isOverdue = isTaskOverdue(mockPlan, task, new Date());
 
   if (due.kind === 'date') {
-    const parts = due.iso.split('-').map(Number);
-    const y = parts[0] ?? 2026;
-    const m = parts[1] ?? 1;
-    const d = parts[2] ?? 1;
-    const dueDate = new Date(Date.UTC(y, m - 1, d));
-    const text = dueDate.toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      timeZone: 'UTC',
-    });
-    return { text, isOverdue };
+    return { text: formatIsoDate(due.iso), isOverdue };
   }
 
   return {

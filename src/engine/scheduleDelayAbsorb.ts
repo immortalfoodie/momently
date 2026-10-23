@@ -3,6 +3,10 @@ import { formatMinuteOfDay } from '@/lib/format';
 import type { ScheduleOutcome } from './scheduleDelayTypes';
 import { cascadeStrategy } from './scheduleDelayStrategies';
 
+/**
+ * Clamps a minute-of-day integer to the valid single-day range [0, 1439].
+ * WHY: Prevents shifted or compressed schedule start times from underflowing 00:00 or overflowing 23:59.
+ */
 export function clampMinute(val: number): number {
   return Math.max(0, Math.min(1439, val));
 }
@@ -162,6 +166,10 @@ function formatAbsorbSummary(
   return `Absorb recovered partial time (${details}), but still overruns limit by ${overflowMinutes}m.`;
 }
 
+/**
+ * Absorbs a schedule delay by compressing flexible slots down toward their minimum durations and dropping optional slots if needed.
+ * WHY: Recovers timeline delays so the celebration can still conclude by the venue curfew without overtime fees.
+ */
 export function absorbStrategy(
   sortedSlots: readonly ScheduleSlot[],
   anchor: ScheduleSlot,

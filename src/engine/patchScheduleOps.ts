@@ -6,6 +6,10 @@ import { shiftSlots } from './schedule';
 export type ScheduleOpType = 'add_slot' | 'update_slot' | 'remove_slot' | 'shift_schedule';
 export type SchedulePatchOp = Extract<PlanPatchOp, { type: ScheduleOpType }>;
 
+/**
+ * Type guard identifying patch operations that target the run-of-show schedule.
+ * WHY: Allows the main patch dispatcher to delegate schedule mutations cleanly without a bloated switch block.
+ */
 export function isScheduleOp(op: PlanPatchOp): op is SchedulePatchOp {
   return (
     op.type === 'add_slot' ||
@@ -15,6 +19,10 @@ export function isScheduleOp(op: PlanPatchOp): op is SchedulePatchOp {
   );
 }
 
+/**
+ * Applies schedule slot mutations while enforcing the 00:00–24:00 (0–1440 minute) single-day boundary.
+ * WHY: Prevents sessions from running past midnight or updating non-existent slot IDs.
+ */
 export function handleScheduleOps(plan: EventPlan, op: SchedulePatchOp): OpResult {
   if (op.type === 'shift_schedule') {
     const shifted = shiftSlots(plan.schedule, op.fromMinute, op.deltaMinutes);

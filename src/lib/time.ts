@@ -5,7 +5,7 @@
 
 /**
  * Formats a Date into a local ISO calendar date string "YYYY-MM-DD".
- * Uses local calendar components (getFullYear, getMonth, getDate).
+ * WHY: Avoids UTC midnight shift bugs when comparing the host's wall-clock date against event dates.
  */
 export function localIsoDate(date: Date): string {
   const y = date.getFullYear();
@@ -16,6 +16,7 @@ export function localIsoDate(date: Date): string {
 
 /**
  * Returns the minute of the day (0-1439) for a Date using local hours and minutes.
+ * WHY: Aligns live event-day clock ticks with schedule slot startMinute integers.
  */
 export function minuteOfDay(date: Date): number {
   return date.getHours() * 60 + date.getMinutes();
@@ -23,7 +24,7 @@ export function minuteOfDay(date: Date): number {
 
 /**
  * Parses a "HH:MM" time string into minute of day (0-1439).
- * Returns undefined if format is invalid or hours/minutes are out of bounds.
+ * WHY: Validates HTML time input values before converting them into engine schedule minutes.
  */
 export function parseTimeInput(timeStr: string): number | undefined {
   if (!/^\d{1,2}:\d{2}$/.test(timeStr)) return undefined;
@@ -37,6 +38,7 @@ export function parseTimeInput(timeStr: string): number | undefined {
 
 /**
  * Converts a minute of the day into a zero-padded "HH:MM" string suitable for HTML time inputs.
+ * WHY: Bridges integer schedule minutes back to controlled <input type="time"> elements.
  */
 export function minuteToTimeInput(minute: number): string {
   const clamped = Math.max(0, Math.min(1439, Math.floor(minute)));

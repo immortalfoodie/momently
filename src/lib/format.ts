@@ -58,14 +58,15 @@ export function formatMinuteOfDay(minute: number): string {
 }
 
 /**
- * Formats a YYYY-MM-DD ISO string into a human-friendly date string.
+ * Formats a YYYY-MM-DD ISO string into a human-friendly date string without timezone drift.
+ * WHY: Centralizes display date formatting (e.g. "15 Dec 2026") across overview, checklist, and event-day views without relying on locale-dependent Date parsing.
  *
  * @param dateIso - ISO date string in YYYY-MM-DD format.
  * @returns Formatted date string (e.g. "15 Dec 2026") or "Date not set" if missing.
  */
 export function formatIsoDate(dateIso?: string | null): string {
   if (!dateIso) return 'Date not set';
-  const parts = dateIso.split('-');
+  const parts = dateIso.slice(0, 10).split('-');
   if (parts.length !== 3) return dateIso;
   const year = parts[0];
   const monthIdx = parseInt(parts[1] ?? '1', 10) - 1;
