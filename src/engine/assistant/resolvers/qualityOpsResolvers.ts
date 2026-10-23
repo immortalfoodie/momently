@@ -55,6 +55,7 @@ export function resolveUpgrade(
       kind: 'proposal',
       message: `Upgrading ${item.label} to ${intent.toQuality} tier costs ${formatInr(proposal.cost)} and fits within budget. Spend shifts from ${formatInr(totalBefore)} to ${formatInr(totalAfter)}.`,
       options: opt ? [opt] : [],
+      recommendedOptionId: opt?.id,
       notes: [],
     };
   }
@@ -80,7 +81,9 @@ export function resolveUpgrade(
       kind: 'proposal',
       message: proposal.message,
       options,
-      recommendedOptionId: proposal.recommendedId,
+      recommendedOptionId: proposal.recommendedId
+        ? `opt_fund_${proposal.recommendedId}`
+        : options[0]?.id,
       notes: [],
     };
   }

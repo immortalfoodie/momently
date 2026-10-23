@@ -91,7 +91,8 @@ function matchCombineConcepts(lower: string): IntentOutput | null {
 }
 
 function matchSelectConcept(lower: string): IntentOutput | null {
-  const pickMatch = /(?:pick|select|choose|go with)\s+(?:the\s+)?(?:option\s+([1-3])|concept\s+([1-3])|(.*?)(?:\s+concept)?$)/i.exec(lower);
+  const cleaned = lower.replace(/[.!?]+$/, '').trim();
+  const pickMatch = /(?:pick|select|choose|go with)\s+(?:the\s+)?(?:option\s+([1-3])|concept\s+([1-3])|(.*?)(?:\s+concept)?$)/i.exec(cleaned);
   if (!pickMatch) return null;
   const ref = pickMatch[1] ?? pickMatch[2] ?? (pickMatch[3] ? pickMatch[3].trim() : '1');
   return { kind: 'select_concept', conceptRef: ref.slice(0, 80) };

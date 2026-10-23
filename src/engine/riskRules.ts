@@ -24,9 +24,8 @@ export interface EvaluatedRisk {
 }
 
 export function checkWeatherRisk(plan: EventPlan): EvaluatedRisk | null {
+  if (plan.meta.setting === 'indoor') return null;
   const isOutdoor = plan.meta.setting === 'outdoor';
-  const isMixed = plan.meta.setting === 'mixed';
-  if (!isOutdoor && !isMixed) return null;
 
   const hasCover = plan.budgetItems.some((i) => i.rateKey?.startsWith('weather_cover.'));
   const hasBackupVenue = plan.budgetItems.some(
@@ -48,7 +47,7 @@ export function checkWeatherRisk(plan: EventPlan): EvaluatedRisk | null {
       id: 'risk_weather_uncovered',
       severity: isOutdoor ? 'high' : 'medium',
       title: 'Open-air venue without rain protection',
-      explanation: `${isOutdoor ? 'Outdoor' : 'Mixed'} setting lacks rain canopy cover or hold on backup indoor space.`,
+      explanation: `${isOutdoor ? 'Outdoor' : 'Mixed or undecided'} setting lacks rain canopy cover or hold on backup indoor space.`,
       mitigation: 'Add weather cover canopy or confirm a 24-hour backup venue hold.',
     },
   };

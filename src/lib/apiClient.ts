@@ -26,6 +26,23 @@ export interface ApiClientOptions {
 
 const DEFAULT_TIMEOUT_MS = 45_000;
 
+/** Number of most recent ledger entries kept in request payloads. */
+export const SLIM_LEDGER_ENTRIES = 20;
+
+/**
+ * Returns a request-sized copy of a plan with the ledger cut to the most recent entries.
+ * WHY: The server only needs the current state to classify and resolve a request; the full audit
+ * ledger (up to 500 entries) would bloat every request. Patches are applied by the client to its
+ * own full plan, so nothing is lost. The original plan object is never mutated.
+ *
+ * @param plan - The full client-side plan.
+ * @returns A shallow copy whose ledger holds at most SLIM_LEDGER_ENTRIES entries.
+ */
+export function slimPlanForRequest(plan: EventPlan): EventPlan {
+  if (!Array.isArray(plan.ledger)) return plan;
+  return { ...plan, ledger: plan.ledger.slice(-SLIM_LEDGER_ENTRIES) };
+}
+
 // eslint-disable-next-line complexity
 async function executeJsonRequest<TResponse>(
   url: string,
@@ -126,7 +143,8 @@ export async function sendMessage(
   request: MessageRequest,
   options?: ApiClientOptions,
 ): Promise<Result<MessageResponse, ClientError>> {
-  return executeJsonRequest<MessageResponse>('/api/message', 'POST', request, options);
+  const payload: MessageRequest = { ...request, plan: slimPlanForRequest(request.plan) };
+  return executeJsonRequest<MessageResponse>('/api/message', 'POST', payload, options);
 }
 
 /**
@@ -146,6 +164,6 @@ export async function requestConcepts(
   plan: EventPlan,
   options?: ApiClientOptions,
 ): Promise<Result<ConceptsResponse, ClientError>> {
-  const payload: ConceptsRequest = { plan };
+  const payload: ConceptsRequest = { plan: slimPlanForRequest(plan) };
   return executeJsonRequest<ConceptsResponse>('/api/concepts', 'POST', payload, options);
 }

@@ -1,9 +1,10 @@
 'use client';
 
-import { useId, useState, type TextareaHTMLAttributes } from 'react';
+import { useId, useState, type Ref, type TextareaHTMLAttributes } from 'react';
 import { resolveFieldBindings, useFieldContext } from './Field';
 
 export interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+  ref?: Ref<HTMLTextAreaElement>;
   maxLength?: number;
   showCount?: boolean;
   className?: string;

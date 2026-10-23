@@ -5,14 +5,20 @@ import { Button, LinkButton } from '@/components/ui/Button';
 import { CoverArt } from '@/components/ui/CoverArt';
 import { Icon } from '@/components/ui/Icon';
 import { useEventsStore } from '@/store/eventsStore';
+import { useTourStore } from '@/store/tourStore';
 
 export function HeroBanner() {
   const router = useRouter();
   const createDemoEvent = useEventsStore((s) => s.createDemoEvent);
+  const startTour = useTourStore((s) => s.start);
 
   const handleLoadDemo = () => {
     const id = createDemoEvent();
     router.push(`/events/${id}/concepts`);
+  };
+
+  const handleWatchDemo = () => {
+    startTour();
   };
 
   return (
@@ -51,6 +57,17 @@ export function HeroBanner() {
           >
             Plan a new event
           </LinkButton>
+
+          <Button
+            type="button"
+            variant="secondary"
+            size="md"
+            onClick={handleWatchDemo}
+            className="bg-white/20 text-white hover:bg-white/30 border-white/40 backdrop-blur-xs font-medium"
+            icon={<Icon name="sparkle" size={18} aria-hidden="true" />}
+          >
+            Watch the demo
+          </Button>
 
           <Button
             type="button"

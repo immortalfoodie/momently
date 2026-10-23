@@ -10,6 +10,7 @@ import type { CombineConceptsIntent, SelectConceptIntent } from '@/llm/schemas/i
 import {
   combineConcepts,
   conceptFit,
+  priceConcept,
   resolveConceptRef,
   selectConceptOps,
 } from '../concepts';
@@ -23,8 +24,13 @@ function buildConceptConflictOutcome(
   conflicts: Conflict[],
   ctx: EngineContext,
 ): AssistantOutcome {
-  const overBy = fit.overBy;
-  const funding = suggestSavings(plan, overBy, {}, ctx);
+  const actualTotal = priceConcept(plan, concept, ctx);
+  const effectiveTotal = Math.max(fit.total, actualTotal);
+  const overBy = fit.cap !== null ? Math.max(0, effectiveTotal - fit.cap) : fit.overBy;
+  const protectedFamilies = Object.keys(concept.qualityProfile ?? {}).map((f) =>
+    f === 'decor' ? 'decor_theme' : f,
+  );
+  const funding = suggestSavings(plan, overBy, { protectedFamilies }, ctx);
   const fundingOptions: RecoveryOption[] = funding
     .map((s, idx) => {
       const mergedOps = [...ops, ...s.ops];
@@ -48,10 +54,10 @@ function buildConceptConflictOutcome(
     fit.cap !== null
       ? buildOption(
           plan,
-          [...ops, { type: 'set_budget_cap', amount: fit.total }],
+          [...ops, { type: 'set_budget_cap', amount: effectiveTotal }],
           {
             id: `opt_select_${concept.id}_raise_cap`,
-            label: `Select "${concept.title}" and raise cap to ${formatInr(fit.total)}`,
+            label: `Select "${concept.title}" and raise cap to ${formatInr(effectiveTotal)}`,
             tradeoff: `Increases hard budget cap by ${formatInr(overBy)}`,
             notes: concept.experienceHighlights,
           },
@@ -61,11 +67,11 @@ function buildConceptConflictOutcome(
         )
       : undefined;
 
-  const allOptions = raiseCapOption ? [raiseCapOption, ...fundingOptions] : fundingOptions;
+  const allOptions = raiseCapOption ? [...fundingOptions, raiseCapOption] : fundingOptions;
 
   return {
     kind: 'conflict',
-    message: `Selecting concept "${concept.title}" would cost ${formatInr(fit.total)}, exceeding your hard budget cap of ${formatInr(fit.cap ?? 0)} by ${formatInr(overBy)}.`,
+    message: `Selecting concept "${concept.title}" would cost ${formatInr(effectiveTotal)}, exceeding your hard budget cap of ${formatInr(fit.cap ?? 0)} by ${formatInr(overBy)}.`,
     conflicts,
     options: allOptions,
   };
@@ -121,6 +127,7 @@ export function resolveSelectConcept(
     kind: 'proposal',
     message: `Proposed selecting concept "${concept.title}". Estimated spend shifts from ${formatInr(totalBefore)} to ${formatInr(fit.total)}${capText}.`,
     options: opt ? [opt] : [],
+    recommendedOptionId: opt?.id,
     notes: concept.tradeoffs,
   };
 }

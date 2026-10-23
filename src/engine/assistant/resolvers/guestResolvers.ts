@@ -11,6 +11,26 @@ import { formatInr } from '@/lib/format';
 import type { ChangeGuestCountIntent } from '@/llm/schemas/intent';
 import type { AssistantOutcome } from '../types';
 
+function pickSurgeRecommendedId(
+  surgeRecommendedId: string | undefined,
+  options: RecoveryOption[],
+): string | undefined {
+  if (surgeRecommendedId) return surgeRecommendedId;
+  return options.find((o) => o.meetsCap && !o.id.includes('raise'))?.id ?? options[0]?.id;
+}
+
+function buildGuestNotes(plan: EventPlan, targetGuests: number): string[] {
+  const mBefore = deriveGuestMetrics(plan.meta.guestCount, plan.guestNeeds);
+  const mAfter = deriveGuestMetrics(targetGuests, plan.guestNeeds);
+  const metricsNote = `Seating & Catering: ${mBefore.tables} -> ${mAfter.tables} tables, ${mBefore.servings} -> ${mAfter.servings} meal servings.`;
+  const locked = plan.budgetItems.filter((i) => i.locked || i.provenance === 'user');
+  if (locked.length === 0) return [metricsNote];
+  return [
+    metricsNote,
+    `Preserved ${locked.length} locked or host-quoted item(s): ${locked.map((i) => i.label).join(', ')}.`,
+  ];
+}
+
 export function resolveChangeGuestCount(
   plan: EventPlan,
   intent: ChangeGuestCountIntent,
@@ -26,17 +46,7 @@ export function resolveChangeGuestCount(
 
   const op: PlanPatchOp = { type: 'set_guest_count', guestCount: intent.guestCount };
   const checkRes = checkRequest(plan, [op], ctx);
-
-  const mBefore = deriveGuestMetrics(plan.meta.guestCount, plan.guestNeeds);
-  const mAfter = deriveGuestMetrics(intent.guestCount, plan.guestNeeds);
-  const metricsNote = `Seating & Catering: ${mBefore.tables} -> ${mAfter.tables} tables, ${mBefore.servings} -> ${mAfter.servings} meal servings.`;
-
-  const locked = plan.budgetItems.filter((i) => i.locked || i.provenance === 'user');
-  const lockedNote =
-    locked.length > 0
-      ? `Preserved ${locked.length} locked or host-quoted item(s): ${locked.map((i) => i.label).join(', ')}.`
-      : undefined;
-  const notes = [metricsNote, ...(lockedNote ? [lockedNote] : [])];
+  const notes = buildGuestNotes(plan, intent.guestCount);
 
   if (checkRes.verdict === 'conflict' && intent.guestCount > plan.meta.guestCount) {
     const diff = intent.guestCount - plan.meta.guestCount;
@@ -50,7 +60,7 @@ export function resolveChangeGuestCount(
       kind: 'proposal',
       message: `Increasing attendance from ${plan.meta.guestCount} to ${intent.guestCount} guests requires budget adjustments.`,
       options,
-      recommendedOptionId: surge.recommendedOptionId,
+      recommendedOptionId: pickSurgeRecommendedId(surge.recommendedOptionId, options),
       notes: [surge.summary, ...notes],
     };
   }

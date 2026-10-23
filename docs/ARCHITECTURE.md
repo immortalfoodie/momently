@@ -404,3 +404,43 @@ Momently guarantees that no planning milestone or historical iteration is ever d
 1. **Immutable Decision Ledger**: Every host edit, approved AI proposal, Chaos mitigation, and system adjustment appends a `DecisionRecord` to `plan.ledger`.
 2. **Historical Snapshots**: Pre-change states are captured in `event.history` as immutable `PlanSnapshot` objects before applying approved mutations.
 3. **Forward-Only Restorations**: Restoring an older snapshot via `store.restoreVersion` does **not** erase subsequent history or roll back clocks. Instead, it creates a brand new version (`current.version + 1`), adopts the snapshot data, retains the event ID, and appends a `"Restored version N"` record to the ledger. Hosts can freely compare diffs across iterations and switch back at any time.
+
+---
+
+## 16. Chat and Guided Demo
+
+Momently's conversational assistant (`src/components/chat/`) and guided demo tour (`src/components/demo/TourBar.tsx`) bring natural-language co-planning into the studio while strictly upholding host agency.
+
+### The Chat Flow
+
+```text
+Host Message -> /api/message -> LLM (intent) -> resolveIntent -> AssistantOutcome (Proposal) -> Host Approval -> store.approveAndApply
+```
+
+1. **Context-Aware Modes**: `ChatProvider` adapts automatically to the current route. Inside `/events/[id]`, it runs in `"event"` mode against the active celebration plan; elsewhere, it runs in `"intake"` mode, submitting new event briefs to `/api/intake` and navigating to the generated concepts studio.
+2. **Untrusted Classification & Pure Resolution**: In event mode, sending a message records the user turn with `basedOnVersion = plan.version`, sends the message and recent conversation context (`recentMessages`, up to 6 turns truncated to 300 chars) to `/api/message`, classifies the request into a typed `IntentOutput`, and resolves it through the pure `resolveIntent` engine into an `AssistantOutcome`.
+3. **Explicit Host Approval**: The chat assistant **never** mutates a plan on its own. Actionable suggestions are rendered via `AssistantOutcomeView` and `OptionCard`, requiring an explicit click on `"Approve this change"` (routed through `store.approveAndApply` with staleness protection). Once a change is approved and `plan.version` increments, earlier proposal cards in the chat log automatically dim with an `"Out of date"` badge.
+
+### Slim Request Payloads (`slimPlanForRequest`)
+
+Because Momently's backend is stateless, the client sends the active `EventPlan` with `/api/message` and `/api/concepts` requests. While the client retains up to 500 immutable audit records in `plan.ledger`, the server only needs the current state to classify and resolve intents. `slimPlanForRequest(plan)` sends a shallow copy with `ledger` trimmed to the 20 most recent entries, keeping request payloads well under 60 KB while the client applies approved patches to its own full plan without losing any audit history.
+
+### Memory-Only Outcomes & Reload Expiry
+
+Persisting full `AssistantOutcome` trees (containing candidate `PlanPatch` payloads, multi-item diffs, and speculative savings levers) in `localStorage` would bloat browser storage and risk rehydrating stale patches across sessions. Instead:
+- Compact plain-text summaries (`outcomeToText`, capped at 600 characters) are persisted in `event.messages`.
+- Full interactive `AssistantOutcome` objects live exclusively in memory (`store.outcomes`).
+- After a page reload, persisted assistant messages render their saved text alongside a transparent note (`"Suggestions expire when you reload: ask again to see them"`).
+
+### Guided Demo Tour Invariant: Never Auto-Approve
+
+The 6-step guided tour (`DEMO_TOUR` in `src/data/demoTour.ts`, driven by the non-persisted `useTourStore` and `TourBar`) walks evaluators through Vibe-to-Vision intake, concept selection, Budget Guardian decor upgrades, guest count scaling (80 to 110), Chaos Lab rain recovery, and the final event checklist:
+- **Zero Auto-Approval**: Running a tour chat step only sends the scripted host message through `ChatProvider.send` to display the resulting proposal card. It **never** calls `approveAndApply` on the user's behalf.
+- **Explicit Guidance**: After each chat step runs, `TourBar` surfaces the reminder: *"Now review the proposal and approve it yourself. Momently never applies a change on its own."*
+- **Resilient Offline Fallback**: Step 1 attempts `/api/intake` and gracefully falls back to `store.createDemoEvent()` if offline.
+
+### Chat Log Accessibility Decisions
+
+- **`role="log"` with `aria-live="off"`**: Interactive outcome cards contain headings, comparison tables, radio groups, and buttons. Allowing `aria-live` on the scroll container to read entire outcome subtrees would flood screen readers with verbose markup. Instead, `MessageList` sets `aria-live="off"` and `ChatProvider` announces only the concise plain-text summary (`outcomeToText`) through the polite `LiveRegionProvider`.
+- **Visually Hidden Sender Labels**: Every message bubble prefixes a screen-reader-only label (`"You said:"` or `"Momently said:"`) so assistive technology users can distinguish turns without relying on visual alignment or bubble color.
+- **Keyboard & Focus Ergonomics**: `Enter` submits, `Shift+Enter` inserts a newline, the 500-character counter announces only at 80%/90%/100% thresholds, focus returns to the composer textarea after sending, and the mobile bottom-sheet `Drawer` traps focus and restores it to the floating trigger on `Escape`.
