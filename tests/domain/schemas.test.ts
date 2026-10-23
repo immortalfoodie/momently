@@ -187,13 +187,14 @@ describe('Domain Zod Schemas - Valid Samples', () => {
       ops: [
         { type: 'set_guest_count', guestCount: 180 },
         { type: 'set_budget_cap', amount: 500000 },
+        { type: 'remove_task', id: 'tk_1' },
       ],
       reason: 'Budget adjustment after guest list revision',
       source: 'user',
       status: 'proposed',
       createdAt: '2026-10-21T12:00:00Z',
     });
-    expect(patch.ops).toHaveLength(2);
+    expect(patch.ops).toHaveLength(3);
 
     const impact = planImpactSchema.parse({
       budgetTotalBefore: 450000,

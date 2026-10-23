@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { EventPlan, Task } from '@/domain/types';
+import { isTaskOverdue, taskDueDate } from '@/engine/taskDates';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -19,20 +20,29 @@ export function computeTaskDueDate(task: Task, dateIso?: string) {
     };
   }
 
-  const eventTime = new Date(dateIso).getTime();
-  const dueTime = eventTime - task.dueDaysBefore * 86400000;
-  const dueDate = new Date(dueTime);
-  const nowStart = new Date();
-  nowStart.setHours(0, 0, 0, 0);
+  const mockPlan = { meta: { dateIso } } as EventPlan;
+  const due = taskDueDate(mockPlan, task);
+  const isOverdue = isTaskOverdue(mockPlan, task, new Date());
 
-  const isOverdue = dueTime < nowStart.getTime();
-  const text = dueDate.toLocaleDateString('en-IN', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
+  if (due.kind === 'date') {
+    const parts = due.iso.split('-').map(Number);
+    const y = parts[0] ?? 2026;
+    const m = parts[1] ?? 1;
+    const d = parts[2] ?? 1;
+    const dueDate = new Date(Date.UTC(y, m - 1, d));
+    const text = dueDate.toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    });
+    return { text, isOverdue };
+  }
 
-  return { text, isOverdue };
+  return {
+    text: `${task.dueDaysBefore} days before the event`,
+    isOverdue: false,
+  };
 }
 
 /**

@@ -1,25 +1,25 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { Icon } from '@/components/ui/Icon';
-import { PageHeader } from '@/components/ui/PageHeader';
+import { TimelineClient } from '@/components/timeline/TimelineClient';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export const metadata: Metadata = {
   title: 'Timeline',
+  description: 'Chronological celebration schedule with duration safeguards and delay triage.',
 };
 
 export default function TimelinePage() {
   return (
-    <div className="py-2">
-      <PageHeader
-        title="Schedule & Timeline"
-        description="Chronological event run-sheet with priority gating, duration bounds, and cascading delay ripple math."
-      />
-
-      <EmptyState
-        icon={<Icon name="clock" size={28} aria-hidden="true" />}
-        title="Event Run-Sheet"
-        description="Dynamic minute-by-minute schedule slots with flexible duration dampening and delay simulation."
-      />
-    </div>
+    <Suspense
+      fallback={
+        <div className="py-2 space-y-6">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      }
+    >
+      <TimelineClient />
+    </Suspense>
   );
 }

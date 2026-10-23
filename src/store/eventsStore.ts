@@ -5,6 +5,7 @@ import { createSnapshot, restoreSnapshot } from '@/engine/history';
 import type { PatchError } from '@/engine/patch';
 import { applyPatch, createPatch } from '@/engine/patch';
 import { replaceConcepts } from '@/engine/replaceConcepts';
+import { setTaskStatus as setTaskStatusEngine } from '@/engine/taskStatus';
 import type { MissingInfoItem } from '@/llm/schemas/intake';
 import { err, ok, type Result } from '@/lib/result';
 import { create } from 'zustand';
@@ -29,9 +30,7 @@ function enforceSizeGuard(
   if (serialized.length <= MAX_SERIALIZED_CHARS) return events;
 
   const updated: Record<string, EventRecord> = {};
-  for (const [id, rec] of Object.entries(events)) {
-    updated[id] = { ...rec, history: [...rec.history] };
-  }
+  for (const [id, rec] of Object.entries(events)) updated[id] = { ...rec, history: [...rec.history] };
 
   while (serialized.length > MAX_SERIALIZED_CHARS) {
     let oldestEventId: string | null = null;
@@ -70,6 +69,7 @@ export interface EventsState {
   applyUserEdit: (eventId: string, ops: PlanPatchOp[], reason: string, options?: { recordSnapshot?: boolean }) => Result<PlanImpact, StoreError | PatchError>;
   restoreVersion: (eventId: string, version: number) => Result<EventPlan, StoreError>;
   setConcepts: (eventId: string, concepts: Concept[]) => void;
+  setTaskStatus: (eventId: string, taskId: string, status: 'todo' | 'doing' | 'done') => Result<EventPlan, StoreError | PatchError>;
   deleteEvent: (id: string) => void;
   addMessage: (eventId: string, message: { role: 'user' | 'assistant'; text: string; outcomeKind?: string; basedOnVersion?: number }) => void;
   clearMessages: (eventId: string) => void;
@@ -199,6 +199,17 @@ export const useEventsStore = create<EventsState>()(
         set({ events: enforceSizeGuard(updatedEvents, nextOrder), order: nextOrder });
       },
 
+      setTaskStatus: (eventId, taskId, status) => {
+        const event = get().events[eventId];
+        if (!event) return err({ code: 'not_found', message: 'Event not found' });
+        const res = setTaskStatusEngine(event.plan, taskId, status, engineContext);
+        if (!res.ok) return res;
+        const updatedEvents = { ...get().events, [eventId]: { ...event, plan: res.value } };
+        const nextOrder = [eventId, ...get().order.filter((id) => id !== eventId)];
+        set({ events: enforceSizeGuard(updatedEvents, nextOrder), order: nextOrder });
+        return ok(res.value);
+      },
+
       deleteEvent: (id) => {
         const nextEvents = { ...get().events };
         delete nextEvents[id];
@@ -208,11 +219,7 @@ export const useEventsStore = create<EventsState>()(
       addMessage: (eventId, msg) => {
         const event = get().events[eventId];
         if (!event) return;
-        const newMsg = {
-          id: engineContext.ids('msg'),
-          createdAt: engineContext.clock().toISOString(),
-          ...msg,
-        };
+        const newMsg = { id: engineContext.ids('msg'), createdAt: engineContext.clock().toISOString(), ...msg };
         const nextMessages = [...event.messages, newMsg].slice(-60);
         set({ events: { ...get().events, [eventId]: { ...event, messages: nextMessages } } });
       },

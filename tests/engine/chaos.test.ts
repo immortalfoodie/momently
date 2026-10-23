@@ -128,8 +128,12 @@ describe('Chaos Scenarios & Recovery Engine', () => {
 
   it('late_start: 120m delay returns three distinct strategy outcomes', () => {
     const base = makeBaseline();
+    const shiftedBase = {
+      ...base,
+      schedule: base.schedule.map((s) => ({ ...s, startMinute: s.startMinute - 180 })),
+    };
     const ctx = { ids: createIdFactory('late_test'), clock: fixedClock };
-    const res = simulateScenario(base, { type: 'late_start', delayMinutes: 120 }, ctx);
+    const res = simulateScenario(shiftedBase, { type: 'late_start', delayMinutes: 120 }, ctx);
 
     expect(res.applicable).toBe(true);
     expect(res.options).toHaveLength(3);

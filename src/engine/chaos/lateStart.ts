@@ -1,11 +1,14 @@
 import type { LateStartScenarioInput } from '@/domain/chaosSchemas';
 import type { EventPlan } from '@/domain/types';
 import type { EngineContext } from '@/engine/context';
+import { buildDelayOptions } from '@/engine/delayOptions';
 import { scoreRisks } from '@/engine/risk';
-import { proposeDelayOptions } from '@/engine/scheduleDelay';
-import { buildOption } from './option';
-import type { RecoveryOption, ScenarioResult } from './types';
+import type { ScenarioResult } from './types';
 
+/**
+ * Simulates the late_start chaos scenario by delegating to shared buildDelayOptions.
+ * WHY: Shares deterministic delay triage between Chaos Lab and the host Timeline.
+ */
 export function simulateLateStart(
   plan: EventPlan,
   input: LateStartScenarioInput,
@@ -37,35 +40,17 @@ export function simulateLateStart(
     };
   }
 
-  const outcomes = proposeDelayOptions(plan.schedule, {
-    anchorSlotId: anchor.id,
-    delayMinutes: input.delayMinutes,
-    endLimitMinute: input.endLimitMinute,
-  });
+  const options = buildDelayOptions(
+    plan,
+    {
+      anchorSlotId: anchor.id,
+      delayMinutes: input.delayMinutes,
+      endLimitMinute: input.endLimitMinute,
+    },
+    ctx,
+  );
 
-  const options: RecoveryOption[] = [];
-
-  for (const outcome of outcomes) {
-    const notes: string[] = [outcome.summary];
-    if (outcome.overflowMinutes > 0) {
-      notes.push(
-        `Overtime of ${outcome.overflowMinutes} minutes: confirm overtime rates with venue, caterer, photographer and DJ.`,
-      );
-    }
-
-    const opt = buildOption(
-      plan,
-      outcome.ops,
-      {
-        id: `opt_delay_${outcome.strategy}`,
-        label: `${outcome.strategy.toUpperCase()}: ${outcome.strategy === 'cascade' ? 'Shift schedule later' : outcome.strategy === 'absorb' ? 'Absorb via slot reductions' : 'Swap flexible slots'}`,
-        tradeoff: outcome.summary,
-        notes,
-      },
-      ctx,
-    );
-    if (opt) options.push(opt);
-  }
+  const recommendedOptionId = options[0]?.id;
 
   return {
     input,
@@ -73,6 +58,7 @@ export function simulateLateStart(
     headline: `Timeline delayed by ${input.delayMinutes} minutes`,
     summary: `Evaluate cascade, slot-compression, and milestone-swapping options to manage the ${input.delayMinutes}-minute delay.`,
     options,
+    recommendedOptionId,
     scoreBefore,
   };
 }

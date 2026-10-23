@@ -474,3 +474,31 @@ The stress test runner (`runStressTest`) systematically evaluates the entire sce
 - **Weakest-Spot Identification**: Identifies the event's most critical vulnerability—prioritizing the first applicable scenario that fails the budget cap, or the scenario with the largest positive cost delta.
 - **One-Click Deep-Linking**: Evaluators can open any scenario directly in the interactive simulator via `?scenario=<type>`, pre-selecting parameters and auto-simulating.
 
+## 18. Timeline and Checklist
+
+Momently's schedule and checklist architecture (`/events/[id]/timeline`, `/events/[id]/checklist`, `src/components/timeline/`, `src/components/checklist/`, `src/engine/taskDates.ts`, `src/engine/taskProgress.ts`, `src/engine/taskStatus.ts`, `src/engine/scheduleView.ts`, `src/engine/delayOptions.ts`) coordinates chronological milestones and operational action items.
+
+### The Progress Versus Decision Distinction
+A core architectural invariant separates milestone execution from plan design:
+- **Progress Tracking (`setTaskStatus`)**: Checking off a task (`todo` -> `doing` -> `done`) represents operational progress by the host, NOT a structural plan decision. `setTaskStatus` updates `task.status` and `plan.updatedAt` purely, but strictly **never increments `plan.version`** or appends to `plan.ledger`. Bumping the plan version on simple checklist ticks would falsely invalidate concurrently open assistant proposals, chaos simulations, and funding levers as "stale", forcing annoying re-evaluations for unrelated task checkboxes.
+- **Plan Decisions (`useUserEdit`)**: In contrast, modifying task content (`add_task`, `update_task`, `remove_task`) or modifying schedule slots (`add_slot`, `update_slot`, `remove_slot`, `shift_schedule`) represents structural design decisions. These operations advance through the validated `useUserEdit` and `approveAndApply` path, incrementing `plan.version` and appending to the decision ledger.
+
+### Shared Delay-Option Logic (Timeline & Chaos Lab)
+Both the host Timeline (`DelayPlanner`) and the Chaos Lab (`late_start` scenario) share identical delay resolution triage via `src/engine/delayOptions.ts`:
+- **Three Deterministic Strategies**: When a session is delayed, `proposeDelayOptions` formulates three recovery paths:
+  1. *Push everything back* (`cascade`): shifts all subsequent slots later in the timeline.
+  2. *Squeeze to finish on time* (`absorb`): compresses flexible slots down toward their `minDurationMinutes`.
+  3. *Swap two activities* (`swap`): exchanges the delayed slot with an adjacent flexible session.
+- **Overtime Transparency**: If an option overruns the schedule boundary (`overflowMinutes > 0`), Momently attaches an explicit notice: `"Overtime of N minutes: confirm overtime rates with the venue, caterer, photographer and DJ; no prices are assumed"`.
+- **Ranking & Host Autonomy**: Feasible options with the lowest disruption score appear first. Infeasible options remain visible for evaluation but are clearly flagged. As always: *"Momently suggests; you decide. It never contacts vendors or guests: you do that yourself."*
+
+### The Midnight Rule (Boundary Invariant)
+Schedule slots represent times within a single operational celebration day (00:00 to 24:00, or 0 to 1440 minutes since midnight). Both `add_slot` and `update_slot` strictly enforce:
+$$\text{startMinute} + \text{durationMinutes} \le 1440$$
+Any session attempting to run past midnight is rejected with typed error code `'schedule_overflow'` and the plain-English message `"A session can't run past midnight"`.
+
+### The Print Run Sheet
+On the day of the event, hosts and coordinators need high-contrast, physical run sheets:
+- **Print Stylesheet Integration**: The `@media print` rules hide navigational chrome, side docks, and adjustment controls (`[data-print-hide]`, `.no-print`).
+- **Clean Run-of-Show Layout**: Renders an exclusive print-only header with the event title and celebration date, followed by the complete chronological milestone sequence with start and end times, priority indicators, and host notes.
+

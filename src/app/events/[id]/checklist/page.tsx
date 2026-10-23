@@ -1,25 +1,25 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { Icon } from '@/components/ui/Icon';
-import { PageHeader } from '@/components/ui/PageHeader';
+import { ChecklistClient } from '@/components/checklist/ChecklistClient';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export const metadata: Metadata = {
   title: 'Checklist',
+  description: 'Prioritized milestone checklist categorized by operational urgency.',
 };
 
 export default function ChecklistPage() {
   return (
-    <div className="py-2">
-      <PageHeader
-        title="Planning Checklist"
-        description="Prioritized action tasks categorized by due date offset and operational category."
-      />
-
-      <EmptyState
-        icon={<Icon name="checklist" size={28} aria-hidden="true" />}
-        title="Task Checklist"
-        description="Categorized planning milestones from 90 days out to the eve of the event with status tracking."
-      />
-    </div>
+    <Suspense
+      fallback={
+        <div className="py-2 space-y-6">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      }
+    >
+      <ChecklistClient />
+    </Suspense>
   );
 }

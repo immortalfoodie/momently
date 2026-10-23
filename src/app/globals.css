@@ -132,6 +132,7 @@ body {
   nav,
   aside,
   [aria-label="Assistant"],
+  [data-print-hide],
   .no-print {
     display: none !important;
   }

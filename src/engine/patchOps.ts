@@ -15,6 +15,7 @@ export interface PatchError {
     | 'item_locked'
     | 'concept_not_found'
     | 'slot_not_found'
+    | 'task_not_found'
     | 'schedule_overflow'
     | 'hard_constraint_violation'
     | 'invalid_change';
@@ -32,19 +33,15 @@ type MetaPatchOp = Extract<PlanPatchOp, { type: MetaOpType }>;
 
 function isBudgetOp(op: PlanPatchOp): op is BudgetPatchOp {
   return (
-    op.type === 'add_budget_item' ||
-    op.type === 'update_budget_item' ||
-    op.type === 'remove_budget_item' ||
-    op.type === 'scale_category'
+    op.type === 'add_budget_item' || op.type === 'update_budget_item' ||
+    op.type === 'remove_budget_item' || op.type === 'scale_category'
   );
 }
 
 function isScheduleOp(op: PlanPatchOp): op is SchedulePatchOp {
   return (
-    op.type === 'add_slot' ||
-    op.type === 'update_slot' ||
-    op.type === 'remove_slot' ||
-    op.type === 'shift_schedule'
+    op.type === 'add_slot' || op.type === 'update_slot' ||
+    op.type === 'remove_slot' || op.type === 'shift_schedule'
   );
 }
 
@@ -103,16 +100,26 @@ function handleScheduleOps(plan: EventPlan, op: SchedulePatchOp): OpResult {
     }
     return ok({ plan: { ...plan, schedule: shifted.value }, notes: [] });
   }
-  if (op.type === 'add_slot')
+  if (op.type === 'add_slot') {
+    if (op.slot.startMinute + op.slot.durationMinutes > 1440) {
+      return err({ code: 'schedule_overflow', message: "A session can't run past midnight" });
+    }
     return ok({ plan: { ...plan, schedule: [...plan.schedule, op.slot] }, notes: [] });
-  if (!plan.schedule.some((s) => s.id === op.id))
-    return err({ code: 'slot_not_found', message: `Slot ${op.id} not found` });
+  }
+  const existing = plan.schedule.find((s) => s.id === op.id);
+  if (!existing) return err({ code: 'slot_not_found', message: `Slot ${op.id} not found` });
 
-  const schedule =
-    op.type === 'update_slot'
-      ? plan.schedule.map((s) => (s.id === op.id ? { ...s, ...op.changes } : s))
-      : plan.schedule.filter((s) => s.id !== op.id);
+  if (op.type === 'update_slot') {
+    const start = op.changes.startMinute ?? existing.startMinute;
+    const dur = op.changes.durationMinutes ?? existing.durationMinutes;
+    if (start + dur > 1440) {
+      return err({ code: 'schedule_overflow', message: "A session can't run past midnight" });
+    }
+    const schedule = plan.schedule.map((s) => (s.id === op.id ? { ...s, ...op.changes } : s));
+    return ok({ plan: { ...plan, schedule }, notes: [] });
+  }
 
+  const schedule = plan.schedule.filter((s) => s.id !== op.id);
   return ok({ plan: { ...plan, schedule }, notes: [] });
 }
 
@@ -169,7 +176,27 @@ function handleMetaOps(plan: EventPlan, op: MetaPatchOp): OpResult {
   return ok({ plan: { ...workingPlan, meta: { ...workingPlan.meta, ...op.changes } }, notes: accumulatedNotes });
 }
 
+function handleTaskOps(plan: EventPlan, op: PlanPatchOp): OpResult | null {
+  if (op.type === 'add_task') {
+    return ok({ plan: { ...plan, tasks: [...plan.tasks, op.task] }, notes: [] });
+  }
+  if (op.type === 'update_task' || op.type === 'remove_task') {
+    if (!plan.tasks.some((t) => t.id === op.id)) {
+      return err({ code: 'task_not_found', message: `Task ${op.id} not found` });
+    }
+    const tasks =
+      op.type === 'update_task'
+        ? plan.tasks.map((t) => (t.id === op.id ? { ...t, ...op.changes } : t))
+        : plan.tasks.filter((t) => t.id !== op.id);
+    return ok({ plan: { ...plan, tasks }, notes: [] });
+  }
+  return null;
+}
+
 function handleMiscOps(plan: EventPlan, op: PlanPatchOp): OpResult {
+  const taskRes = handleTaskOps(plan, op);
+  if (taskRes) return taskRes;
+
   if (op.type === 'select_concept') {
     if (op.conceptId !== null && !plan.concepts.some((c) => c.id === op.conceptId)) {
       return err({
@@ -179,26 +206,18 @@ function handleMiscOps(plan: EventPlan, op: PlanPatchOp): OpResult {
     }
     return ok({ plan: { ...plan, selectedConceptId: op.conceptId }, notes: [] });
   }
-  if (op.type === 'add_constraint')
+  if (op.type === 'add_constraint') {
     return ok({
       plan: { ...plan, constraints: [...plan.constraints, op.constraint] },
       notes: [],
     });
-  if (op.type === 'remove_constraint')
+  }
+  if (op.type === 'remove_constraint') {
     return ok({
       plan: { ...plan, constraints: plan.constraints.filter((c) => c.id !== op.id) },
       notes: [],
     });
-  if (op.type === 'add_task')
-    return ok({ plan: { ...plan, tasks: [...plan.tasks, op.task] }, notes: [] });
-  if (op.type === 'update_task')
-    return ok({
-      plan: {
-        ...plan,
-        tasks: plan.tasks.map((t) => (t.id === op.id ? { ...t, ...op.changes } : t)),
-      },
-      notes: [],
-    });
+  }
   return ok({ plan, notes: [] });
 }
 

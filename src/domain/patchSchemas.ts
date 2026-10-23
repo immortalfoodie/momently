@@ -81,6 +81,10 @@ export const planPatchOpSchema = z.discriminatedUnion('type', [
     changes: taskSchema.omit({ id: true }).partial(),
   }),
   z.object({
+    type: z.literal('remove_task'),
+    id: z.string().min(1),
+  }),
+  z.object({
     type: z.literal('set_meta'),
     changes: eventMetaSchema.partial(),
   }),
