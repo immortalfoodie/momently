@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
 import { useAnnouncer } from '@/components/ui/LiveRegion';
 import { Select } from '@/components/ui/Select';
+import { useCopyText } from '@/components/ui/useCopyText';
 import { buildVendorBrief } from '@/lib/vendorBrief';
 import { BriefFallbackDialog } from './BriefFallbackDialog';
 import { QuoteComparison } from './QuoteComparison';
@@ -29,11 +30,10 @@ const STATUS_OPTIONS: { value: VendorNeedStatus; label: string }[] = [
 export function VendorNeedCard({ plan, need, eventId, className = '' }: VendorNeedCardProps) {
   const { announce } = useAnnouncer();
   const { applyEdit } = useUserEdit(eventId);
+  const { copyText, fallbackOpen, fallbackText, closeFallback } = useCopyText();
 
   const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
   const [editingQuote, setEditingQuote] = useState<VendorQuote | null>(null);
-  const [fallbackDialogOpen, setFallbackDialogOpen] = useState(false);
-  const [briefText, setBriefText] = useState('');
 
   const categoryTitle = need.category.charAt(0).toUpperCase() + need.category.slice(1);
 
@@ -51,18 +51,10 @@ export function VendorNeedCard({ plan, need, eventId, className = '' }: VendorNe
 
   const handleCopyBrief = async () => {
     const brief = buildVendorBrief(plan, need);
-    setBriefText(brief);
-
-    try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(brief);
-        announce(`Inquiry brief for ${categoryTitle} copied to clipboard.`);
-      } else {
-        setFallbackDialogOpen(true);
-      }
-    } catch {
-      setFallbackDialogOpen(true);
-    }
+    await copyText(brief, {
+      announceText: `Inquiry brief for ${categoryTitle} copied to clipboard.`,
+      title: 'Vendor inquiry brief',
+    });
   };
 
   const handleSaveQuote = async (quote: VendorQuote): Promise<boolean> => {
@@ -201,11 +193,11 @@ export function VendorNeedCard({ plan, need, eventId, className = '' }: VendorNe
       )}
 
       {/* Brief Fallback Dialog */}
-      {fallbackDialogOpen && (
+      {fallbackOpen && (
         <BriefFallbackDialog
-          open={fallbackDialogOpen}
-          onClose={() => setFallbackDialogOpen(false)}
-          brief={briefText}
+          open={fallbackOpen}
+          onClose={closeFallback}
+          brief={fallbackText}
         />
       )}
     </section>

@@ -14,7 +14,8 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { engineContext } from './engineContext';
 import type { EventRecord } from './persistSchema';
 import { safeStorage } from './safeStorage';
-import { enforceSizeGuard, runHydrateValidation } from './storeValidation';
+import { applyImportEvents, enforceSizeGuard, runHydrateValidation } from './storeValidation';
+import { useTourStore } from './tourStore';
 
 export interface StoreError {
   code: 'not_found' | 'stale_plan' | 'version_not_found';
@@ -45,6 +46,8 @@ export interface EventsState {
   setOutcome: (messageId: string, outcome: AssistantOutcome) => void;
   setChatDraft: (draft: string) => void;
   dismissNotice: () => void;
+  importEvents: (records: readonly EventRecord[]) => { imported: number; skipped: number };
+  deleteAllData: () => void;
 }
 
 export const useEventsStore = create<EventsState>()(
@@ -181,6 +184,28 @@ export const useEventsStore = create<EventsState>()(
       setOutcome: (messageId, outcome) => set({ outcomes: { ...get().outcomes, [messageId]: outcome } }),
       setChatDraft: (draft) => set({ chatDraft: draft }),
       dismissNotice: () => set({ notice: null }),
+
+      importEvents: (records) => {
+        const res = applyImportEvents(get().events, get().order, records, engineContext.ids);
+        set({ events: res.events, order: res.order });
+        return { imported: res.imported, skipped: res.skipped };
+      },
+
+      deleteAllData: () => {
+        try {
+          useTourStore.getState().exit();
+          set({
+            events: {},
+            order: [],
+            outcomes: {},
+            chatDraft: '',
+            notice: null,
+          });
+          safeStorage.removeItem('momently.v1');
+        } catch {
+          // Never throw
+        }
+      },
     }),
     {
       name: 'momently.v1',

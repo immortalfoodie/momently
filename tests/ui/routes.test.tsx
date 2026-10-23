@@ -19,6 +19,8 @@ import GuestsPage from '@/app/events/[id]/guests/page';
 import VendorsPage from '@/app/events/[id]/vendors/page';
 import ChaosLabPage from '@/app/events/[id]/chaos/page';
 import DayOfPage from '@/app/events/[id]/day-of/page';
+import EventKitPage from '@/app/events/[id]/kit/page';
+import PrintablePlanPage from '@/app/events/[id]/kit/plan/page';
 import NotFound from '@/app/not-found';
 import Loading from '@/app/loading';
 import ErrorBoundary from '@/app/error';
@@ -38,6 +40,8 @@ describe('Route Skeletons Heading & Accessibility Audit', () => {
     { name: 'Vendors', Component: VendorsPage },
     { name: 'Chaos Lab', Component: ChaosLabPage },
     { name: 'Event Day', Component: DayOfPage },
+    { name: 'Event Kit', Component: EventKitPage },
+    { name: 'Printable Plan', Component: PrintablePlanPage },
     { name: 'Not Found', Component: NotFound },
     { name: 'Loading Skeleton', Component: Loading },
   ];

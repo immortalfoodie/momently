@@ -22,6 +22,7 @@ const GLOBAL_NAV_ITEMS: NavItem[] = [
   { label: 'Home', href: '/', icon: 'home' },
   { label: 'New Event', href: '/new', icon: 'plus' },
   { label: 'My Events', href: '/events', icon: 'calendar' },
+  { label: 'Settings', href: '/settings', icon: 'settings' },
 ];
 
 function getEventNavItems(eventId: string): NavItem[] {
@@ -35,6 +36,7 @@ function getEventNavItems(eventId: string): NavItem[] {
     { label: 'Vendors', href: `/events/${eventId}/vendors`, icon: 'store' },
     { label: 'Chaos Lab', href: `/events/${eventId}/chaos`, icon: 'storm' },
     { label: 'Event Day', href: `/events/${eventId}/day-of`, icon: 'calendar' },
+    { label: 'Event kit', href: `/events/${eventId}/kit`, icon: 'download' },
   ];
 }
 

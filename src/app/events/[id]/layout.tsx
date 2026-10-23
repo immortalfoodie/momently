@@ -29,9 +29,18 @@ function EventSubnav({ eventId }: { eventId: string }) {
     { href: `/events/${eventId}/vendors`, label: 'Vendors', isActive: pathname === `/events/${eventId}/vendors` },
     { href: `/events/${eventId}/chaos`, label: 'Chaos Lab', isActive: pathname === `/events/${eventId}/chaos` },
     { href: `/events/${eventId}/day-of`, label: 'Event Day', isActive: pathname === `/events/${eventId}/day-of` },
+    {
+      href: `/events/${eventId}/kit`,
+      label: 'Event kit',
+      isActive: pathname === `/events/${eventId}/kit` || pathname.startsWith(`/events/${eventId}/kit/`),
+    },
   ];
 
-  return <LinkTabs items={tabItems} aria-label="Event workspace sections" />;
+  return (
+    <div data-print-hide="true">
+      <LinkTabs items={tabItems} aria-label="Event workspace sections" />
+    </div>
+  );
 }
 
 /**
@@ -82,7 +91,9 @@ export default function EventLayout({ children }: EventLayoutProps) {
         <Suspense fallback={<div className="h-11 border-b border-[#E6DCD2]" />}>
           <EventSubnav eventId={id} />
         </Suspense>
-        <PlanHealthStrip eventId={id} />
+        <div data-print-hide="true">
+          <PlanHealthStrip eventId={id} />
+        </div>
         <div>{children}</div>
       </div>
     </EventContextProvider>

@@ -551,5 +551,37 @@ When a host selects a quote, `quoteToBudgetOps` (`src/engine/quoteToBudget.ts`) 
 - **Provenance Integrity**: If the host checks *"This is a confirmed written quote"*, the budget item provenance is marked as `'verified'`. Otherwise, it is marked as `'user'`.
 - **Hard Cap Interception**: Applying a quote routes through `useUserEdit`. If the quote pushes the overall plan beyond a hard budget cap, the mutation is blocked and converted into an approvable funding rebalance option.
 
+## 21. Event Kit and Data Portability
+
+Momently's Event Kit (`/events/[id]/kit`, `/events/[id]/kit/plan`, `src/lib/export/`) and Settings data portability tools (`/settings`, `src/components/settings/`) allow hosts to export, print, back up, restore, and delete their plans with zero network dependency.
+
+### Local-Only Deterministic Generation
+Every export artifact—budget CSV, checklist CSV, `.ics` calendar file, vendor inquiry briefs, guest invitation copy, catering order quantities, printable plan document, and JSON backup—is generated 100% locally in the browser from the active `EventPlan` state:
+- **Zero Network & Zero AI**: No export button makes a server request or invokes an LLM. Invitation wording (`src/lib/export/invitation.ts`) and order quantities (`src/lib/export/orderQuantities.ts`) use deterministic templates and pure math.
+- **Sovereign Sharing**: Nothing leaves the device unless the host explicitly downloads a file (`downloadText`) or copies text to their clipboard (`useCopyText` with `CopyFallbackDialog`).
+
+### CSV Formula-Injection Defence
+Spreadsheet applications (Excel, Google Sheets, LibreOffice Calc) evaluate cells beginning with `=`, `+`, `-`, `@`, Tab (`\t`), or Carriage Return (`\r`)—even after leading spaces—as active formulas or Dynamic Data Exchange (DDE) payloads:
+- **String Cell Neutralization (`neutralizeFormula`)**: Before RFC 4180 quoting (`src/lib/export/csv.ts`), any string cell whose first non-whitespace character is `=`, `+`, `-`, or `@`, or that starts with `\t` or `\r` (including after leading spaces), is prefixed with a single quote (`'`).
+- **Raw Integer Numbers**: Numeric cells (`number`) are written directly as plain integers without currency symbols or neutralization so spreadsheets can sum `budgetCsv` totals directly.
+- **UTF-8 BOM Support**: CSV downloads prepend `\uFEFF` so Excel decodes the Indian Rupee symbol (`₹`) and Indic scripts (`देवनागरी`) without mojibake.
+
+### ICS Floating Local Times & UTF-8 Octet Folding
+The calendar builder (`src/lib/export/ics.ts`) generates RFC 5545 compliant `VCALENDAR` files:
+- **Why Floating Local Time**: `DTSTART` and `DTEND` are formatted as `YYYYMMDDTHHMMSS` without a trailing `Z` or `TZID` parameter. Celebration run-of-show slots (e.g. a 7:00 PM dinner) represent wall-clock times at the event venue; floating time ensures the session appears at 7:00 PM in the host's calendar app regardless of which timezone their device is in when they import the `.ics` file.
+- **UTF-8 Aware 75-Octet Line Folding**: Per RFC 5545 Section 3.1, lines exceeding 75 UTF-8 bytes are folded with CRLF followed by a single space (`\r\n `). `foldIcsLine` iterates by full Unicode code points (`for (const char of line)`) and measures byte length via `TextEncoder`, guaranteeing multi-byte UTF-8 sequences (`₹`, Devanagari, emoji) are never split mid-character.
+
+### What the Printable Plan Omits on Purpose
+The printable plan (`src/lib/export/planDocument.ts`, `/events/[id]/kit/plan`) is designed to be shared with family members and on-site coordinators:
+- **Deliberate Omissions**: It strictly excludes `EventRecord.contacts` (private phone numbers), `plan.meta.hostBrief` (raw personal intake notes), and candidate vendor names or commercial quotes (`VendorNeed.quotes`, showing only category and booking status).
+- **Explicit Provenance & Disclaimers**: Every budget line displays its source as plain text (`Your input`, `Estimate`, `Verified quote`) alongside the fixed disclaimer: *"Prices are estimates unless marked Your input or Verified quote. They are not vendor quotes."*
+
+### Backup Validation, Re-ID on Import, and Complete Deletion
+Settings (`/settings`) provides full local data lifecycle controls via `src/lib/export/backup.ts` and `useEventsStore`:
+- **Strict Validation & Prototype-Pollution Defence (`parseBackup`)**: Rejects payloads over 2,000,000 characters, verifies `format: "momently-backup"` and `version: 1`, and validates each event individually with `eventRecordSchema.safeParse` (which strips unknown keys and neutralizes `__proto__` keys). Malformed records are skipped and counted rather than failing the entire import, capped at 20 events per backup file.
+- **Collision-Free Re-ID (`prepareImport` & `importEvents`)**: Every imported plan (and its version history snapshots) is assigned a fresh ID via the ID factory (`ids('evt')`), and ephemeral chat messages are dropped (`messages: []`). Importing a backup never overwrites an existing event in the browser, and respects a total store cap of 50 events.
+- **Complete Local Deletion (`deleteAllData`)**: Clears `events`, `order`, `outcomes`, `chatDraft`, resets `useTourStore`, and removes the `momently.v1` key from `safeStorage`.
+
+
 
 

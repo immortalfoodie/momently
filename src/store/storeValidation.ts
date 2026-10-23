@@ -1,8 +1,58 @@
+import { prepareImport } from '@/lib/export/backup';
+import type { IdFactory } from '@/lib/id';
 import type { EventRecord } from './persistSchema';
 import { eventRecordSchema } from './persistSchema';
 import { safeStorage } from './safeStorage';
 
 const MAX_SERIALIZED_CHARS = 2_500_000;
+export const MAX_STORED_EVENTS = 50;
+
+export function applyImportEvents(
+  currentEvents: Record<string, EventRecord>,
+  currentOrder: string[],
+  records: readonly EventRecord[],
+  ids: IdFactory,
+): {
+  events: Record<string, EventRecord>;
+  order: string[];
+  imported: number;
+  skipped: number;
+} {
+  try {
+    const prepared = prepareImport(records, ids);
+    const available = Math.max(0, MAX_STORED_EVENTS - currentOrder.length);
+    const accepted = prepared.slice(0, available);
+    const skipped = Math.max(0, records.length - accepted.length);
+
+    if (accepted.length === 0) {
+      return { events: currentEvents, order: currentOrder, imported: 0, skipped };
+    }
+
+    const nextEvents: Record<string, EventRecord> = { ...currentEvents };
+    const nextOrder: string[] = [...currentOrder];
+
+    for (const rec of accepted) {
+      nextEvents[rec.plan.id] = rec;
+      if (!nextOrder.includes(rec.plan.id)) {
+        nextOrder.push(rec.plan.id);
+      }
+    }
+
+    return {
+      events: enforceSizeGuard(nextEvents, nextOrder),
+      order: nextOrder,
+      imported: accepted.length,
+      skipped,
+    };
+  } catch {
+    return {
+      events: currentEvents,
+      order: currentOrder,
+      imported: 0,
+      skipped: records.length,
+    };
+  }
+}
 
 export function enforceSizeGuard(
   events: Record<string, EventRecord>,
