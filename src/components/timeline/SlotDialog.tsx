@@ -12,6 +12,8 @@ import { Select } from '@/components/ui/Select';
 import { TextInput } from '@/components/ui/TextInput';
 import { engineContext } from '@/store/engineContext';
 
+import { minuteToTimeInput, parseTimeInput } from '@/lib/time';
+
 export interface SlotDialogProps {
   open: boolean;
   onClose: () => void;
@@ -19,13 +21,8 @@ export interface SlotDialogProps {
   eventId: string;
 }
 
-function minuteToTime(min: number): string {
-  return `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
-}
-
 function timeToMinute(timeStr: string): number {
-  const [h = 0, m = 0] = timeStr.split(':').map(Number);
-  return h * 60 + m;
+  return parseTimeInput(timeStr) ?? 0;
 }
 
 function validateSlotInput(
@@ -72,7 +69,7 @@ function initialSlotValues(slot: ScheduleSlot | null | undefined) {
   if (slot) {
     return {
       title: slot.title,
-      timeStr: minuteToTime(slot.startMinute),
+      timeStr: minuteToTimeInput(slot.startMinute),
       duration: slot.durationMinutes,
       priority: slot.priority,
       flexible: slot.flexible,

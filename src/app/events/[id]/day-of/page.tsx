@@ -1,25 +1,25 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { Icon } from '@/components/ui/Icon';
-import { PageHeader } from '@/components/ui/PageHeader';
+import { DayOfClient } from '@/components/eventday/DayOfClient';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export const metadata: Metadata = {
   title: 'Event Day',
+  description: 'Calm, phone-first coordinator showing active sessions, urgency milestones, and recovery options.',
 };
 
 export default function DayOfPage() {
   return (
-    <div className="py-2">
-      <PageHeader
-        title="Event Day Run-Sheet"
-        description="High-contrast execution kit for hosts and on-site coordinators, optimized for mobile screens and print."
-      />
-
-      <EmptyState
-        icon={<Icon name="calendar" size={28} aria-hidden="true" />}
-        title="Live Day-Of Studio"
-        description="Active timeline tracking, vendor emergency contacts, printable event run-sheets, and quick delay adjustments."
-      />
-    </div>
+    <Suspense
+      fallback={
+        <div className="py-2 space-y-6">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      }
+    >
+      <DayOfClient />
+    </Suspense>
   );
 }

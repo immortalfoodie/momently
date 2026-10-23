@@ -17,6 +17,8 @@ export interface DelayPlannerProps {
   plan: EventPlan;
   eventId?: string;
   className?: string;
+  defaultAnchorSlotId?: string;
+  defaultDelayMinutes?: number;
 }
 
 const DELAY_MINUTES_OPTIONS = [15, 30, 45, 60, 90, 120, 180];
@@ -36,17 +38,23 @@ function getRecommendedIndex(options: RecoveryOption[] | null): number {
   return feasibleIndex !== -1 ? feasibleIndex : 0;
 }
 
-export function DelayPlanner({ plan, eventId, className = '' }: DelayPlannerProps) {
+export function DelayPlanner({
+  plan,
+  eventId,
+  className = '',
+  defaultAnchorSlotId,
+  defaultDelayMinutes,
+}: DelayPlannerProps) {
   const targetEventId = eventId ?? plan.id;
   const sortedSlots = [...plan.schedule].sort((a, b) => a.startMinute - b.startMinute);
-  const defaultAnchorId = sortedSlots[0]?.id ?? '';
+  const fallbackAnchorId = defaultAnchorSlotId ?? sortedSlots[0]?.id ?? '';
 
-  const [anchorSlotId, setAnchorSlotId] = useState<string>(defaultAnchorId);
-  const [delayMinutes, setDelayMinutes] = useState<number>(60);
+  const [anchorSlotId, setAnchorSlotId] = useState<string>(fallbackAnchorId);
+  const [delayMinutes, setDelayMinutes] = useState<number>(defaultDelayMinutes ?? 60);
   const [options, setOptions] = useState<RecoveryOption[] | null>(null);
 
   const handleShowOptions = () => {
-    const targetAnchor = anchorSlotId || defaultAnchorId;
+    const targetAnchor = anchorSlotId || fallbackAnchorId;
     if (!anchorSlotId && targetAnchor) {
       setAnchorSlotId(targetAnchor);
     }
@@ -73,7 +81,7 @@ export function DelayPlanner({ plan, eventId, className = '' }: DelayPlannerProp
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="Which activity is late or delayed?">
           <Select
-            value={anchorSlotId || defaultAnchorId}
+            value={anchorSlotId}
             onChange={(e) => setAnchorSlotId(e.target.value)}
             aria-label="Which activity is late or delayed?"
           >

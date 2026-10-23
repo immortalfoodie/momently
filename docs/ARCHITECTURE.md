@@ -502,3 +502,31 @@ On the day of the event, hosts and coordinators need high-contrast, physical run
 - **Print Stylesheet Integration**: The `@media print` rules hide navigational chrome, side docks, and adjustment controls (`[data-print-hide]`, `.no-print`).
 - **Clean Run-of-Show Layout**: Renders an exclusive print-only header with the event title and celebration date, followed by the complete chronological milestone sequence with start and end times, priority indicators, and host notes.
 
+## 19. Event-Day Mode
+
+Momently's Event-Day Mode (`/events/[id]/day-of`, `src/components/eventday/`, `src/engine/eventDay.ts`, `src/lib/time.ts`) acts as a calm, phone-first coordinator on celebration day. It displays what is happening now and up next, open checklist action items, quick emergency contacts, and real-time contingency options.
+
+### Live Versus Practice Mode (Why Practice Exists)
+Event coordinators and hosts cannot wait until the live celebration begins to verify their timeline pacing:
+- **Practice Mode**: Available at any time during planning. Hosts can simulate any minute of the day using standard time inputs or `-15 min` / `+15 min` nudge buttons. Practice mode defaults to 30 minutes before the first scheduled session (`max(0, firstStart - 30)`), allowing coordinators to walk through door opening, session transitions, and wrap-up states prior to the event.
+- **Live Mode**: Unlocked exclusively on the actual calendar day of the celebration (`isEventToday(plan, clock)` in local time). Live mode ticks every 30 seconds via pure clock injection, tracking active sessions, minutes remaining, and upcoming transitions in real time.
+- **Polite Screen Reader Announcements**: To avoid auditory chatter, announcements trigger strictly when the active or upcoming activity changes (e.g. `"Now: Dinner. Next: Speeches at 8:30 PM"`), never on periodic clock ticks.
+
+### Contacts Privacy by Construction
+On-site coordinators need fast access to personal phone numbers for caterers, venue managers, photographers, and family members. Momently enforces strict privacy by construction:
+- **Storage Isolation**: Contacts (`src/domain/contactSchemas.ts`) are stored in `EventRecord.contacts` on the client. They are strictly **omitted from `eventPlanSchema`**.
+- **Zero Server or LLM Exposure**: Because contacts live outside the `EventPlan` entity, neither `slimPlanForRequest` nor `apiClient` payloads (`sendMessage`, `requestConcepts`) can ever access or serialize contact records. Similarly, `summarizePlanForLlm(plan)` never accesses contacts.
+- **Reference Data (No Version Bump)**: Contact actions (`addContact`, `updateContact`, `removeContact`) update client-side reference records without incrementing `plan.version` or recording ledger entries, ensuring zero interference with concurrently active plan proposals.
+
+### The Suggest-Never-Act Rule
+In high-stress celebration moments, automated AI actions create panic. Momently strictly adheres to the principle of sovereign host control:
+- **No Autonomous Outreach**: Momently provides direct `tel:` links and convenient clipboard copying for phone numbers, but never sends automated texts or emails to vendors or guests.
+- **No Involuntary Plan Adjustments**: When sessions run late, the integrated `DelayPlanner` formulates concrete recovery options, but no changes are applied until the host explicitly clicks to approve. Every contingency screen prominently displays: *"Momently suggests; you decide. It never contacts vendors or guests: you do that yourself."*
+
+### Screen Wake Lock (Progressive Enhancement)
+Event hosts frequently check the run of show while walking across venues:
+- **Feature Detection**: The `KeepScreenOn` component checks for `'wakeLock' in navigator`. Unsupported browsers render nothing, degrading gracefully.
+- **Lifecycle Management**: Acquires a screen sentinel when toggled, safely re-requests the lock when returning from background visibility (`visibilitychange`), and automatically releases the sentinel on unmount or toggle off.
+- **Non-Throwing Resilience**: Rejections due to system battery-saver mode or browser security policies display an inline status warning and never throw or crash the UI.
+
+

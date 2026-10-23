@@ -1,3 +1,4 @@
+import { contactSchema, type Contact } from '@/domain/contactSchemas';
 import { eventPlanSchema } from '@/domain/schemas';
 import type { EventPlan } from '@/domain/types';
 import type { PlanSnapshot } from '@/engine/history';
@@ -31,6 +32,7 @@ export const eventRecordSchema = z.object({
   messages: z.array(chatMessageSchema).max(60).default([]),
   assumptions: z.array(z.string()).max(10).default([]),
   missingInfo: z.array(missingInfoItemSchema).max(4).default([]),
+  contacts: z.array(contactSchema).max(30).default([]),
 });
 
 export interface EventRecord {
@@ -39,6 +41,7 @@ export interface EventRecord {
   messages: ChatMessage[];
   assumptions: string[];
   missingInfo: MissingInfoItem[];
+  contacts: Contact[];
 }
 
 export const persistedStateSchema = z.object({

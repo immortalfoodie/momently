@@ -1,3 +1,4 @@
+import type { Contact } from '@/domain/contactSchemas';
 import type { Concept, EventPlan, PlanImpact, PlanPatch, PlanPatchOp } from '@/domain/types';
 import type { AssistantOutcome } from '@/engine/assistant/types';
 import { buildDemoPlan } from '@/engine/demo';
@@ -12,47 +13,12 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { engineContext } from './engineContext';
 import type { EventRecord } from './persistSchema';
-import { eventRecordSchema } from './persistSchema';
 import { safeStorage } from './safeStorage';
+import { enforceSizeGuard, runHydrateValidation } from './storeValidation';
 
 export interface StoreError {
   code: 'not_found' | 'stale_plan' | 'version_not_found';
   message: string;
-}
-
-const MAX_SERIALIZED_CHARS = 2_500_000;
-
-function enforceSizeGuard(
-  events: Record<string, EventRecord>,
-  order: string[],
-): Record<string, EventRecord> {
-  let serialized = JSON.stringify({ state: { events, order }, version: 1 });
-  if (serialized.length <= MAX_SERIALIZED_CHARS) return events;
-
-  const updated: Record<string, EventRecord> = {};
-  for (const [id, rec] of Object.entries(events)) updated[id] = { ...rec, history: [...rec.history] };
-
-  while (serialized.length > MAX_SERIALIZED_CHARS) {
-    let oldestEventId: string | null = null;
-    let oldestTimestamp = Infinity;
-
-    for (const [id, rec] of Object.entries(updated)) {
-      const snap = rec.history[0];
-      if (snap) {
-        const time = new Date(snap.savedAt).getTime();
-        if (time < oldestTimestamp) {
-          oldestTimestamp = time;
-          oldestEventId = id;
-        }
-      }
-    }
-
-    if (!oldestEventId) break;
-    updated[oldestEventId]?.history.shift();
-    serialized = JSON.stringify({ state: { events: updated, order }, version: 1 });
-  }
-
-  return updated;
 }
 
 export interface EventsState {
@@ -70,56 +36,15 @@ export interface EventsState {
   restoreVersion: (eventId: string, version: number) => Result<EventPlan, StoreError>;
   setConcepts: (eventId: string, concepts: Concept[]) => void;
   setTaskStatus: (eventId: string, taskId: string, status: 'todo' | 'doing' | 'done') => Result<EventPlan, StoreError | PatchError>;
+  addContact: (eventId: string, contact: Contact) => void;
+  updateContact: (eventId: string, contactId: string, changes: Partial<Omit<Contact, 'id'>>) => void;
+  removeContact: (eventId: string, contactId: string) => void;
   deleteEvent: (id: string) => void;
   addMessage: (eventId: string, message: { role: 'user' | 'assistant'; text: string; outcomeKind?: string; basedOnVersion?: number }) => void;
   clearMessages: (eventId: string) => void;
   setOutcome: (messageId: string, outcome: AssistantOutcome) => void;
   setChatDraft: (draft: string) => void;
   dismissNotice: () => void;
-}
-
-// eslint-disable-next-line complexity
-function runHydrateValidation(set: (fn: (state: EventsState) => Partial<EventsState>) => void) {
-  try {
-    const raw = safeStorage.getItem('momently.v1');
-    if (!raw || typeof raw !== 'string') {
-      set(() => ({ hydrated: true }));
-      return;
-    }
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      set(() => ({ events: {}, order: [], hydrated: true, notice: "Saved events couldn't be loaded: corrupted storage format" }));
-      return;
-    }
-    const stateObj = typeof parsed === 'object' && parsed !== null && 'state' in parsed ? (parsed as { state: unknown }).state : parsed;
-    if (typeof stateObj !== 'object' || stateObj === null) {
-      set(() => ({ hydrated: true }));
-      return;
-    }
-    const rawEvents = (stateObj as { events?: Record<string, unknown> }).events ?? {};
-    const rawOrder = (stateObj as { order?: unknown[] }).order ?? [];
-    const validEvents: Record<string, EventRecord> = {};
-    let invalidCount = 0;
-
-    for (const [id, data] of Object.entries(rawEvents)) {
-      const res = eventRecordSchema.safeParse(data);
-      if (res.success) {
-        validEvents[id] = res.data;
-      } else {
-        invalidCount++;
-      }
-    }
-    const validOrder = (Array.isArray(rawOrder) ? rawOrder : []).filter((id): id is string => typeof id === 'string' && Boolean(validEvents[id]));
-    for (const id of Object.keys(validEvents)) {
-      if (!validOrder.includes(id)) validOrder.push(id);
-    }
-    const notice = invalidCount > 0 ? `${invalidCount} saved event(s) couldn't be loaded` : null;
-    set(() => ({ events: validEvents, order: validOrder, hydrated: true, ...(notice ? { notice } : {}) }));
-  } catch {
-    set(() => ({ hydrated: true }));
-  }
 }
 
 export const useEventsStore = create<EventsState>()(
@@ -141,6 +66,7 @@ export const useEventsStore = create<EventsState>()(
           messages: [],
           assumptions: (extras?.assumptions ?? []).slice(0, 10),
           missingInfo: (extras?.missingInfo ?? []).slice(0, 4),
+          contacts: [],
         };
         const nextEvents = { ...get().events, [plan.id]: record };
         const nextOrder = [plan.id, ...get().order.filter((id) => id !== plan.id)];
@@ -208,6 +134,28 @@ export const useEventsStore = create<EventsState>()(
         const nextOrder = [eventId, ...get().order.filter((id) => id !== eventId)];
         set({ events: enforceSizeGuard(updatedEvents, nextOrder), order: nextOrder });
         return ok(res.value);
+      },
+
+      addContact: (eventId, contact) => {
+        const event = get().events[eventId];
+        if (!event) return;
+        const newContact: Contact = { ...contact, id: contact.id || engineContext.ids('contact') };
+        const nextContacts = [...(event.contacts ?? []), newContact].slice(0, 30);
+        set({ events: { ...get().events, [eventId]: { ...event, contacts: nextContacts } } });
+      },
+
+      updateContact: (eventId, contactId, changes) => {
+        const event = get().events[eventId];
+        if (!event || !event.contacts) return;
+        const nextContacts = event.contacts.map((c) => (c.id === contactId ? { ...c, ...changes } : c));
+        set({ events: { ...get().events, [eventId]: { ...event, contacts: nextContacts } } });
+      },
+
+      removeContact: (eventId, contactId) => {
+        const event = get().events[eventId];
+        if (!event || !event.contacts) return;
+        const nextContacts = event.contacts.filter((c) => c.id !== contactId);
+        set({ events: { ...get().events, [eventId]: { ...event, contacts: nextContacts } } });
       },
 
       deleteEvent: (id) => {
