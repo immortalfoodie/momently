@@ -1,8 +1,8 @@
 import { resolveIntent } from '@/engine/assistant/resolveIntent';
 import type { AssistantOutcome } from '@/engine/assistant/types';
+import { buildChaosFacts } from '@/engine/chaos/facts';
 import { messageRequestSchema, type MessageResponse } from '@/lib/contracts';
 import { summarizePlanForLlm } from '@/llm/context';
-import type { FactValue } from '@/llm/schemas/narrate';
 import { MAX_BODY_BYTES_MESSAGE } from '../config';
 import type { Deps } from '../deps';
 import { runWithFallback } from '../fallback';
@@ -17,18 +17,7 @@ async function narrateChaosOutcome(
     return undefined;
   }
 
-  const facts: Record<string, FactValue> = {
-    headline: outcome.result.headline,
-    scoreBefore: outcome.result.scoreBefore,
-    optionsCount: outcome.result.options.length,
-  };
-
-  outcome.result.options.forEach((opt, idx) => {
-    facts[`option_${idx + 1}_label`] = opt.label;
-    facts[`option_${idx + 1}_cost`] = opt.impact.budgetTotalAfter;
-    facts[`option_${idx + 1}_diff`] =
-      opt.impact.budgetTotalAfter - opt.impact.budgetTotalBefore;
-  });
+  const facts = buildChaosFacts(outcome.result);
 
   try {
     const narrateFallback = await runWithFallback(deps, 'narrate', {

@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import type { EventPlan } from '@/domain/types';
 import type { AssistantOutcome } from '@/engine/assistant/types';
 import type { Conflict, ResolutionOption } from '@/engine/conflicts';
@@ -134,7 +135,18 @@ export function AssistantOutcomeView({
       {outcome.kind === 'chaos' && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <h3 className="text-base font-semibold text-[#2B1B2E]">{outcome.result.headline}</h3>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-base font-semibold text-[#2B1B2E]">{outcome.result.headline}</h3>
+              {eventId && (
+                <Link
+                  href={`/events/${eventId}/chaos?scenario=${outcome.result.input.type}`}
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B2D5C] hover:text-[#55224A] hover:underline"
+                >
+                  <span>Open in Chaos Lab</span>
+                  <span aria-hidden="true">&rarr;</span>
+                </Link>
+              )}
+            </div>
             <p className="text-xs text-[#5C4556]">{outcome.result.summary}</p>
           </div>
           {narrationText && (

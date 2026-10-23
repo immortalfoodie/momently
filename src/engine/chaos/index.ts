@@ -11,10 +11,15 @@ import type { RecoveryOption, ScenarioResult } from './types';
 import { simulateVendorCancels } from './vendorCancels';
 
 export * from './budgetCut';
+export * from './defaults';
+export * from './facts';
 export * from './guestSurge';
 export * from './itemUnavailable';
 export * from './lateStart';
+export * from './option';
+export * from './optionPreview';
 export * from './rain';
+export * from './stressTest';
 export * from './types';
 export * from './vendorCancels';
 

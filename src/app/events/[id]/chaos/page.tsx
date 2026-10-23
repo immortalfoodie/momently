@@ -1,25 +1,28 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { Icon } from '@/components/ui/Icon';
-import { PageHeader } from '@/components/ui/PageHeader';
+import { ChaosLabClient } from '@/components/chaos/ChaosLabClient';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export const metadata: Metadata = {
   title: 'Chaos Lab',
+  description: 'Stress-test your celebration before reality does.',
 };
 
+/**
+ * Chaos Lab route presenting the complete disruption simulation laboratory.
+ */
 export default function ChaosLabPage() {
   return (
-    <div className="py-2">
-      <PageHeader
-        title="Chaos Simulation Lab"
-        description="Stress-test your event against realistic disruptions: weather shocks, budget cuts, vendor dropouts, and delays."
-      />
-
-      <EmptyState
-        icon={<Icon name="storm" size={28} aria-hidden="true" />}
-        title="Contingency Stress-Testing"
-        description="Run simulated disruption scenarios to preview impact scores, cost deltas, and approvable recovery options."
-      />
-    </div>
+    <Suspense
+      fallback={
+        <div className="py-4 space-y-6">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-44 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      }
+    >
+      <ChaosLabClient />
+    </Suspense>
   );
 }

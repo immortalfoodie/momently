@@ -10,7 +10,7 @@ import { formatInr } from '@/lib/format';
 import { buildOption } from './option';
 import type { RecoveryOption, ScenarioResult } from './types';
 
-export const BACKUP_VENUE_HOLD_PERCENT = 25;
+export const BACKUP_VENUE_HOLD_PERCENT = 20;
 
 function determineTypicalQuality(plan: EventPlan): QualityLevel {
   const counts: Record<QualityLevel, number> = { essential: 0, standard: 0, premium: 0 };
@@ -101,13 +101,13 @@ export function simulateRain(plan: EventPlan, ctx: EngineContext): ScenarioResul
     const holdItem: BudgetItem = {
       id: ctx.ids('item'),
       category: 'venue',
-      label: 'Backup indoor hall hold (25%)',
+      label: 'Backup indoor hall hold (20%)',
       basis: 'flat',
       unitCost: holdCost,
       quantity: 1,
       provenance: 'estimate',
       locked: false,
-      note: 'Standby backup venue hold (25% of essential hall rate)',
+      note: 'Standby backup venue hold (20% of essential hall rate)',
     };
     const taskB = makeRainTask(ctx);
     const opsB: PlanPatchOp[] = [
@@ -120,7 +120,7 @@ export function simulateRain(plan: EventPlan, ctx: EngineContext): ScenarioResul
       {
         id: 'opt_rain_backup_hall',
         label: 'Backup indoor hall on standby',
-        tradeoff: `Reserve standby indoor hall hold for ${formatInr(holdCost)} (25% deposit)`,
+        tradeoff: `Reserve standby indoor hall hold for ${formatInr(holdCost)} (20% deposit)`,
         notes: [
           'Venue terms must be confirmed with property management before executing hold.',
           'Hold deposit guarantees indoor relocation if severe storm hits.',

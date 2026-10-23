@@ -22,6 +22,11 @@ export interface UseApproveOptionResult {
   resetErrors: () => void;
 }
 
+export type OnOptionAppliedCallback = (result: {
+  impact: PlanImpact;
+  newVersion: number;
+}) => void;
+
 /**
  * Hook providing a resilient, accessible execution pipeline for host option approvals.
  *
@@ -30,7 +35,10 @@ export interface UseApproveOptionResult {
  * protection. Emits assertive screen-reader announcements upon success, gracefully isolates
  * hard constraint violations without throwing, and surfaces plain-language conflict messages.
  */
-export function useApproveOption(eventId: string): UseApproveOptionResult {
+export function useApproveOption(
+  eventId: string,
+  onApplied?: OnOptionAppliedCallback,
+): UseApproveOptionResult {
   const { announce } = useAnnouncer();
   const event = useEventsStore((s) => s.events[eventId]);
   const approveAndApply = useEventsStore((s) => s.approveAndApply);
@@ -66,6 +74,7 @@ export function useApproveOption(eventId: string): UseApproveOptionResult {
           const budgetFormatted = formatInr(res.value.budgetTotalAfter);
           const nextVersion = currentVersion + 1;
           announce(`Change applied. Budget now ${budgetFormatted}. Plan version ${nextVersion}.`);
+          onApplied?.({ impact: res.value, newVersion: nextVersion });
           return true;
         }
 
@@ -94,7 +103,7 @@ export function useApproveOption(eventId: string): UseApproveOptionResult {
         return false;
       }
     },
-    [eventId, currentVersion, approveAndApply, announce, resetErrors],
+    [eventId, currentVersion, approveAndApply, announce, resetErrors, onApplied],
   );
 
   return {

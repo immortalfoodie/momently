@@ -444,3 +444,33 @@ The 6-step guided tour (`DEMO_TOUR` in `src/data/demoTour.ts`, driven by the non
 - **`role="log"` with `aria-live="off"`**: Interactive outcome cards contain headings, comparison tables, radio groups, and buttons. Allowing `aria-live` on the scroll container to read entire outcome subtrees would flood screen readers with verbose markup. Instead, `MessageList` sets `aria-live="off"` and `ChatProvider` announces only the concise plain-text summary (`outcomeToText`) through the polite `LiveRegionProvider`.
 - **Visually Hidden Sender Labels**: Every message bubble prefixes a screen-reader-only label (`"You said:"` or `"Momently said:"`) so assistive technology users can distinguish turns without relying on visual alignment or bubble color.
 - **Keyboard & Focus Ergonomics**: `Enter` submits, `Shift+Enter` inserts a newline, the 500-character counter announces only at 80%/90%/100% thresholds, focus returns to the composer textarea after sending, and the mobile bottom-sheet `Drawer` traps focus and restores it to the floating trigger on `Escape`.
+
+---
+
+## 17. Chaos Simulation Lab
+
+Momently's Chaos Simulation Lab (`/events/[id]/chaos`, `src/components/chaos/`, `src/engine/chaos/`) enables hosts to stress-test their celebrations against real-world disruptions before reality does.
+
+### The Simulation Principle: Read-Only, Pure & Offline
+Every chaos simulation executes locally in Momently's pure deterministic engine with zero network latency and complete offline capability:
+- **Zero Involuntary Mutations**: Running a simulation evaluates scenario impact against deep-frozen copies of the plan without altering active state or incrementing `plan.version`.
+- **Pure Calculation**: Baseline scenario parameters are computed via `defaultInputFor`, verified through `chaosScenarioInputSchema`, and evaluated purely via `simulateScenario`.
+- **No Hallucinations or Vendor Outreach**: Simulations rely strictly on empirical rate cards and local business rules. Momently never contacts vendors or invents prices.
+
+### The Recovery Proposal Principle: Host Approval Gate
+Disruptions produce structured `RecoveryOption` proposals with concrete trade-offs, line-item diffs (`previewOption`), and required approvals:
+- **Host Consent Required**: Simulating NEVER mutates the active plan; only host approval through `useApproveOption` and `store.approveAndApply` commits changes to the ledger.
+- **Budget Feasibility & Funding**: Recovery options that exceed the hard budget cap cannot be directly approved (`disabled` with clear rationale) and attach interactive `fundingOptions` from Budget Guardian.
+- **Staleness Isolation**: If the plan version advances while an outcome is displayed, proposal cards automatically dim as stale, preventing outdated patch applications.
+
+### Transparent Chaos Score: Points-Based Risk Sum
+The Chaos Score (0–100) measures event resilience across four descriptive bands (`calm`, `manageable`, `exposed`, `fragile`):
+- **Transparent Rule Sum**: The score is an arithmetic sum of transparent, explainable risk rules (e.g. uncovered venue in monsoon, razor-thin budget margin, tight schedule buffer, unverified price estimates)—not a black-box AI prediction.
+- **Auditable Breakdown**: Hosts can inspect the exact point contribution and weight origin of each active risk rule in a dedicated calculations table.
+
+### Full Stress Test Runner
+The stress test runner (`runStressTest`) systematically evaluates the entire scenario catalog against the active plan:
+- **Deterministic Catalog Execution**: Simulates all 6 scenarios in catalog order (`rain`, `budget_cut`, `guest_surge`, `vendor_cancels`, `late_start`, `item_unavailable`) using baseline defaults.
+- **Weakest-Spot Identification**: Identifies the event's most critical vulnerability—prioritizing the first applicable scenario that fails the budget cap, or the scenario with the largest positive cost delta.
+- **One-Click Deep-Linking**: Evaluators can open any scenario directly in the interactive simulator via `?scenario=<type>`, pre-selecting parameters and auto-simulating.
+
