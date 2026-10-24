@@ -53,7 +53,12 @@ export function MealPlanTable({ plan, className = '' }: MealPlanTableProps) {
 
       {/* Breakdown table */}
       <div className="space-y-2">
-        <div className="overflow-x-auto rounded-[12px] border border-[#E6DCD2]">
+        <div
+          tabIndex={0}
+          role="region"
+          aria-label="Dietary breakdown table"
+          className="overflow-x-auto rounded-[12px] border border-[#E6DCD2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2"
+        >
           <table className="w-full text-left text-sm border-collapse">
             <caption className="sr-only">Dietary breakdown for catering provisions</caption>
             <thead>

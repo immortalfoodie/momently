@@ -41,7 +41,7 @@ export function Header({ onToggleMobileNav }: HeaderProps) {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-white border-b border-[#E6DCD2] px-4 sm:px-6 flex items-center justify-between shadow-2xs">
+    <header className="sticky top-0 z-30 h-[var(--header-h)] bg-white border-b border-[#E6DCD2] px-4 sm:px-6 flex items-center justify-between shadow-2xs">
       <div className="flex items-center gap-3">
         {onToggleMobileNav ? (
           <button

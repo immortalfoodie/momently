@@ -9,9 +9,11 @@ import { AssistantOutcomeView } from '@/components/review/AssistantOutcomeView';
 import { ConflictList } from '@/components/review/ConflictList';
 import { ImpactSummary } from '@/components/review/ImpactSummary';
 import { Dialog } from '@/components/ui/Dialog';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useOptionalCurrentEvent } from '@/components/events/EventContext';
+import { PAGE_COPY } from '@/lib/copy';
 import { engineContext } from '@/store/engineContext';
 import { useEventsStore } from '@/store/eventsStore';
 import { useEvent, useStoreReady } from '@/store/selectors';
@@ -52,17 +54,17 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
 
   if (!isReady || !event || !plan) {
     return (
-      <div className="py-2 space-y-6">
+      <PageContainer width="full" className="space-y-6">
         <PageHeader
-          title="Celebration Overview"
-          description="Holistic snapshot of milestone parameters, active aesthetic concept, and progress."
+          title={PAGE_COPY.overview.title}
+          description={PAGE_COPY.overview.description}
         />
         <div className="space-y-4">
           <Skeleton className="h-44 w-full rounded-xl" />
           <Skeleton className="h-64 w-full rounded-xl" />
           <Skeleton className="h-48 w-full rounded-xl" />
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
@@ -104,10 +106,10 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
   };
 
   return (
-    <div className="py-2 space-y-8">
+    <PageContainer width="full" className="space-y-8">
       <PageHeader
-        title="Celebration Overview"
-        description="Holistic snapshot of milestone parameters, active aesthetic concept, and executive progress."
+        title={PAGE_COPY.overview.title}
+        description={PAGE_COPY.overview.description}
       />
 
       {/* Sticky navigation strip with scroll-margin-top links */}
@@ -149,7 +151,7 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
       {/* Section 4: Risks */}
       <section id="risks" aria-labelledby="heading-risks" className="space-y-3">
         <h2 id="heading-risks" className="text-lg font-serif font-bold text-[#2B1B2E] scroll-mt-20">
-          Top Operational Vulnerabilities
+          Things to watch out for
         </h2>
         <TopRisks plan={plan} eventId={eventId} />
       </section>
@@ -228,6 +230,6 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
           </div>
         )}
       </Dialog>
-    </div>
+    </PageContainer>
   );
 }

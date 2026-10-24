@@ -194,7 +194,7 @@ function IntakeFormContent({ initialType }: { initialType: string }) {
           disabled={!text.trim() || isSubmitting}
           icon={<Icon name="sparkle" size={18} aria-hidden="true" />}
         >
-          {isSubmitting ? 'Creating your plan...' : 'Synthesize Plan'}
+          {isSubmitting ? 'Creating your plan...' : 'Create my plan'}
         </Button>
       </div>
     </form>

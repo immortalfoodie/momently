@@ -22,7 +22,7 @@ export function EventFactsCard({ plan, onEdit, className = '' }: EventFactsCardP
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#E6DCD2]">
         <div>
           <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">Celebration Facts</h3>
-          <p className="text-xs text-[#5B4A5E] mt-0.5">Core milestone logistics and host brief parameters.</p>
+          <p className="text-xs text-[#5B4A5E] mt-0.5">Core celebration details and host brief parameters.</p>
         </div>
         <Button
           variant="secondary"

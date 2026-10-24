@@ -42,7 +42,7 @@ describe('UI: Day-Of Page & Interactions (TASK 4 & 5)', () => {
       </LiveRegionProvider>,
     );
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Event day' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /Event day/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: 'Right now' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: "Today's to-do list" })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: 'Something went wrong?' })).toBeInTheDocument();
@@ -76,18 +76,18 @@ describe('UI: Day-Of Page & Interactions (TASK 4 & 5)', () => {
 
     const timeInput = screen.getByLabelText("Pretend it's");
 
-    // Welcome Drinks is 18:30 - 19:15. At 19:00 it is Happening now.
-    fireEvent.change(timeInput, { target: { value: '19:00' } });
+    // Welcome Drinks is 17:00 - 17:45. At 17:30 it is Happening now.
+    fireEvent.change(timeInput, { target: { value: '17:30' } });
 
     await waitFor(() => {
       expect(screen.getByText(/Happening now/i)).toBeInTheDocument();
       expect(screen.getByRole('heading', { level: 3, name: 'Welcome & Welcome Drinks' })).toBeInTheDocument();
       expect(screen.getByText(/15m left/i)).toBeInTheDocument();
-      expect(screen.getByText(/Ends at 7:15 PM/i)).toBeInTheDocument();
+      expect(screen.getByText(/Ends at 5:45 PM/i)).toBeInTheDocument();
     });
 
-    // Pretend time is after all events: 22:00
-    fireEvent.change(timeInput, { target: { value: '22:00' } });
+    // Pretend time is after all events: 23:00
+    fireEvent.change(timeInput, { target: { value: '23:00' } });
 
     await waitFor(() => {
       expect(screen.getByText(/That's a wrap\. Congratulations!/i)).toBeInTheDocument();

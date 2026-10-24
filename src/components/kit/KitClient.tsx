@@ -3,9 +3,11 @@
 import { useParams } from 'next/navigation';
 import { useOptionalCurrentEvent } from '@/components/events/EventContext';
 import { CopyFallbackDialog } from '@/components/ui/CopyFallbackDialog';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useCopyText } from '@/components/ui/useCopyText';
+import { PAGE_COPY } from '@/lib/copy';
 import { useEventsStore } from '@/store/eventsStore';
 import { KitBriefsAndInvite } from './KitBriefsAndInvite';
 import { KitDownloadsGrid } from './KitDownloadsGrid';
@@ -17,10 +19,10 @@ export interface KitClientProps {
 
 function KitLoadingSkeleton() {
   return (
-    <div className="py-2 space-y-6 max-w-4xl mx-auto">
+    <PageContainer width="full" className="space-y-6">
       <PageHeader
-        title="Event kit"
-        description="Everything from your plan, ready to share or print. Made on your device."
+        title={PAGE_COPY.kit.title}
+        description={PAGE_COPY.kit.description}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Skeleton className="h-44 w-full rounded-[16px]" />
@@ -28,7 +30,7 @@ function KitLoadingSkeleton() {
         <Skeleton className="h-44 w-full rounded-[16px]" />
         <Skeleton className="h-44 w-full rounded-[16px]" />
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -62,10 +64,10 @@ export function KitClient({ eventId: propEventId }: KitClientProps) {
   }
 
   return (
-    <div className="py-2 space-y-6 max-w-4xl mx-auto">
+    <PageContainer width="full" className="space-y-6">
       <PageHeader
-        title="Event kit"
-        description="Everything from your plan, ready to share or print. Made on your device."
+        title={PAGE_COPY.kit.title}
+        description={PAGE_COPY.kit.description}
       />
 
       <KitDownloadsGrid plan={plan} eventId={plan.id} />
@@ -87,6 +89,6 @@ export function KitClient({ eventId: propEventId }: KitClientProps) {
           description={fallbackDescription}
         />
       )}
-    </div>
+    </PageContainer>
   );
 }

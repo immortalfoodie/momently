@@ -29,7 +29,7 @@ describe('PlanHealthStrip Component', () => {
     expect(region).toBeInTheDocument();
 
     // 1. Budget progress meter
-    expect(screen.getByRole('meter', { name: 'Budget cap utilization' })).toBeInTheDocument();
+    expect(screen.getByRole('meter', { name: /Budget cap (progress|utilization)/i })).toBeInTheDocument();
 
     // 2. Chaos Score linking to /events/[id]/chaos
     const chaosLink = screen.getByRole('link', { name: /Chaos Score:/ });

@@ -1,9 +1,11 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useOptionalCurrentEvent } from '@/components/events/EventContext';
+import { PAGE_COPY } from '@/lib/copy';
 import { useEventsStore } from '@/store/eventsStore';
 import { AccessCheck } from './AccessCheck';
 import { GuestNeedsForm } from './GuestNeedsForm';
@@ -18,16 +20,16 @@ export interface GuestsClientProps {
 
 function GuestsLoadingSkeleton() {
   return (
-    <div className="py-2 space-y-6 max-w-3xl mx-auto">
+    <PageContainer width="full" className="space-y-6">
       <PageHeader
-        title="Guests"
-        description="Dietary requirements, accessibility provisions, demographic breakdown, and cultural traditions."
+        title={PAGE_COPY.guests.title}
+        description={PAGE_COPY.guests.description}
       />
       <div className="space-y-4 pt-4">
         <Skeleton className="h-40 w-full rounded-[16px]" />
         <Skeleton className="h-60 w-full rounded-[16px]" />
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -46,10 +48,10 @@ export function GuestsClient({ eventId: propEventId }: GuestsClientProps) {
   const targetEventId = eventId || plan.id;
 
   return (
-    <div className="py-2 space-y-8 max-w-3xl mx-auto">
+    <PageContainer width="full" className="space-y-8">
       <PageHeader
-        title="Guests"
-        description="Dietary requirements, accessibility provisions, demographic breakdown, and cultural traditions."
+        title={PAGE_COPY.guests.title}
+        description={PAGE_COPY.guests.description}
       />
 
       {/* 1. Who's coming */}
@@ -61,12 +63,14 @@ export function GuestsClient({ eventId: propEventId }: GuestsClientProps) {
         <MealPlanTable plan={plan} />
       </section>
 
-      {/* 2. What your guests need */}
+      {/* 2. What your guests need - narrow form block */}
       <section aria-labelledby="guest-needs-heading" className="space-y-4">
         <h2 id="guest-needs-heading" className="text-xl font-serif font-bold text-[#2B1B2E]">
           What your guests need
         </h2>
-        <GuestNeedsForm plan={plan} eventId={targetEventId} />
+        <div className="max-w-[48rem]">
+          <GuestNeedsForm plan={plan} eventId={targetEventId} />
+        </div>
       </section>
 
       {/* 3. Reminders for you */}
@@ -78,13 +82,15 @@ export function GuestsClient({ eventId: propEventId }: GuestsClientProps) {
         <AccessCheck plan={plan} eventId={targetEventId} />
       </section>
 
-      {/* 4. Traditions and requirements */}
+      {/* 4. Traditions and requirements - narrow form block */}
       <section aria-labelledby="traditions-heading" className="space-y-4">
         <h2 id="traditions-heading" className="text-xl font-serif font-bold text-[#2B1B2E]">
           Traditions and requirements
         </h2>
-        <PreferencesManager plan={plan} eventId={targetEventId} />
+        <div className="max-w-[48rem]">
+          <PreferencesManager plan={plan} eventId={targetEventId} />
+        </div>
       </section>
-    </div>
+    </PageContainer>
   );
 }

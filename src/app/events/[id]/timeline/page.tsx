@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 
 export const metadata: Metadata = {
   title: 'Timeline',
-  description: 'Chronological celebration schedule with duration safeguards and delay triage.',
+  description: 'Your day, hour by hour. Move sessions around or plan for delays.',
 };
 
 export default function TimelinePage() {

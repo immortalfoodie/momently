@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { AssistantOutcomeView } from '@/components/review/AssistantOutcomeView';
 import type { AssistantOutcome } from '@/engine/assistant/types';
 import { useEventsStore } from '@/store/eventsStore';
@@ -23,6 +24,26 @@ function resolveChaosNarration(
     return text;
   }
   return undefined;
+}
+
+function renderMessageContent(text: string) {
+  const match = text.match(/^(.*?)\[(.*?)\]\((.*?)\)(.*?)$/);
+  if (match) {
+    const [, before, label, href, after] = match;
+    return (
+      <>
+        {before}
+        <Link
+          href={href!}
+          className="text-[#6B2D5C] font-semibold underline hover:text-[#55224A] cursor-pointer"
+        >
+          {label}
+        </Link>
+        {after}
+      </>
+    );
+  }
+  return text;
 }
 
 /**
@@ -56,7 +77,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
         {showSeparateSummaryText && (
           <p className="text-sm text-[#2B1B2E] leading-relaxed whitespace-pre-wrap break-words">
-            {message.text}
+            {renderMessageContent(message.text)}
           </p>
         )}
 

@@ -21,7 +21,7 @@ const TOOLS: ToolItem[] = [
   },
   {
     title: 'Budget Guardian',
-    description: 'Track rupee allocations, caps, and cost-saving levers',
+    description: 'Track rupee allocations, caps, and cost-saving choices',
     icon: 'wallet',
     getHref: (id) => (id ? `/events/${id}/budget` : '/new'),
   },

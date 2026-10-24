@@ -37,19 +37,12 @@ function formatClientError(error: ClientError): string {
   if (error.code === 'rate_limited') {
     return `Rate limit reached. Please wait ${error.retryAfterSeconds ?? 30} seconds before trying again.`;
   }
-  if (error.code === 'network') {
-    return "I couldn't reach the server. Your plan is safe; please try again";
-  }
+  if (error.code === 'network') return "I couldn't reach the server. Your plan is safe; please try again";
   return 'Something went wrong while processing your request. Please try again.';
 }
 
-function useOptionalPathname(): string {
-  try { return NextNavigation.usePathname() || '/'; } catch { return '/'; }
-}
-
-function useOptionalRouter(): { push: (href: string) => void } | undefined {
-  try { return NextNavigation.useRouter(); } catch { return undefined; }
-}
+const useOptionalPathname = (): string => { try { return NextNavigation.usePathname() || '/'; } catch { return '/'; } };
+const useOptionalRouter = (): { push: (href: string) => void } | undefined => { try { return NextNavigation.useRouter(); } catch { return undefined; } };
 
 function resolveActiveEventId(
   initialEventId: string | undefined,
@@ -165,13 +158,24 @@ export function ChatProvider({ children, initialEventId }: ChatProviderProps) {
       ]);
       const res = await submitIntake(trimmed);
       if (res.ok) {
+        const title = res.value.plan.meta.title;
         const createdId = useEventsStore.getState().createEvent(res.value.plan, {
           assumptions: res.value.assumptions,
           missingInfo: res.value.missingInfo,
         });
         lastFailedTextRef.current = null;
         setCanRetry(false);
-        announce(`Created ${res.value.plan.meta.title}`);
+        const announcement = `I've created ${title}. Opening your concepts now.`;
+        const linkText = `I've created ${title}. [Opening your concepts now.](/events/${createdId}/concepts)`;
+        setIntakeMessages([
+          {
+            id: engineContext.ids('msg'),
+            role: 'assistant',
+            text: linkText,
+            createdAt: nowIso,
+          },
+        ]);
+        announce(announcement);
         router?.push(`/events/${createdId}/concepts`);
       } else {
         const errText = formatClientError(res.error);

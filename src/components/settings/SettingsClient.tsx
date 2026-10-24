@@ -1,16 +1,18 @@
 'use client';
 
 import { Card } from '@/components/ui/Card';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
+import { PAGE_COPY } from '@/lib/copy';
 import { AiModeSection } from './AiModeSection';
 import { YourDataSection } from './YourDataSection';
 
 export function SettingsClient() {
   return (
-    <div className="py-2 space-y-8 max-w-3xl mx-auto">
+    <PageContainer width="narrow" className="space-y-8">
       <PageHeader
-        title="Settings"
-        description="AI mode, local data portability, and privacy controls."
+        title={PAGE_COPY.settings.title}
+        description={PAGE_COPY.settings.description}
       />
 
       <AiModeSection />
@@ -27,10 +29,10 @@ export function SettingsClient() {
 
         <Card className="p-5">
           <p className="text-sm text-[#5B4A5E] leading-relaxed">
-            Momently calculates budgets using deterministic Indian city-tier rate cards (Metro, Tier-1, Tier-2) and marks every price as an Estimate, Your input, or a Verified quote so you always know where figures come from. Every simulation, schedule adjustment and export runs locally on your device, and Momently never contacts vendors or guests on your behalf.
+            Momently calculates budgets using standard pricing for Indian city tiers (Metro, Tier-1, Tier-2) and marks every price as an Estimate, Your input, or a Verified quote so you always know where figures come from. Every simulation, schedule adjustment and export runs locally on your device, and Momently never contacts vendors or guests on your behalf.
           </p>
         </Card>
       </section>
-    </div>
+    </PageContainer>
   );
 }

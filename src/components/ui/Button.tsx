@@ -82,7 +82,7 @@ export function Button({
       type={props.type ?? 'button'}
       disabled={isDisabled}
       aria-busy={loading || undefined}
-      className={`inline-flex items-center justify-center font-medium transition-colors cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
+      className={`inline-flex items-center justify-center font-medium transition-colors cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
       {...props}
     >
       {loading ? <Spinner /> : icon ? <span aria-hidden="true">{icon}</span> : null}
@@ -105,7 +105,7 @@ export function LinkButton({
 }: LinkButtonProps) {
   return (
     <Link
-      className={`inline-flex items-center justify-center font-medium transition-colors cursor-pointer select-none no-underline ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
+      className={`inline-flex items-center justify-center font-medium transition-colors cursor-pointer select-none no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
       {...props}
     >
       {icon ? <span aria-hidden="true">{icon}</span> : null}

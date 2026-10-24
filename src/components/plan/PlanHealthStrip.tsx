@@ -86,9 +86,9 @@ export function PlanHealthStrip({ eventId, className = '' }: PlanHealthStripProp
     <section
       role="region"
       aria-label="Plan health"
-      className={`w-full bg-[#FAF5F0] border-b border-[#E6DCD2] px-4 py-2.5 static md:sticky md:top-0 z-20 shadow-xs ${className}`}
+      className={`w-full bg-[#FAF5F0] border-b border-[#E6DCD2] px-4 sm:px-6 lg:px-8 py-2.5 sticky top-[var(--header-h)] z-20 shadow-xs ${className}`}
     >
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+      <div className="max-w-[72rem] w-full flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
         {/* 1. Budget progress meter or plain total */}
         <div className="flex-1 max-w-sm">
           {status.cap !== null ? (
@@ -96,7 +96,7 @@ export function PlanHealthStrip({ eventId, className = '' }: PlanHealthStripProp
               value={status.total}
               max={status.cap}
               label={`Budget: ${formatInr(status.total)} / ${formatInr(status.cap)}`}
-              aria-label="Budget cap utilization"
+              aria-label="Budget cap progress"
             />
           ) : (
             <div className="flex items-center gap-1.5 text-sm font-medium text-[#2B1B2E]">

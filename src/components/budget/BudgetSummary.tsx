@@ -81,7 +81,7 @@ export function BudgetSummary({
           <ProgressMeter
             value={status.total}
             max={status.cap}
-            label="Budget utilization"
+            label="Budget used"
           />
         </div>
       )}

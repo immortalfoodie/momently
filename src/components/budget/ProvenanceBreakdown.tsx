@@ -40,7 +40,7 @@ export function ProvenanceBreakdown({
     <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
       <div>
         <h3 className="font-serif font-bold text-base text-[#2B1B2E]">
-          Quote Reliability
+          Where your prices come from
         </h3>
         <p className="text-xs text-[#5B4A5E] mt-0.5">
           Estimates are placeholders; replace them with real quotes as you receive them.

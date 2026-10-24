@@ -160,8 +160,9 @@ export function checkCapacityAndSchedule(plan: EventPlan): EvaluatedRisk[] {
         id: 'risk_schedule_no_slack',
         severity: 'medium',
         title: 'Tight schedule with insufficient buffer',
-        explanation: `Schedule has only ${totalSlackMinutes} minutes of total slack; any minor delay will trigger late-night overruns.`,
-        mitigation: 'Add 15-30 minute buffer gaps between key event milestones.',
+        explanation:
+          'Sessions run back to back, so one delay pushes everything later. Consider a 10 to 15 minute buffer.',
+        mitigation: 'Add 10 to 15 minute buffer gaps between sessions to absorb delays.',
       },
     });
   }

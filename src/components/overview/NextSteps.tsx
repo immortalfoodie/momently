@@ -50,7 +50,7 @@ export function NextSteps({ plan, eventId, className = '' }: NextStepsProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#E6DCD2]">
         <div>
           <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">Next Steps</h3>
-          <p className="text-xs text-[#5B4A5E] mt-0.5">Top 5 immediate planning milestones requiring host action.</p>
+          <p className="text-xs text-[#5B4A5E] mt-0.5">Top 5 immediate planning tasks requiring host action.</p>
         </div>
         <Link href={`/events/${eventId}/checklist`}>
           <Button variant="secondary" size="sm">

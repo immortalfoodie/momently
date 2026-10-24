@@ -83,7 +83,7 @@ export function AddItemDialog({
       open={isOpen}
       onClose={onClose}
       title="Add Budget Line Item"
-      description="Record a custom expense or convert an unpriced reminder into an active ledger line."
+      description="Record a custom expense or turn a reminder into an active budget item."
     >
       <form onSubmit={handleSubmit} className="space-y-4 pt-2">
         <Field

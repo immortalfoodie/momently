@@ -45,7 +45,7 @@ export function MessageList() {
       aria-live="off"
       aria-label="Conversation history"
       onScroll={handleScroll}
-      className="flex-1 overflow-y-auto p-4 space-y-3"
+      className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3"
     >
       {welcomeVisible && <WelcomeMessage />}
 

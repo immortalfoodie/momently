@@ -8,8 +8,10 @@ import { Dialog } from '@/components/ui/Dialog';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Icon } from '@/components/ui/Icon';
 import { useAnnouncer } from '@/components/ui/LiveRegion';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { PAGE_COPY } from '@/lib/copy';
 import { useEventsStore } from '@/store/eventsStore';
 import type { EventRecord } from '@/store/persistSchema';
 import { useEventList, useStoreReady } from '@/store/selectors';
@@ -38,10 +40,10 @@ export function EventsListClient() {
   };
 
   return (
-    <div className="py-2">
+    <PageContainer width="full">
       <PageHeader
-        title="My Celebrations"
-        description="View, manage, and inspect all celebration workspaces stored in this browser."
+        title={PAGE_COPY.events.title}
+        description={PAGE_COPY.events.description}
         actions={
           <LinkButton
             href="/new"
@@ -134,6 +136,6 @@ export function EventsListClient() {
           </Button>
         </div>
       </Dialog>
-    </div>
+    </PageContainer>
   );
 }

@@ -42,7 +42,12 @@ export function LineItemsTable({
 
   return (
     <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
-      <div className="overflow-x-auto">
+      <div
+        tabIndex={0}
+        role="region"
+        aria-label="Budget Line Items"
+        className="overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2"
+      >
         <table className="w-full text-left text-sm border-collapse">
           <caption className="text-left font-serif font-bold text-base text-[#2B1B2E] mb-3">
             Budget Line Items
@@ -111,7 +116,7 @@ export function LineItemsTable({
                           type="button"
                           aria-pressed={item.locked}
                           onClick={() => onToggleLock(item)}
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium border transition-colors ${
+                          className={`inline-flex items-center gap-1.5 min-h-[36px] px-3 py-1.5 rounded-[8px] text-xs font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2 ${
                             item.locked
                               ? 'bg-[#FFF4DC] text-[#8A5A00] border-[#D4A24C]'
                               : 'bg-white text-[#5B4A5E] border-[#E6DCD2] hover:bg-[#F4EDE6]'

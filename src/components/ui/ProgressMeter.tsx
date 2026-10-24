@@ -1,11 +1,14 @@
 import { formatInr } from '@/lib/format';
 import { Icon } from './Icon';
 
+export type ProgressMeterVariant = 'budget' | 'progress';
+
 export interface ProgressMeterProps {
   value: number;
   max: number;
   min?: number;
   label?: string;
+  variant?: ProgressMeterVariant;
   className?: string;
   'aria-label'?: string;
 }
@@ -46,26 +49,82 @@ function getMeterStatus(value: number, max: number, percentage: number) {
   };
 }
 
+function getProgressStatus(value: number, max: number, percentage: number) {
+  if (value === 0 || max === 0) {
+    return {
+      barColor: 'bg-[#5B4A5E]',
+      statusColor: 'text-[#5B4A5E]',
+      icon: null,
+      text: 'Not started',
+      isStrong: false,
+    };
+  }
+  if (value >= max) {
+    return {
+      barColor: 'bg-[#1F6F54]',
+      statusColor: 'text-[#1F6F54]',
+      icon: 'check' as const,
+      text: 'Complete',
+      isStrong: true,
+    };
+  }
+  return {
+    barColor: 'bg-[#6B2D5C]',
+    statusColor: 'text-[#6B2D5C]',
+    icon: null,
+    text: `${percentage}% done`,
+    isStrong: false,
+  };
+}
+
+function resolveProgressLabels(
+  variant: ProgressMeterVariant,
+  value: number,
+  max: number,
+  percentage: number,
+  statusText: string,
+  label?: string,
+  ariaLabel?: string,
+) {
+  if (variant === 'budget') {
+    return {
+      visibleLabel: label ?? `${formatInr(value)} of ${formatInr(max)} (${percentage}%)`,
+      ariaLabel: ariaLabel ?? 'Budget progress meter',
+      ariaValueText: `${percentage}% of budget used`,
+    };
+  }
+  return {
+    visibleLabel: label ?? `${value} of ${max} (${percentage}%)`,
+    ariaLabel: ariaLabel ?? 'Task completion progress',
+    ariaValueText: statusText,
+  };
+}
+
 /**
- * Budget progress meter with explicit semantic accessibility attributes.
+ * Progress meter with support for both budget utilization and task completion semantics.
  *
  * ACCESSIBILITY DECISION (WHY):
- * 1. Uses `role="meter"` with `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, and `aria-valuetext`.
- * 2. Visual & non-visual status: When exceeding 90% or 100%, changes color AND explicitly appends
- *    an icon (`alert`) and textual status ("Near budget cap" or "Over budget"). Color alone is never used.
+ * 1. Uses `role="meter"` with standard ARIA range attributes.
+ * 2. In 'progress' mode, replaces financial wording with clear milestone phrasing
+ *    ("Not started", "N% done", "Complete" with check icon) and accessible text indicators.
  */
 export function ProgressMeter({
   value,
   max,
   min = 0,
   label,
+  variant = 'budget',
   className = '',
-  'aria-label': ariaLabel = 'Budget utilization meter',
+  'aria-label': ariaLabel,
 }: ProgressMeterProps) {
   const percentage = max > 0 ? Math.round((value / max) * 100) : 0;
-  const status = getMeterStatus(value, max, percentage);
-  const defaultLabel = `${formatInr(value)} of ${formatInr(max)} (${percentage}%)`;
-  const visibleLabel = label ?? defaultLabel;
+  const isBudget = variant === 'budget';
+  const status = isBudget
+    ? getMeterStatus(value, max, percentage)
+    : getProgressStatus(value, max, percentage);
+
+  const { visibleLabel, ariaLabel: resolvedAriaLabel, ariaValueText: resolvedAriaValueText } =
+    resolveProgressLabels(variant, value, max, percentage, status.text, label, ariaLabel);
 
   return (
     <div className={`w-full ${className}`}>
@@ -76,18 +135,18 @@ export function ProgressMeter({
             status.isStrong ? 'font-semibold' : 'font-medium'
           } ${status.statusColor}`}
         >
-          <Icon name={status.icon} size={14} aria-hidden="true" />
+          {status.icon && <Icon name={status.icon} size={14} aria-hidden="true" />}
           <span>{status.text}</span>
         </span>
       </div>
 
       <div
         role="meter"
-        aria-label={ariaLabel}
+        aria-label={resolvedAriaLabel}
         aria-valuemin={min}
         aria-valuemax={max}
         aria-valuenow={value}
-        aria-valuetext={`${percentage}% of budget used`}
+        aria-valuetext={resolvedAriaValueText}
         className="w-full h-3 rounded-full bg-[#E6DCD2] overflow-hidden"
       >
         <div

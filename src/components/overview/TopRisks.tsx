@@ -33,7 +33,7 @@ export function TopRisks({ plan, eventId, className = '' }: TopRisksProps) {
         <div>
           <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">Vulnerability Analysis</h3>
           <p className="text-xs text-[#5B4A5E] mt-0.5">
-            Operational stress test score: <span className="font-semibold">{report.score}/100</span> ({report.band} band)
+            Stress test score: <span className="font-semibold">{report.score}/100</span> ({report.band} band)
           </p>
         </div>
         <Link href={`/events/${eventId}/chaos`}>
@@ -46,7 +46,7 @@ export function TopRisks({ plan, eventId, className = '' }: TopRisksProps) {
       {top.length === 0 ? (
         <p className="text-sm text-[#1F6F54] font-medium flex items-center gap-1.5 py-2">
           <Icon name="check" size={16} aria-hidden="true" />
-          No severe operational vulnerabilities detected.
+          No severe risk warnings detected.
         </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">

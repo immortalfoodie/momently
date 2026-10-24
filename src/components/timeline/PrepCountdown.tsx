@@ -80,7 +80,7 @@ export function PrepCountdown({
         />
         <div>
           <span className="text-xs uppercase tracking-wider font-semibold text-[#5B4A5E]">
-            Milestone Countdown
+            Countdown to your day
           </span>
           <p className="text-lg font-serif font-bold text-[#2B1B2E]">{text}</p>
         </div>

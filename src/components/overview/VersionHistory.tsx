@@ -93,7 +93,7 @@ export function VersionHistory({
 
         {/* Tab 1: Decisions */}
         <TabPanel value="decisions">
-          <ul className="divide-y divide-[#F4EDE6]" aria-label="Decision ledger entries">
+          <ul className="divide-y divide-[#F4EDE6]" aria-label="Past decisions">
             {visibleDecisions.map((entry) => {
               const src = getSourceBadge(entry.source);
               return (

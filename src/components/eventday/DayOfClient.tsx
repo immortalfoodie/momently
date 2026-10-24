@@ -2,8 +2,10 @@
 
 import { useParams } from 'next/navigation';
 import { useOptionalCurrentEvent } from '@/components/events/EventContext';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { PAGE_COPY } from '@/lib/copy';
 import { useEventsStore } from '@/store/eventsStore';
 import { ContactsPanel } from './ContactsPanel';
 import { DayTasks } from './DayTasks';
@@ -19,17 +21,17 @@ export interface DayOfClientProps {
 
 function DayOfLoadingSkeleton() {
   return (
-    <div className="py-2 space-y-6">
+    <PageContainer width="narrow" className="space-y-6">
       <PageHeader
-        title="Event day"
-        description="Calm, real-time celebration coordination and live run-of-show tracking."
+        title={PAGE_COPY.dayOf.title}
+        description={PAGE_COPY.dayOf.description}
       />
       <div className="space-y-4">
         <Skeleton className="h-24 w-full rounded-[16px]" />
         <Skeleton className="h-48 w-full rounded-[16px]" />
         <Skeleton className="h-40 w-full rounded-[16px]" />
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -48,10 +50,10 @@ export function DayOfClient({ eventId: propEventId }: DayOfClientProps) {
   }
 
   return (
-    <div className="py-2 space-y-8 max-w-3xl mx-auto">
+    <PageContainer width="narrow" className="space-y-8">
       <PageHeader
-        title="Event day"
-        description="Calm, phone-first coordinator showing active sessions, urgency milestones, and recovery options."
+        title={PAGE_COPY.dayOf.title}
+        description={PAGE_COPY.dayOf.description}
       />
 
       {/* 1. Right now */}
@@ -100,6 +102,6 @@ export function DayOfClient({ eventId: propEventId }: DayOfClientProps) {
         </h2>
         <ContactsPanel plan={plan} eventId={eventId} />
       </section>
-    </div>
+    </PageContainer>
   );
 }

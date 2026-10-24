@@ -37,7 +37,7 @@ describe('Budget Guardian Page & Components', () => {
     const { container } = render(<TestBudgetWrapper eventId={demoEventId} />);
 
     // Table caption and headings
-    expect(screen.getByRole('heading', { name: /Category & Quote Source Distribution/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Where the money goes/i })).toBeInTheDocument();
     expect(screen.getByRole('table', { name: /Category Breakdown/i })).toBeInTheDocument();
 
     // Provenance legend

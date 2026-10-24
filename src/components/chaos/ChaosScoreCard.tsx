@@ -77,7 +77,7 @@ export function ChaosScoreCard({ derived, className = '' }: ChaosScoreCardProps)
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <p className="text-xs uppercase tracking-wider font-semibold text-[#5C4556]">
-            Resilience Index
+            Chaos Score
           </p>
           <div className="flex items-baseline gap-3">
             <span className="text-4xl sm:text-5xl font-serif font-bold text-[#2B1B2E] tracking-tight">

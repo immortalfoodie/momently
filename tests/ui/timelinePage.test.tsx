@@ -50,7 +50,7 @@ describe('UI: Timeline Page & Interactions (TASK 4)', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'Move or adjust' })).toBeInTheDocument();
 
     // Verify slots with times are present
-    expect(screen.getByText(/Run-Sheet Sequence/i)).toBeInTheDocument();
+    expect(screen.getByText(/Run of show \(\d+ sessions\)/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 3, name: 'Welcome & Welcome Drinks' })).toBeInTheDocument();
 
     await expectNoAxeViolations(container);
@@ -67,7 +67,7 @@ describe('UI: Timeline Page & Interactions (TASK 4)', () => {
 
     // Open Add session dialog
     fireEvent.click(screen.getByRole('button', { name: 'Add session' }));
-    const dialog = screen.getByRole('dialog', { name: 'Add Activity Slot' });
+    const dialog = screen.getByRole('dialog', { name: /Add (Session|Activity Slot)/i });
     expect(dialog).toBeInTheDocument();
 
     // Fill in title
@@ -106,7 +106,7 @@ describe('UI: Timeline Page & Interactions (TASK 4)', () => {
     const editButtons = screen.getAllByRole('button', { name: 'Edit' });
     fireEvent.click(editButtons[0]!);
 
-    expect(screen.getByRole('dialog', { name: 'Edit Activity Slot' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: /Edit (Session|Activity Slot)/i })).toBeInTheDocument();
 
     // Modify title
     const titleInput = screen.getByLabelText(/Activity Title/i);
@@ -151,8 +151,8 @@ describe('UI: Timeline Page & Interactions (TASK 4)', () => {
       expect(firstStartAfter).toBe(firstStartBefore + 30);
     });
 
-    // Overflow shift: set to 240m on a late schedule
-    fireEvent.change(shiftInput, { target: { value: '240' } });
+    // Overflow shift: set to 350m on a late schedule
+    fireEvent.change(shiftInput, { target: { value: '350' } });
     fireEvent.click(screen.getByRole('button', { name: 'Apply Shift' }));
 
     await waitFor(() => {

@@ -6,8 +6,10 @@ import { OptionCard } from '@/components/review/OptionCard';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
 import { Icon } from '@/components/ui/Icon';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { PAGE_COPY } from '@/lib/copy';
 import { useEvent, useStoreReady } from '@/store/selectors';
 import { AddItemDialog } from './AddItemDialog';
 import { BudgetSummary } from './BudgetSummary';
@@ -59,10 +61,10 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
 
   if (!isReady || !event || !plan) {
     return (
-      <div className="py-2 space-y-6">
+      <PageContainer width="full" className="space-y-6">
         <PageHeader
-          title="Budget Guardian"
-          description="Deterministic line-item ledger with real-time floor protection, provenance badges, and lever controls."
+          title={PAGE_COPY.budget.title}
+          description={PAGE_COPY.budget.description}
         />
         <div className="space-y-4">
           <Skeleton className="h-28 w-full rounded-xl" />
@@ -72,7 +74,7 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
           </div>
           <Skeleton className="h-80 w-full rounded-xl" />
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
@@ -114,31 +116,31 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
     );
   };
 
+  const addExpenseAction = (
+    <Button
+      variant="primary"
+      onClick={() => {
+        setAddPrefill(undefined);
+        setIsAddItemOpen(true);
+      }}
+      icon={<Icon name="sparkle" size={14} aria-hidden="true" />}
+    >
+      Add expense
+    </Button>
+  );
+
   return (
-    <div className="py-2 space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <PageHeader
-          title="Budget Guardian"
-          description="Deterministic line-item ledger with real-time floor protection, provenance badges, and lever controls."
-        />
-        <div className="shrink-0">
-          <Button
-            variant="primary"
-            onClick={() => {
-              setAddPrefill(undefined);
-              setIsAddItemOpen(true);
-            }}
-            icon={<Icon name="sparkle" size={14} aria-hidden="true" />}
-          >
-            Add expense
-          </Button>
-        </div>
-      </div>
+    <PageContainer width="full" className="space-y-8">
+      <PageHeader
+        title={PAGE_COPY.budget.title}
+        description={PAGE_COPY.budget.description}
+        actions={addExpenseAction}
+      />
 
       {/* Region 1: Summary */}
       <section aria-labelledby="heading-budget-summary" className="space-y-3">
         <h2 id="heading-budget-summary" className="text-lg font-serif font-bold text-[#2B1B2E]">
-          Overview & Cap Utilization
+          Your budget at a glance
         </h2>
         <BudgetSummary plan={plan} onEditCap={() => setIsCapEditorOpen(true)} />
       </section>
@@ -146,7 +148,7 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
       {/* Region 2: Distributions */}
       <section aria-labelledby="heading-budget-breakdowns" className="space-y-3">
         <h2 id="heading-budget-breakdowns" className="text-lg font-serif font-bold text-[#2B1B2E]">
-          Category & Quote Source Distribution
+          Where the money goes
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <CategoryBreakdown plan={plan} />
@@ -155,9 +157,9 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
       </section>
 
       {/* Region 3: Line Items Table */}
-      <section aria-labelledby="heading-budget-ledger" className="space-y-3">
-        <h2 id="heading-budget-ledger" className="text-lg font-serif font-bold text-[#2B1B2E]">
-          Line-Item Ledger
+      <section aria-labelledby="heading-budget-items" className="space-y-3">
+        <h2 id="heading-budget-items" className="text-lg font-serif font-bold text-[#2B1B2E]">
+          All expenses
         </h2>
         <LineItemsTable
           plan={plan}
@@ -231,6 +233,6 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
           </div>
         )}
       </Dialog>
-    </div>
+    </PageContainer>
   );
 }

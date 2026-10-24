@@ -37,14 +37,14 @@ export const communityTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Welcome Address & Inauguration Ceremony',
-      offsetMinutes: 45,
+      offsetMinutes: 60,
       durationMinutes: 30,
       priority: 'essential',
       flexible: false,
     },
     {
       title: 'Main Community Programme & Presentations',
-      offsetMinutes: 75,
+      offsetMinutes: 105,
       durationMinutes: 90,
       priority: 'essential',
       flexible: true,
@@ -52,7 +52,7 @@ export const communityTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Interactive Workshops & Open Forum',
-      offsetMinutes: 165,
+      offsetMinutes: 210,
       durationMinutes: 60,
       priority: 'important',
       flexible: true,
@@ -60,14 +60,14 @@ export const communityTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Refreshments & Community Social Mixer',
-      offsetMinutes: 225,
+      offsetMinutes: 285,
       durationMinutes: 45,
       priority: 'essential',
       flexible: false,
     },
     {
       title: 'Closing Remarks, Awards & Cleanup',
-      offsetMinutes: 270,
+      offsetMinutes: 345,
       durationMinutes: 30,
       priority: 'essential',
       flexible: false,

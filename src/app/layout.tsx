@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     default: 'Momently | Elegant Event Planning Studio',
   },
   description:
-    'AI-assisted celebration and milestone event planning studio with deterministic budget and contingency controls.',
+    'Celebration planning studio with real-time budget, vendor, and contingency guidance.',
 };
 
 export const viewport: Viewport = {

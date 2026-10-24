@@ -72,7 +72,9 @@ function collectTimingWarnings(
 ): string[] {
   const warnings: string[] = [];
   if (totalSlackMinutes < 30 && sorted.length > 1) {
-    warnings.push(`Less than 30 minutes of slack in total (${totalSlackMinutes}m remaining)`);
+    warnings.push(
+      'Sessions run back to back, so one delay pushes everything later. Consider a 10 to 15 minute buffer.',
+    );
   }
   for (const v of slotViews) {
     if (v.endMinute > 1380) {

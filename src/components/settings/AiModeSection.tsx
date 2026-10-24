@@ -9,7 +9,7 @@ type DisplayMode = 'Demo mode' | 'Live AI' | 'Offline';
 
 const MODE_DESCRIPTIONS: Record<DisplayMode, string> = {
   'Demo mode':
-    'Momently is running with built-in deterministic responses so you can explore every feature without an API key or external AI calls.',
+    'Momently is running with built-in sample responses so you can explore every feature without an API key or external AI calls.',
   'Live AI':
     'Connected to Gemini for natural-language intake, concept ideas and optional plain-English explanations. All math, pricing and schedule changes still run locally in the pure engine.',
   Offline:

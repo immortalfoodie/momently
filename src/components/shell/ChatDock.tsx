@@ -11,16 +11,16 @@ function ChatDockInner() {
 
   return (
     <>
-      {/* Desktop Column: fixed right column on lg+ */}
+      {/* Desktop Column: fixed right column on xl+ */}
       <aside
         aria-label="Assistant"
-        className="hidden lg:flex w-80 bg-white border-l border-[#E6DCD2] flex-col shrink-0 h-[calc(100vh-4rem)] sticky top-16"
+        className="hidden xl:flex xl:w-[22rem] 2xl:w-[24rem] bg-white border-l border-[#E6DCD2] flex-col shrink-0 sticky top-[var(--header-h)] h-[calc(100dvh-var(--header-h))] overflow-hidden min-h-0"
       >
-        {!isMobileOpen ? <ChatPanel /> : null}
+        <ChatPanel />
       </aside>
 
-      {/* Mobile Floating Trigger: below lg */}
-      <div className="lg:hidden">
+      {/* Mobile Floating Trigger: below xl */}
+      <div className="xl:hidden">
         <button
           type="button"
           onClick={() => setIsMobileOpen(true)}
@@ -34,9 +34,9 @@ function ChatDockInner() {
           open={isMobileOpen}
           onClose={() => setIsMobileOpen(false)}
           placement="bottom"
-          title="AI Event Assistant"
+          title="Assistant"
         >
-          <div className="h-96">{isMobileOpen ? <ChatPanel /> : null}</div>
+          <div className="h-[75vh] max-h-[36rem] flex flex-col min-h-0">{isMobileOpen ? <ChatPanel /> : null}</div>
         </Drawer>
       </div>
     </>

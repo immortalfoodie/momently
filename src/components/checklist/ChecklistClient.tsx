@@ -8,8 +8,10 @@ import { useOptionalCurrentEvent } from '@/components/events/EventContext';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Icon } from '@/components/ui/Icon';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { PAGE_COPY } from '@/lib/copy';
 import { engineContext } from '@/store/engineContext';
 import { useEventsStore } from '@/store/eventsStore';
 import { ChecklistFilters, type ChecklistFilterState } from './ChecklistFilters';
@@ -38,14 +40,17 @@ function matchesFilters(t: Task, filters: ChecklistFilterState): boolean {
 
 function ChecklistLoadingSkeleton() {
   return (
-    <div className="py-2 space-y-6">
-      <PageHeader title="Checklist" description="Actionable planning milestones organized by operational urgency." />
+    <PageContainer width="full" className="space-y-6">
+      <PageHeader
+        title={PAGE_COPY.checklist.title}
+        description={PAGE_COPY.checklist.description}
+      />
       <div className="space-y-4">
         <Skeleton className="h-24 w-full rounded-[16px]" />
         <Skeleton className="h-28 w-full rounded-[16px]" />
         <Skeleton className="h-64 w-full rounded-[16px]" />
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -77,7 +82,7 @@ function ChecklistTaskView({
       <EmptyState
         icon={<Icon name="checklist" size={28} aria-hidden="true" />}
         title="No tasks in checklist"
-        description="Your planning checklist has no milestones yet. Add a task to start tracking action items."
+        description="Your planning checklist has no tasks yet. Add a task to start tracking action items."
         action={<Button variant="primary" onClick={onAddTask}>Add a task</Button>}
       />
     );
@@ -94,7 +99,7 @@ function ChecklistTaskView({
   }
   return (
     <div className="space-y-8">
-      <h2 className="sr-only">Planning Milestones</h2>
+      <h2 className="sr-only">Planning Tasks</h2>
       {groups.map((group) => (
         <TaskGroup
           key={group.name}
@@ -152,10 +157,10 @@ export function ChecklistClient({ eventId: propEventId }: ChecklistClientProps) 
   }
 
   return (
-    <div className="py-2 space-y-6">
+    <PageContainer width="full" className="space-y-6">
       <PageHeader
-        title="Checklist"
-        description="Prioritized milestone checklist categorized by operational urgency."
+        title={PAGE_COPY.checklist.title}
+        description={PAGE_COPY.checklist.description}
         actions={
           <Button
             variant="primary"
@@ -213,6 +218,6 @@ export function ChecklistClient({ eventId: propEventId }: ChecklistClientProps) 
           eventId={eventId}
         />
       )}
-    </div>
+    </PageContainer>
   );
 }

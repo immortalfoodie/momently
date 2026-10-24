@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {
   createContext,
   useContext,
+  useEffect,
   useId,
   useRef,
   useState,
@@ -190,25 +191,51 @@ export interface LinkTabsProps {
  * Route-based tab navigation rendering anchor elements with aria-current="page".
  */
 export function LinkTabs({ items, 'aria-label': ariaLabel, className = '' }: LinkTabsProps) {
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!navRef.current) return;
+    const activeEl = navRef.current.querySelector<HTMLElement>('[aria-current="page"]');
+    if (activeEl && typeof activeEl.scrollIntoView === 'function') {
+      activeEl.scrollIntoView({ inline: 'center', block: 'nearest' });
+    }
+  }, []);
+
   return (
-    <nav aria-label={ariaLabel} className={`border-b border-[#E6DCD2] pb-px overflow-x-auto ${className}`}>
-      <ul role="list" className="flex items-center gap-1 -mb-px p-0 m-0 list-none">
-        {items.map((item) => (
-          <li key={item.href}>
-            <Link
-              href={item.href}
-              aria-current={item.isActive ? 'page' : undefined}
-              className={`inline-block px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors select-none whitespace-nowrap no-underline ${
-                item.isActive
-                  ? 'border-[#6B2D5C] text-[#6B2D5C]'
-                  : 'border-transparent text-[#5B4A5E] hover:text-[#2B1B2E] hover:border-[#E6DCD2]'
-              }`}
-            >
-              {item.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <div className={`relative ${className}`}>
+      {/* Decorative edge fades for horizontal scrolling */}
+      <div
+        className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-[#FBF7F2] to-transparent z-10"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-[#FBF7F2] to-transparent z-10"
+        aria-hidden="true"
+      />
+
+      <nav
+        ref={navRef}
+        aria-label={ariaLabel}
+        className="border-b border-[#E6DCD2] pb-px overflow-x-auto"
+      >
+        <ul role="list" className="flex items-center gap-1 -mb-px p-0 m-0 list-none px-2">
+          {items.map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                aria-current={item.isActive ? 'page' : undefined}
+                className={`inline-block px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors select-none whitespace-nowrap no-underline ${
+                  item.isActive
+                    ? 'border-[#6B2D5C] text-[#6B2D5C]'
+                    : 'border-transparent text-[#5B4A5E] hover:text-[#2B1B2E] hover:border-[#E6DCD2]'
+                }`}
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
   );
 }

@@ -25,10 +25,15 @@ export function PrintablePlanTables({ doc }: PrintablePlanTablesProps) {
             : ''}
         </p>
 
-        <div className="overflow-x-auto">
+        <div
+          tabIndex={0}
+          role="region"
+          aria-label="Budget summary table"
+          className="overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2"
+        >
           <table className="w-full text-left border-collapse text-sm">
             <caption className="sr-only">
-              Budget breakdown by category and provenance
+              Budget breakdown by category and price source
             </caption>
             <thead>
               <tr className="border-b border-[#E6DCD2] text-xs font-semibold uppercase tracking-wider text-[#5B4A5E]">

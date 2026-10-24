@@ -37,8 +37,8 @@ function EventSubnav({ eventId }: { eventId: string }) {
   ];
 
   return (
-    <div data-print-hide="true">
-      <LinkTabs items={tabItems} aria-label="Event workspace sections" />
+    <div data-print-hide="true" className="lg:hidden">
+      <LinkTabs items={tabItems} aria-label="Event sections" />
     </div>
   );
 }
@@ -87,8 +87,8 @@ export default function EventLayout({ children }: EventLayoutProps) {
 
   return (
     <EventContextProvider value={{ event, plan: event.plan, derived }}>
-      <div className="flex flex-col gap-6">
-        <Suspense fallback={<div className="h-11 border-b border-[#E6DCD2]" />}>
+      <div className="flex flex-col">
+        <Suspense fallback={<div className="lg:hidden h-11 border-b border-[#E6DCD2]" />}>
           <EventSubnav eventId={id} />
         </Suspense>
         <div data-print-hide="true">

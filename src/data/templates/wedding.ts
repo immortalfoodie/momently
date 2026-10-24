@@ -46,7 +46,7 @@ export const weddingTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Ceremony & Traditional Rituals',
-      offsetMinutes: 45,
+      offsetMinutes: 60,
       durationMinutes: 90,
       priority: 'essential',
       flexible: false,
@@ -54,7 +54,7 @@ export const weddingTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Family & Bridal Portrait Session',
-      offsetMinutes: 135,
+      offsetMinutes: 165,
       durationMinutes: 60,
       priority: 'important',
       flexible: true,
@@ -62,7 +62,7 @@ export const weddingTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Social Hour & Appetizer Service',
-      offsetMinutes: 195,
+      offsetMinutes: 240,
       durationMinutes: 60,
       priority: 'optional',
       flexible: true,
@@ -70,14 +70,14 @@ export const weddingTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Grand Banquet Dinner Reception',
-      offsetMinutes: 255,
+      offsetMinutes: 315,
       durationMinutes: 90,
       priority: 'essential',
       flexible: false,
     },
     {
       title: 'Toasts, Speeches & Cake Cutting',
-      offsetMinutes: 345,
+      offsetMinutes: 420,
       durationMinutes: 45,
       priority: 'important',
       flexible: true,
@@ -85,7 +85,7 @@ export const weddingTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Open Dance Floor & Celebration',
-      offsetMinutes: 390,
+      offsetMinutes: 480,
       durationMinutes: 90,
       priority: 'optional',
       flexible: true,
@@ -93,7 +93,7 @@ export const weddingTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Warm Farewell & Guest Send-off',
-      offsetMinutes: 480,
+      offsetMinutes: 585,
       durationMinutes: 30,
       priority: 'essential',
       flexible: false,

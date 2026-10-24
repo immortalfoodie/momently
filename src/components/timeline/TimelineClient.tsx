@@ -6,8 +6,10 @@ import { useOptionalCurrentEvent } from '@/components/events/EventContext';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Icon } from '@/components/ui/Icon';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { PAGE_COPY } from '@/lib/copy';
 import { useEventsStore } from '@/store/eventsStore';
 import type { EventPlan } from '@/domain/types';
 import { DelayPlanner } from './DelayPlanner';
@@ -52,13 +54,16 @@ function TimelineScheduleSections({ plan, eventId }: { plan: EventPlan; eventId:
 
 function TimelineLoadingSkeleton() {
   return (
-    <div className="py-2 space-y-6">
-      <PageHeader title="Timeline" description="Chronological milestone run-sheet with cascading delay triage." />
+    <PageContainer width="full" className="space-y-6">
+      <PageHeader
+        title={PAGE_COPY.timeline.title}
+        description={PAGE_COPY.timeline.description}
+      />
       <div className="space-y-4">
         <Skeleton className="h-20 w-full rounded-[16px]" />
         <Skeleton className="h-64 w-full rounded-[16px]" />
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -118,13 +123,13 @@ export function TimelineClient({ eventId: propEventId }: TimelineClientProps) {
   };
 
   return (
-    <div className="py-2 space-y-8">
+    <PageContainer width="full" className="space-y-8">
       <PrintHeader title={plan.meta.title} dateIso={plan.meta.dateIso} />
 
       <div data-print-hide className="no-print">
         <PageHeader
-          title="Timeline"
-          description="Chronological celebration schedule with duration safeguards and delay triage."
+          title={PAGE_COPY.timeline.title}
+          description={PAGE_COPY.timeline.description}
           actions={
             <div className="flex gap-2">
               <Button variant="secondary" onClick={handlePrint}>
@@ -159,6 +164,6 @@ export function TimelineClient({ eventId: propEventId }: TimelineClientProps) {
           eventId={eventId}
         />
       )}
-    </div>
+    </PageContainer>
   );
 }

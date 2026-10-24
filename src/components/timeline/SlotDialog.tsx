@@ -174,8 +174,8 @@ export function SlotDialog({ open, onClose, slot, eventId }: SlotDialogProps) {
       <Dialog
         open={open && !confirmRemoveOpen}
         onClose={onClose}
-        title={isEditing ? 'Edit Activity Slot' : 'Add Activity Slot'}
-        description="Configure start time, duration, and flex constraints for this milestone."
+        title={isEditing ? 'Edit Session' : 'Add Session'}
+        description="Configure start time, duration, and buffer options for this session."
       >
         <div className="space-y-4 py-2">
           {error && <Alert tone="danger">{error}</Alert>}

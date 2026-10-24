@@ -11,7 +11,7 @@ const POINTS = [
     icon: 'wallet' as const,
     title: '2. The engine checks the numbers',
     description:
-      'Deterministic arithmetic verifies every rupee, constraint, and schedule gap without hallucination.',
+      'Exact calculations verify every rupee, constraint, and schedule gap without guessing.',
   },
   {
     icon: 'check' as const,

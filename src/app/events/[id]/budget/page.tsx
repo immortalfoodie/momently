@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { BudgetClient } from '@/components/budget/BudgetClient';
 
 export const metadata: Metadata = {
-  title: 'Budget Guardian',
-  description: 'Deterministic line-item ledger with real-time floor protection, provenance badges, and lever controls.',
+  title: 'Budget',
+  description: 'See where every rupee goes, and what changes if you add, upgrade or cut something.',
 };
 
 /**

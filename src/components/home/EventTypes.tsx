@@ -12,22 +12,22 @@ const EVENT_TYPES: EventTypeInfo[] = [
   {
     type: 'wedding',
     title: 'Wedding',
-    tagline: 'Multi-function sangeet, wedding ceremony, and gala banquet orchestration',
+    tagline: 'Multi-function sangeet, wedding ceremony, and gala banquet planning',
   },
   {
     type: 'birthday',
-    title: 'Milestone Birthday',
+    title: 'Birthday',
     tagline: 'Themed decor, high-energy party games, custom cake, and entertainment',
   },
   {
     type: 'anniversary',
     title: 'Silver / Golden Jubilee',
-    tagline: 'Nostalgic family tributes, golden memories, audio-visuals, and refined dining',
+    tagline: 'Nostalgic family tributes, golden memories, music, and refined dining',
   },
   {
     type: 'community',
     title: 'Community & Society',
-    tagline: 'High-turnout cultural gatherings, festive stage stalls, and crowd coordination',
+    tagline: 'High-turnout cultural gatherings, festive stalls, and community coordination',
   },
 ];
 
@@ -42,7 +42,7 @@ export function EventTypes() {
           What are you celebrating?
         </h2>
         <p className="text-sm text-[#5B4A5E] mt-0.5">
-          Select an event format to launch a pre-configured template with tailored rate cards.
+          Select an event format to launch a pre-configured template with tailored pricing.
         </p>
       </div>
 
@@ -55,7 +55,7 @@ export function EventTypes() {
             <Link
               key={item.type}
               href={`/new?type=${item.type}`}
-              className="bg-white rounded-[16px] border border-[#E6DCD2] p-5 shadow-2xs hover:border-[#6B2D5C] hover:shadow-xs transition-all no-underline text-inherit group flex flex-col justify-between"
+              className="bg-white rounded-[16px] border border-[#E6DCD2] p-5 shadow-2xs hover:border-[#6B2D5C] hover:shadow-xs transition-all no-underline text-inherit group flex flex-col h-full"
             >
               <div>
                 <h3 className="font-serif text-lg font-bold text-[#2B1B2E] group-hover:text-[#6B2D5C] transition-colors">
@@ -66,7 +66,7 @@ export function EventTypes() {
                 </p>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-[#E6DCD2]/60">
+              <div className="mt-auto pt-3 border-t border-[#E6DCD2]/60">
                 <span className="text-[11px] font-semibold text-[#5B4A5E] uppercase tracking-wider block mb-2">
                   Popular aesthetics
                 </span>

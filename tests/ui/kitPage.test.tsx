@@ -42,7 +42,7 @@ describe('UI: Event Kit Page & Components (TASK 3 & 5)', () => {
       </LiveRegionProvider>,
     );
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Event kit' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /Event kit/i })).toBeInTheDocument();
     expect(
       screen.getByText(/Quantities to share with your caterer and decorator/i),
     ).toBeInTheDocument();

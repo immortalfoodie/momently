@@ -45,7 +45,7 @@ export function RunOfShow({ plan, eventId, className = '' }: RunOfShowProps) {
     <div className={`space-y-4 ${className}`}>
       {view.warnings.length > 0 && (
         <Alert tone="warning">
-          <div className="font-semibold text-sm mb-1">Schedule Notice</div>
+          <div className="font-semibold text-sm mb-1">Heads up</div>
           <ul className="list-disc pl-4 space-y-1 text-xs">
             {view.warnings.map((w, idx) => (
               <li key={idx}>{w}</li>
@@ -56,7 +56,7 @@ export function RunOfShow({ plan, eventId, className = '' }: RunOfShowProps) {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#5B4A5E] pb-2 border-b border-[#E6DCD2]">
         <span className="font-semibold text-sm text-[#2B1B2E]">
-          Run-Sheet Sequence ({view.slots.length} milestones)
+          Run of show ({view.slots.length} sessions)
         </span>
         <span className="tabular-nums font-medium text-[#2B1B2E]">
           Total: {spanHours} hours {spanMins} minutes, slack {view.totalSlackMinutes} minutes

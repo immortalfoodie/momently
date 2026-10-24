@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 
 export const metadata: Metadata = {
   title: 'Checklist',
-  description: 'Prioritized milestone checklist categorized by operational urgency.',
+  description: "Everything to do before the day, grouped by how soon it's due.",
 };
 
 export default function ChecklistPage() {

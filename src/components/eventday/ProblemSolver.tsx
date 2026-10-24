@@ -33,7 +33,7 @@ export function ProblemSolver({
           Something went wrong?
         </h3>
         <p className="text-xs text-[#5B4A5E]">
-          Quick triage and contingency strategies for common event-day disruptions.
+          Quick recovery options and contingency strategies for common event-day disruptions.
         </p>
       </div>
 

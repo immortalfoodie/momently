@@ -3,8 +3,10 @@
 import { useParams } from 'next/navigation';
 import { useOptionalCurrentEvent } from '@/components/events/EventContext';
 import { Button, LinkButton } from '@/components/ui/Button';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { PAGE_COPY } from '@/lib/copy';
 import {
   buildPlanDocument,
   type PlanDocument,
@@ -91,20 +93,20 @@ export function PrintablePlanClient({
 
   if (!hydrated || !plan) {
     return (
-      <div className="py-2 space-y-6 max-w-4xl mx-auto">
+      <PageContainer width="full" className="space-y-6">
         <PageHeader
-          title="Printable plan"
-          description="Clean, print-ready summary of your celebration plan."
+          title={PAGE_COPY.kitPlan.title}
+          description={PAGE_COPY.kitPlan.description}
         />
         <Skeleton className="h-96 w-full rounded-[16px]" />
-      </div>
+      </PageContainer>
     );
   }
 
   const doc = buildPlanDocument(plan, engineContext.clock(), assumptions);
 
   return (
-    <div className="py-2 space-y-6 max-w-4xl mx-auto">
+    <PageContainer width="full" className="space-y-6">
       <div
         data-print-hide="true"
         className="no-print flex flex-wrap items-center justify-between gap-3"
@@ -128,6 +130,6 @@ export function PrintablePlanClient({
       </div>
 
       <PrintablePlan doc={doc} />
-    </div>
+    </PageContainer>
   );
 }

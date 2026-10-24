@@ -104,9 +104,8 @@ function LaterList({ slots }: { slots: ScheduleSlot[] }) {
   );
 }
 
-export function NowNext({ plan, minute, eventId, className = '' }: NowNextProps) {
+function useDayStatusAnnouncer(report: DayStatusReport) {
   const { announce } = useAnnouncer();
-  const report: DayStatusReport = dayStatus(plan.schedule, minute);
   const lastAnnouncedKeyRef = useRef<string>('');
 
   useEffect(() => {
@@ -121,6 +120,53 @@ export function NowNext({ plan, minute, eventId, className = '' }: NowNextProps)
       }
     }
   }, [report, announce]);
+}
+
+function PhaseBanner({ report, eventId }: { report: DayStatusReport; eventId: string }) {
+  if (report.phase === 'before' && report.next) {
+    return (
+      <Card className="p-4 bg-[#F5F2EB] border border-[#E6DCD2]">
+        <p className="text-base font-semibold text-[#2B1B2E]">
+          Doors open at {formatMinuteOfDay(report.next.startMinute)}, first session: &ldquo;{report.next.title}&rdquo;
+        </p>
+      </Card>
+    );
+  }
+
+  if (report.phase === 'between' && report.next) {
+    return (
+      <Card className="p-4 bg-[#F5F2EB] border border-[#E6DCD2]">
+        <p className="text-base font-semibold text-[#2B1B2E]">
+          Nothing is scheduled right now. Next up: &ldquo;{report.next.title}&rdquo; at {formatMinuteOfDay(report.next.startMinute)}
+        </p>
+      </Card>
+    );
+  }
+
+  if (report.phase === 'after') {
+    return (
+      <Card className="p-5 bg-white border border-[#E6DCD2] space-y-2 text-center">
+        <p className="text-lg font-serif font-bold text-[#2B1B2E]">
+          That&apos;s a wrap. Congratulations!
+        </p>
+        <p className="text-xs text-[#5B4A5E]">
+          All timeline activities for the day have completed.
+        </p>
+        <div className="pt-2">
+          <Link href={`/events/${eventId}`} className="min-h-[44px] inline-flex items-center px-4 py-2 rounded-[12px] bg-[#2B1B2E] text-white font-medium text-sm">
+            Back to overview
+          </Link>
+        </div>
+      </Card>
+    );
+  }
+
+  return null;
+}
+
+export function NowNext({ plan, minute, eventId, className = '' }: NowNextProps) {
+  const report: DayStatusReport = dayStatus(plan.schedule, minute);
+  useDayStatusAnnouncer(report);
 
   if (plan.schedule.length === 0) {
     return (
@@ -139,40 +185,7 @@ export function NowNext({ plan, minute, eventId, className = '' }: NowNextProps)
 
   return (
     <div className={`space-y-4 ${className}`}>
-      {report.phase === 'before' && report.next && (
-        <Card className="p-4 bg-[#F5F2EB] border border-[#E6DCD2]">
-          <p className="text-base font-semibold text-[#2B1B2E]">
-            Doors open at {formatMinuteOfDay(report.next.startMinute)}
-          </p>
-          <p className="text-xs text-[#5B4A5E] mt-0.5">
-            First session: &ldquo;{report.next.title}&rdquo;
-          </p>
-        </Card>
-      )}
-
-      {report.phase === 'between' && report.next && (
-        <Card className="p-4 bg-[#F5F2EB] border border-[#E6DCD2]">
-          <p className="text-base font-semibold text-[#2B1B2E]">
-            Nothing is scheduled right now. Next up: &ldquo;{report.next.title}&rdquo; at {formatMinuteOfDay(report.next.startMinute)}
-          </p>
-        </Card>
-      )}
-
-      {report.phase === 'after' && (
-        <Card className="p-5 bg-white border border-[#E6DCD2] space-y-2 text-center">
-          <p className="text-lg font-serif font-bold text-[#2B1B2E]">
-            That&apos;s a wrap. Congratulations!
-          </p>
-          <p className="text-xs text-[#5B4A5E]">
-            All timeline activities for the day have completed.
-          </p>
-          <div className="pt-2">
-            <Link href={`/events/${eventId}`} className="min-h-[44px] inline-flex items-center px-4 py-2 rounded-[12px] bg-[#2B1B2E] text-white font-medium text-sm">
-              Back to overview
-            </Link>
-          </div>
-        </Card>
-      )}
+      <PhaseBanner report={report} eventId={eventId} />
 
       {report.current && (
         <HappeningNowCard
@@ -182,7 +195,7 @@ export function NowNext({ plan, minute, eventId, className = '' }: NowNextProps)
         />
       )}
 
-      {report.next && (
+      {report.next && report.phase !== 'before' && (
         <UpNextCard slot={report.next} minutesUntil={report.minutesUntilNext} />
       )}
 

@@ -52,7 +52,7 @@ export function DayTasks({ plan, eventId, className = '' }: DayTasksProps) {
     return (
       <Card className={`p-6 bg-white border border-[#E6DCD2] text-center space-y-1 ${className}`}>
         <p className="text-base font-semibold text-[#2B1B2E]">Nothing left on today&apos;s list</p>
-        <p className="text-xs text-[#5B4A5E]">All event day tasks and urgent milestones are done.</p>
+        <p className="text-xs text-[#5B4A5E]">All event day tasks are done.</p>
       </Card>
     );
   }

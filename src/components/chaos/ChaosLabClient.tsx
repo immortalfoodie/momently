@@ -15,8 +15,10 @@ import {
 } from '@/engine/chaos';
 import { Alert } from '@/components/ui/Alert';
 import { Button } from '@/components/ui/Button';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { PAGE_COPY } from '@/lib/copy';
 import { engineContext } from '@/store/engineContext';
 import { useEvent, useEventDerived, useStoreReady, type EventDerivedMetrics } from '@/store/selectors';
 import { ChaosScoreCard } from './ChaosScoreCard';
@@ -34,16 +36,16 @@ const VALID_TYPES = new Set(CHAOS_SCENARIO_CATALOG.map((c) => c.type));
 
 function ChaosLabSkeleton() {
   return (
-    <div className="py-2 space-y-6">
+    <PageContainer width="full" className="space-y-6">
       <PageHeader
-        title="Chaos Lab"
-        description="Stress-test your celebration before reality does."
+        title={PAGE_COPY.chaos.title}
+        description={PAGE_COPY.chaos.description}
       />
       <div className="space-y-4">
         <Skeleton className="h-44 w-full rounded-xl" />
         <Skeleton className="h-64 w-full rounded-xl" />
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -118,10 +120,10 @@ function ChaosLabContent({ eventId, plan, derived }: ChaosLabContentProps) {
     !result;
 
   return (
-    <div className="py-2 space-y-8">
+    <PageContainer width="full" className="space-y-8">
       <PageHeader
-        title="Chaos Lab"
-        description="Stress-test your celebration before reality does."
+        title={PAGE_COPY.chaos.title}
+        description={PAGE_COPY.chaos.description}
       />
 
       {appliedNotice && (
@@ -137,7 +139,7 @@ function ChaosLabContent({ eventId, plan, derived }: ChaosLabContentProps) {
       {!plan.selectedConceptId && (
         <Alert tone="info">
           <p className="font-semibold text-sm mb-1">Draft celebration plan</p>
-          This plan does not have a selected concept yet. Disruption simulations will sharpen and calculate exact rate-card quality profiles after a creative concept is chosen.
+          You haven&apos;t chosen a concept yet. Results will get more precise once you do.
         </Alert>
       )}
 
@@ -225,7 +227,7 @@ function ChaosLabContent({ eventId, plan, derived }: ChaosLabContentProps) {
           onSelectScenario={handleTestRiskScenario}
         />
       </section>
-    </div>
+    </PageContainer>
   );
 }
 

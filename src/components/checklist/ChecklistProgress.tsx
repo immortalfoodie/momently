@@ -24,6 +24,7 @@ export function ChecklistProgress({
   return (
     <Card className={`p-4 bg-white border border-[#E6DCD2] space-y-3 ${className}`}>
       <ProgressMeter
+        variant="progress"
         value={metrics.done}
         max={Math.max(1, metrics.total)}
         label={label}

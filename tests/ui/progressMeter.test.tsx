@@ -45,4 +45,45 @@ describe('UI Primitive: ProgressMeter', () => {
 
     await expectNoAxeViolations(container);
   });
+
+  describe('variant="progress" task completion semantics', () => {
+    it('displays "Not started" when 0 tasks are done', async () => {
+      const { container } = render(
+        <ProgressMeter variant="progress" value={0} max={10} />,
+      );
+
+      expect(screen.getByText('Not started')).toBeInTheDocument();
+      expect(screen.queryByText(/budget/i)).not.toBeInTheDocument();
+      expect(screen.getByRole('meter')).toHaveAttribute('aria-valuetext', 'Not started');
+
+      await expectNoAxeViolations(container);
+    });
+
+    it('displays "N% done" when some tasks are done', async () => {
+      const { container } = render(
+        <ProgressMeter variant="progress" value={4} max={10} />,
+      );
+
+      expect(screen.getByText('40% done')).toBeInTheDocument();
+      expect(screen.queryByText(/budget/i)).not.toBeInTheDocument();
+      expect(screen.getByRole('meter')).toHaveAttribute('aria-valuetext', '40% done');
+
+      await expectNoAxeViolations(container);
+    });
+
+    it('displays "Complete" with check icon when all tasks are done', async () => {
+      const { container } = render(
+        <ProgressMeter variant="progress" value={10} max={10} />,
+      );
+
+      expect(screen.getByText('Complete')).toBeInTheDocument();
+      expect(screen.queryByText(/budget/i)).not.toBeInTheDocument();
+      expect(screen.getByRole('meter')).toHaveAttribute('aria-valuetext', 'Complete');
+
+      const checkIcon = container.querySelector('svg[aria-hidden="true"]');
+      expect(checkIcon).toBeInTheDocument();
+
+      await expectNoAxeViolations(container);
+    });
+  });
 });

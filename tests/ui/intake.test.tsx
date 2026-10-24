@@ -104,7 +104,7 @@ describe('New Event Intake Flow (/new)', () => {
     const chip = screen.getByRole('button', { name: "Parents' 25th Anniversary" });
     fireEvent.click(chip);
 
-    const submitBtn = screen.getByRole('button', { name: /synthesize plan/i });
+    const submitBtn = screen.getByRole('button', { name: /create my plan|synthesize plan/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -129,7 +129,7 @@ describe('New Event Intake Flow (/new)', () => {
     const chip = screen.getByRole('button', { name: "Parents' 25th Anniversary" });
     fireEvent.click(chip);
 
-    const submitBtn = screen.getByRole('button', { name: /synthesize plan/i });
+    const submitBtn = screen.getByRole('button', { name: /create my plan|synthesize plan/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -169,7 +169,7 @@ describe('New Event Intake Flow (/new)', () => {
     const chip = screen.getByRole('button', { name: "Parents' 25th Anniversary" });
     fireEvent.click(chip);
 
-    const form = screen.getByRole('button', { name: /synthesize plan/i }).closest('form')!;
+    const form = screen.getByRole('button', { name: /create my plan|synthesize plan/i }).closest('form')!;
     fireEvent.submit(form);
     fireEvent.submit(form);
 

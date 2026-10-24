@@ -29,7 +29,7 @@ export function ForgottenTeaser({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#E6DCD2]">
         <div>
           <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">Hidden Gotchas & Overlooked Costs</h3>
-          <p className="text-xs text-[#5B4A5E] mt-0.5">Top reminders commonly missing from initial milestone budgets.</p>
+          <p className="text-xs text-[#5B4A5E] mt-0.5">Top reminders commonly missing from initial budgets.</p>
         </div>
         <Link href={`/events/${eventId}/budget`}>
           <Button variant="secondary" size="sm" icon={<Icon name="wallet" size={14} aria-hidden="true" />}>

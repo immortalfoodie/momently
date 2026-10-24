@@ -39,7 +39,7 @@ export function ForgottenCostsList({
           Common Hidden Gotchas
         </h3>
         <p className="text-xs text-[#5B4A5E] mt-0.5">
-          Frequently overlooked fees, statutory deposits, and operational costs for your event setting.
+          Frequently overlooked fees, deposits, and venue setup costs for your celebration.
         </p>
       </div>
 

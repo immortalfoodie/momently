@@ -12,6 +12,7 @@ export * from './Icon';
 export * from './LiveRegion';
 export * from './Money';
 export * from './NumberInput';
+export * from './PageContainer';
 export * from './PageHeader';
 export * from './PaletteSwatches';
 export * from './ProgressMeter';

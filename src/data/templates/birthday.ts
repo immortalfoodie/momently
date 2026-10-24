@@ -20,7 +20,7 @@ export const birthdayTemplate: EventTemplate = eventTemplateSchema.parse({
     'venue_hall',
   ],
   contingencyBasePercent: 7,
-  defaultStartMinute: 1020,
+  defaultStartMinute: 960,
   schedule: [
     {
       title: 'Welcome & Activity Stations',
@@ -31,7 +31,7 @@ export const birthdayTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Party Games & Interactive Entertainment',
-      offsetMinutes: 45,
+      offsetMinutes: 60,
       durationMinutes: 60,
       priority: 'important',
       flexible: true,
@@ -39,14 +39,14 @@ export const birthdayTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Cake Cutting & Birthday Anthem',
-      offsetMinutes: 105,
+      offsetMinutes: 130,
       durationMinutes: 30,
       priority: 'essential',
       flexible: false,
     },
     {
       title: 'Theme Photo Booth & Family Snaps',
-      offsetMinutes: 135,
+      offsetMinutes: 175,
       durationMinutes: 45,
       priority: 'optional',
       flexible: true,
@@ -54,14 +54,14 @@ export const birthdayTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Celebration Dinner Buffet',
-      offsetMinutes: 180,
+      offsetMinutes: 235,
       durationMinutes: 60,
       priority: 'essential',
       flexible: false,
     },
     {
       title: 'Music & Open Dance Floor',
-      offsetMinutes: 240,
+      offsetMinutes: 305,
       durationMinutes: 60,
       priority: 'optional',
       flexible: true,
@@ -69,7 +69,7 @@ export const birthdayTemplate: EventTemplate = eventTemplateSchema.parse({
     },
     {
       title: 'Return Gifts & Farewell',
-      offsetMinutes: 300,
+      offsetMinutes: 375,
       durationMinutes: 30,
       priority: 'essential',
       flexible: false,

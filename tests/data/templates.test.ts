@@ -4,6 +4,9 @@ import { QUALITY_ORDER } from '@/data/rateCards.schema';
 import { eventTemplateSchema } from '@/data/templates';
 import { getTemplate, TEMPLATES } from '@/data/templates';
 import { EVENT_TYPE_IDS } from '@/domain/constants';
+import { createPlan } from '@/engine/planFactory';
+import { buildScheduleView } from '@/engine/scheduleView';
+import { createIdFactory } from '@/lib/id';
 
 describe('Event Templates Data Layer', () => {
   it('validates all registered event templates against eventTemplateSchema', () => {
@@ -151,5 +154,34 @@ describe('Event Templates Data Layer', () => {
     );
     expect(permits?.required).toBe(true);
     expect(volunteerKit?.required).toBe(true);
+  });
+
+  it('asserts total slack >= 30 and warnings is empty for a freshly created plan of every event type', () => {
+    for (const type of EVENT_TYPE_IDS) {
+      const plan = createPlan({
+        meta: {
+          title: `Test ${type}`,
+          type,
+          city: 'Mumbai',
+          dateIso: '2026-12-15',
+          guestCount: 50,
+          setting: 'indoor',
+          hostBrief: 'Test event brief',
+        },
+        constraints: [],
+        ids: createIdFactory(`test_${type}`),
+        clock: () => new Date('2026-10-21T12:00:00.000Z'),
+      }).plan;
+
+      const scheduleView = buildScheduleView(plan);
+      expect(
+        scheduleView.totalSlackMinutes,
+        `Template ${type} total slack is ${scheduleView.totalSlackMinutes}m (must be >= 30)`
+      ).toBeGreaterThanOrEqual(30);
+      expect(
+        scheduleView.warnings,
+        `Template ${type} produced schedule warnings: ${scheduleView.warnings.join(', ')}`
+      ).toEqual([]);
+    }
   });
 });

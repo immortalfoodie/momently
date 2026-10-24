@@ -50,42 +50,51 @@ function ChatPanelInner() {
   };
 
   return (
-    <div className="flex flex-col h-full justify-between bg-white">
-      <div className="p-3.5 border-b border-[#E6DCD2] flex items-center justify-between gap-2">
+    <div className="flex flex-col h-full min-h-0 bg-white">
+      <div className="p-3.5 border-b border-[#E6DCD2] flex items-center justify-between gap-2 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           <div className="w-6 h-6 rounded-full bg-[#F4EDE6] text-[#6B2D5C] flex items-center justify-center shrink-0">
             <Icon name="sparkle" size={14} aria-hidden="true" />
           </div>
           <h2 className="font-serif text-base font-bold text-[#2B1B2E] truncate">
-            AI Event Assistant
+            Assistant
           </h2>
           {healthMode === 'live' ? (
-            <Badge tone="success">Live AI</Badge>
+            <Badge tone="success" className="whitespace-nowrap shrink-0">
+              Live AI
+            </Badge>
           ) : (
-            <Badge tone="brand">Demo mode</Badge>
+            <Badge tone="brand" className="whitespace-nowrap shrink-0">
+              Demo mode
+            </Badge>
           )}
         </div>
 
-        <button
-          type="button"
-          onClick={() => setConfirmClearOpen(true)}
-          disabled={messages.length === 0}
-          aria-label="Clear conversation"
-          className="text-xs font-medium text-[#5B4A5E] hover:text-[#2B1B2E] px-2 py-1 rounded hover:bg-[#F4EDE6] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer shrink-0"
-        >
-          Clear
-        </button>
+        {messages.length > 0 && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setConfirmClearOpen(true)}
+            aria-label="Clear conversation"
+            className="text-xs shrink-0 text-[#2B1B2E]"
+          >
+            Clear
+          </Button>
+        )}
       </div>
 
       <MessageList />
 
       {!welcomeVisible && mode === 'event' && (
-        <div className="px-3.5 py-2 border-t border-[#E6DCD2] bg-[#FAF5F0]">
+        <div className="px-3.5 py-2 border-t border-[#E6DCD2] bg-[#FAF5F0] shrink-0">
           <SuggestedPrompts />
         </div>
       )}
 
-      <Composer />
+      <div className="shrink-0">
+        <Composer />
+      </div>
 
       <Dialog
         open={confirmClearOpen}

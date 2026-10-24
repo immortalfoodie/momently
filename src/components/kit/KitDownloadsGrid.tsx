@@ -112,7 +112,7 @@ export function KitDownloadsGrid({ plan, eventId }: KitDownloadsGridProps) {
               Budget spreadsheet (CSV)
             </h2>
             <p className="text-sm text-[#5B4A5E]">
-              All line items with raw INR figures and provenance sources. Opens in Excel or Google Sheets.
+              All line items with raw INR figures and price sources. Opens in Excel or Google Sheets.
             </p>
           </div>
           <div>

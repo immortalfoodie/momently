@@ -5,7 +5,8 @@ import { Skeleton } from '@/components/ui/Skeleton';
 
 export const metadata: Metadata = {
   title: 'Event Day',
-  description: 'Calm, phone-first coordinator showing active sessions, urgency milestones, and recovery options.',
+  description:
+    "A calm, phone-friendly view for the day itself: what's on now, what's next, and what to do if something goes wrong.",
 };
 
 export default function DayOfPage() {

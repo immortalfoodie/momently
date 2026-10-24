@@ -64,9 +64,9 @@ export function GuardianPanel({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs text-[#5B4A5E]">
-        <p>Instant pure engine evaluation: no network calls, runs completely offline.</p>
+        <p>Instant evaluation: no network calls, runs completely offline.</p>
         <p className="italic">
-          Prices are host inputs or rate-card estimates; nothing is a vendor quote.
+          Prices are your own numbers or regional estimates; nothing is a vendor quote yet.
         </p>
       </div>
 

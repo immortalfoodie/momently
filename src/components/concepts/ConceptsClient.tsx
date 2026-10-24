@@ -1,19 +1,17 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { useParams } from 'next/navigation';
 import type { Concept } from '@/domain/types';
 import { selectConceptOps } from '@/engine/assistant/concepts';
 import { buildOption } from '@/engine/chaos/option';
 import type { RecoveryOption } from '@/engine/chaos/types';
+import { tierForCity } from '@/engine/pricing';
 import { requestConcepts } from '@/lib/apiClient';
 import { useOptionalCurrentEvent } from '@/components/events';
-import { Alert } from '@/components/ui/Alert';
-import { Button } from '@/components/ui/Button';
-import { Dialog } from '@/components/ui/Dialog';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { Icon } from '@/components/ui/Icon';
+import { Alert, Button, Dialog, EmptyState, Icon, PageContainer, PageHeader } from '@/components/ui';
 import { useAnnouncer } from '@/components/ui/LiveRegion';
-import { PageHeader } from '@/components/ui/PageHeader';
+import { PAGE_COPY } from '@/lib/copy';
 import { OptionCard } from '@/components/review/OptionCard';
 import { engineContext } from '@/store/engineContext';
 import { useEventsStore } from '@/store/eventsStore';
@@ -22,8 +20,6 @@ import { CompareTable } from './CompareTable';
 import { ConceptCard } from './ConceptCard';
 import { MakeItYoursCard } from './MakeItYoursCard';
 import { WhatIAssumedCard } from './WhatIAssumedCard';
-
-import { useParams } from 'next/navigation';
 
 /**
  * ConceptsClient coordinates concept studio ideation, comparison, and deterministic switching.
@@ -65,9 +61,7 @@ export function ConceptsClient() {
       if (res.ok) {
         setConcepts(eventId, res.value.concepts);
         announce(`Generated ${res.value.concepts.length} fresh celebration concepts.`);
-      } else {
-        setGenerateError(res.error.message);
-      }
+      } else setGenerateError(res.error.message);
     } catch {
       setGenerateError('Unable to generate concepts right now. Please try again.');
     } finally {
@@ -109,38 +103,40 @@ export function ConceptsClient() {
 
   if (!event || !plan) {
     return (
-      <div className="py-2 space-y-6">
+      <PageContainer width="full" className="space-y-6">
         <PageHeader
-          title="Celebration Concepts"
-          description="Explore aesthetic directions with live engine pricing, custom palettes, and trade-offs."
+          title={PAGE_COPY.concepts.title}
+          description={PAGE_COPY.concepts.description}
         />
-      </div>
+      </PageContainer>
     );
   }
 
   const concepts = plan.concepts;
 
+  const headerActions =
+    concepts.length > 0 ? (
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => setConfirmRefreshOpen(true)}
+        disabled={isGenerating}
+        icon={<Icon name="sparkle" size={14} aria-hidden="true" />}
+      >
+        {isGenerating ? 'Refreshing...' : 'Refresh ideas'}
+      </Button>
+    ) : undefined;
+
+  const cityTier = tierForCity(plan.meta.city);
+  const cityTierLabel = cityTier === 'tier1' ? 'tier-1' : cityTier === 'tier3' ? 'tier-3' : 'tier-2';
+
   return (
-    <div className="py-2 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <PageHeader
-          title="Celebration Concepts"
-          description="Explore aesthetic directions with live engine pricing, custom palettes, and trade-offs."
-        />
-        {concepts.length > 0 && (
-          <div className="shrink-0">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setConfirmRefreshOpen(true)}
-              disabled={isGenerating}
-              icon={<Icon name="sparkle" size={14} aria-hidden="true" />}
-            >
-              {isGenerating ? 'Refreshing...' : 'Refresh ideas'}
-            </Button>
-          </div>
-        )}
-      </div>
+    <PageContainer width="full" className="space-y-6">
+      <PageHeader
+        title={PAGE_COPY.concepts.title}
+        description={PAGE_COPY.concepts.description}
+        actions={headerActions}
+      />
 
       {generateError && (
         <Alert tone="danger" title="Concept Generation Failed">
@@ -148,14 +144,20 @@ export function ConceptsClient() {
         </Alert>
       )}
 
-      {/* Assumptions & Quick-Edits */}
-      <WhatIAssumedCard
-        eventId={eventId}
-        assumptions={event.assumptions}
-        missingInfo={event.missingInfo}
-      />
+      {/* One-line summary banner linking to assumptions card below */}
+      <div className="p-3 bg-[#FAF5F0] border border-[#E6DCD2] rounded-[10px] text-xs text-[#5B4A5E] flex items-center justify-between gap-2">
+        <span>
+          We assumed {plan.meta.guestCount} guests and {cityTierLabel} prices.{' '}
+          <a
+            href="#what-i-assumed"
+            className="font-semibold text-[#6B2D5C] hover:underline cursor-pointer"
+          >
+            Review
+          </a>
+        </span>
+      </div>
 
-      {/* Concepts Empty State vs Cards Grid */}
+      {/* Concepts Empty State vs Cards Grid (Shown FIRST) */}
       {concepts.length === 0 ? (
         <EmptyState
           icon={<Icon name="bulb" size={28} aria-hidden="true" />}
@@ -195,6 +197,15 @@ export function ConceptsClient() {
         </div>
       )}
 
+      {/* Assumptions & Quick-Edits (Moved below concepts) */}
+      <div id="what-i-assumed" className="scroll-mt-28">
+        <WhatIAssumedCard
+          eventId={eventId}
+          assumptions={event.assumptions}
+          missingInfo={event.missingInfo}
+        />
+      </div>
+
       {/* Choose Concept Approval Dialog */}
       {targetOption && (
         <Dialog
@@ -233,6 +244,6 @@ export function ConceptsClient() {
           </div>
         </div>
       </Dialog>
-    </div>
+    </PageContainer>
   );
 }

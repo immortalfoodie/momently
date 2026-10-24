@@ -99,7 +99,7 @@ export function WhatIfGuests({
         {/* Logistics metrics */}
         <div className="rounded-lg border border-[#E6DCD2] p-3 bg-[#FAF5F0] space-y-2">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-[#6B2D5C]">
-            Operational Logistics Diff
+            Logistics Summary
           </h4>
           <table className="w-full text-xs">
             <caption className="sr-only">Guest Metrics Projection</caption>

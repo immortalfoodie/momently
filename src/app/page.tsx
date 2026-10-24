@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { PageContainer } from '@/components/ui/PageContainer';
 import {
   EventTypes,
   HeroBanner,
@@ -10,17 +11,17 @@ import {
 export const metadata: Metadata = {
   title: 'Momently Celebration Studio',
   description:
-    'Plan, stress-test, and orchestrate milestone celebrations with real-time budget, vendor, and contingency intelligence.',
+    'Plan and stress-test celebrations with real-time budget, vendor, and contingency guidance.',
 };
 
 export default function HomePage() {
   return (
-    <div className="py-2">
+    <PageContainer width="full">
       <HeroBanner />
       <MyEvents />
       <QuickTools />
       <EventTypes />
       <HowItDecides />
-    </div>
+    </PageContainer>
   );
 }

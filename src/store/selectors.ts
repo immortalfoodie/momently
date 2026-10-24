@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import type { EventPlan } from '@/domain/types';
 import type { Conflict } from '@/engine/conflicts';
 import { findConflicts } from '@/engine/conflicts';
 import type { ForgottenCost } from '@/engine/forgottenCosts';
@@ -22,6 +23,31 @@ export interface EventDerivedMetrics {
   findForgottenCosts: ForgottenCost[];
   deriveGuestMetrics: GuestMetrics;
   stage: EventStage;
+}
+
+/**
+ * Module-level WeakMap cache memoizing pure engine metrics by immutable plan reference.
+ * WHY: Across multiple components rendering concurrently on a page (e.g., PlanHealthStrip,
+ * OverviewClient, AssistantAside), metrics are computed exactly once per plan version.
+ */
+const derivedCache = new WeakMap<EventPlan, EventDerivedMetrics>();
+
+export function getDerivedMetrics(plan: EventPlan): EventDerivedMetrics {
+  const cached = derivedCache.get(plan);
+  if (cached) {
+    return cached;
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  const metrics: EventDerivedMetrics = {
+    budgetStatus: getBudgetStatus(plan),
+    scoreRisks: scoreRisks(plan, engineContext),
+    findConflicts: findConflicts(plan, engineContext),
+    findForgottenCosts: findForgottenCosts(plan),
+    deriveGuestMetrics: deriveGuestMetrics(plan.meta.guestCount, plan.guestNeeds),
+    stage: eventStage(plan, today),
+  };
+  derivedCache.set(plan, metrics);
+  return metrics;
 }
 
 /**
@@ -52,25 +78,14 @@ export function useStoreReady(): boolean {
 
 /**
  * Memoized selector deriving all pure engine metrics from the active plan version.
- * WHY: Recomputes only when plan.version changes. Zero network overhead or duplicate runs.
+ * WHY: Recomputes only when plan reference changes. Zero duplicate runs across components.
  */
 export function useEventDerived(id: string): EventDerivedMetrics | undefined {
   const event = useEvent(id);
-  const version = event?.plan.version;
+  const plan = event?.plan;
 
   return useMemo(() => {
-    if (!event) return undefined;
-    const plan = event.plan;
-    const today = new Date().toISOString().slice(0, 10);
-
-    return {
-      budgetStatus: getBudgetStatus(plan),
-      scoreRisks: scoreRisks(plan, engineContext),
-      findConflicts: findConflicts(plan, engineContext),
-      findForgottenCosts: findForgottenCosts(plan),
-      deriveGuestMetrics: deriveGuestMetrics(plan.meta.guestCount, plan.guestNeeds),
-      stage: eventStage(plan, today),
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [event, version]);
+    if (!plan) return undefined;
+    return getDerivedMetrics(plan);
+  }, [plan]);
 }

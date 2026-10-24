@@ -6,8 +6,10 @@ import { useOptionalCurrentEvent } from '@/components/events/EventContext';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Icon } from '@/components/ui/Icon';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { PAGE_COPY } from '@/lib/copy';
 import { useEventsStore } from '@/store/eventsStore';
 import { VendorNeedCard } from './VendorNeedCard';
 
@@ -17,16 +19,16 @@ export interface VendorsClientProps {
 
 function VendorsLoadingSkeleton() {
   return (
-    <div className="py-2 space-y-6 max-w-3xl mx-auto">
+    <PageContainer width="full" className="space-y-6">
       <PageHeader
-        title="Vendors"
-        description="Category requirements, vendor interview questions, and competitive quote comparisons."
+        title={PAGE_COPY.vendors.title}
+        description={PAGE_COPY.vendors.description}
       />
       <div className="space-y-4 pt-4">
         <Skeleton className="h-32 w-full rounded-[16px]" />
         <Skeleton className="h-64 w-full rounded-[16px]" />
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -101,14 +103,14 @@ export function VendorsClient({ eventId: propEventId }: VendorsClientProps) {
   const bookedCount = vendors.filter((v: VendorNeed) => v.status === 'booked').length;
 
   return (
-    <div className="py-2 space-y-8 max-w-3xl mx-auto">
+    <PageContainer width="full" className="space-y-8">
       <PageHeader
-        title="Vendors"
-        description="Category requirements, vendor interview questions, and competitive quote comparisons."
+        title={PAGE_COPY.vendors.title}
+        description={PAGE_COPY.vendors.description}
       />
 
       <VendorsSummaryBanner bookedCount={bookedCount} totalVendors={vendors.length} />
       <VendorsContent vendors={vendors} plan={plan} targetEventId={targetEventId} />
-    </div>
+    </PageContainer>
   );
 }

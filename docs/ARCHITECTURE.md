@@ -597,6 +597,27 @@ Settings (`/settings`) provides full local data lifecycle controls via `src/lib/
 - **Collision-Free Re-ID (`prepareImport` & `importEvents`)**: Every imported plan (and its version history snapshots) is assigned a fresh ID via the ID factory (`ids('evt')`), and ephemeral chat messages are dropped (`messages: []`). Importing a backup never overwrites an existing event in the browser, and respects a total store cap of 50 events.
 - **Complete Local Deletion (`deleteAllData`)**: Clears `events`, `order`, `outcomes`, `chatDraft`, resets `useTourStore`, and removes the `momently.v1` key from `safeStorage`.
 
+## 22. Layout Architecture
+
+Momently's shell and page structure prioritize document scrolling, left alignment, responsive responsiveness, and zero-clipping ergonomics:
+
+### Document Scrolling & Sticky Columns
+- **Document Scrolling**: The browser `document` (window) is the primary scroll container. `<main>` is never given `overflow: auto` or `overflow: scroll`, ensuring native browser print handling, hash anchor scrolling (`#facts`, `#conflicts`), find-in-page (`Ctrl+F`), and scroll restoration function without friction.
+- **Unified Header Height Variable**: `--header-h` (4rem) is defined once in `:root` (`src/app/globals.css`) and governs all sticky positioning.
+- **Desktop Sidebar & Assistant Columns**: Both desktop landmarks use `position: sticky; top: var(--header-h); height: calc(100dvh - var(--header-h)); overflow-y: auto; min-h-0`. The assistant aside is structured as a flex column (shrink-0 header, flex-1 message list with `min-h-0 overflow-y: auto`, and shrink-0 composer), ensuring the composer input is never pushed out of viewport.
+- **PlanHealthStrip & Deep Link Margins**: `PlanHealthStrip` sticks immediately below the header (`top: var(--header-h)`). Global CSS applies `section[id] { scroll-margin-top: calc(var(--header-h) + var(--strip-h, 3.25rem)); }` so navigating to hash anchors never conceals section headings behind sticky bars.
+- **Print Resets**: Media query `@media print` resets `position: static`, `height: auto`, and `overflow: visible` across all structural landmarks.
+
+### Breakpoints & Navigation Hierarchy
+- **Navigation Handoff (`lg: 1024px`)**: The desktop `Sidebar` is visible from `lg` upwards (`hidden lg:flex`). Below `lg`, the top tab strip (`EventSubnav`) serves as the primary event section navigation with horizontal scroll, active tab auto-scrolling on mount (`scrollIntoView({ inline: 'center' })`), and `aria-label="Event sections"`. From `lg` upwards, the top tab strip is hidden (`lg:hidden`), deferring to the sidebar's "This event" navigation group.
+- **Assistant Docking (`xl: 1280px`)**: The assistant aside is docked as a persistent right-hand column from `xl` (22rem width at `xl`, 24rem width at `2xl`). Below `xl`, the assistant is accessed via a floating action button and drawer.
+
+### PageContainer Standards
+`PageContainer` (`src/components/ui/PageContainer.tsx`) standardizes content layout across all views:
+- **Left Alignment (Never Centered)**: Content containers are strictly left-aligned flush with the plan health strip and sidebar rather than centered, establishing a clean left reading edge.
+- **Standard Widths & Padding**: Offers `width="full"` (max 72rem / 1152px) for tables, comparison matrices, and card grids, and `width="narrow"` (max 48rem / 768px) for forms (intake, settings, guest needs) and phone-friendly reading. Sets standardized padding: `px-4 sm:px-6 lg:px-8 py-6`.
+
+
 
 
 

@@ -91,7 +91,7 @@ export function UseQuoteButton({
               onChange={(e) => setConfirmed(e.target.checked)}
               className="w-5 h-5 rounded border-[#E6DCD2] text-[#2B1B2E] focus:ring-1 focus:ring-[#2B1B2E]"
             />
-            <span>This is a confirmed written quote (marks provenance as verified)</span>
+            <span>This is a confirmed written quote (marks price as verified)</span>
           </label>
 
           {!budgetOpsResult.ok ? (

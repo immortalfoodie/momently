@@ -25,7 +25,12 @@ export function CategoryBreakdown({ plan, className = '' }: CategoryBreakdownPro
 
   return (
     <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-3 ${className}`}>
-      <div className="overflow-x-auto">
+      <div
+        tabIndex={0}
+        role="region"
+        aria-label="Category Breakdown"
+        className="overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2"
+      >
         <table className="w-full text-left text-sm border-collapse">
           <caption className="text-left font-serif font-bold text-base text-[#2B1B2E] mb-3">
             Category Breakdown

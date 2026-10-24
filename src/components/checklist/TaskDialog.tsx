@@ -148,7 +148,7 @@ export function TaskDialog({
         open={open && !confirmRemoveOpen}
         onClose={onClose}
         title={isEditing ? 'Edit Task' : 'Add Task'}
-        description="Configure checklist milestone, target schedule offset, and priority."
+        description="Configure checklist task, target schedule offset, and priority."
       >
         <div className="space-y-4 py-2">
           {error && <Alert tone="danger">{error}</Alert>}

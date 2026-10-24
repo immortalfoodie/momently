@@ -36,9 +36,9 @@ function AppShellInner({ children }: AppShellProps) {
     <div className="min-h-screen bg-[#FBF7F2] text-[#2B1B2E] flex flex-col">
       <Header onToggleMobileNav={() => setIsMobileNavOpen(true)} />
 
-      <div className="flex-1 flex overflow-x-hidden">
+      <div className="flex-1 flex min-w-0">
         {/* Desktop Sidebar: visible on lg+ */}
-        <Sidebar className="hidden lg:flex" />
+        <Sidebar className="hidden lg:flex sticky top-[var(--header-h)] h-[calc(100dvh-var(--header-h))] overflow-y-auto min-h-0" />
 
         {/* Mobile Navigation Drawer */}
         <Drawer
@@ -58,46 +58,50 @@ function AppShellInner({ children }: AppShellProps) {
         <main
           id="main-content"
           tabIndex={-1}
-          className={`flex-1 min-w-0 max-w-full p-4 sm:p-6 lg:p-8 outline-none ${
+          className={`flex-1 min-w-0 max-w-full outline-none ${
             tourActive ? 'pb-48 sm:pb-40' : ''
           }`}
         >
-          <div className="max-w-5xl mx-auto space-y-4">
-            {showStorageFallbackNotice && (
-              <Alert
-                tone="warning"
-                action={
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setStorageNoticeDismissed(true)}
-                    aria-label="Dismiss storage notice"
+          <div className="w-full">
+            {(showStorageFallbackNotice || storeNotice) && (
+              <div className="px-4 sm:px-6 lg:px-8 pt-4 space-y-4">
+                {showStorageFallbackNotice && (
+                  <Alert
+                    tone="warning"
+                    action={
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setStorageNoticeDismissed(true)}
+                        aria-label="Dismiss storage notice"
+                      >
+                        Dismiss
+                      </Button>
+                    }
                   >
-                    Dismiss
-                  </Button>
-                }
-              >
-                {STORAGE_FALLBACK_NOTICE}
-              </Alert>
-            )}
-            {storeNotice && (
-              <Alert
-                tone="warning"
-                action={
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={dismissNotice}
-                    aria-label="Dismiss notice"
+                    {STORAGE_FALLBACK_NOTICE}
+                  </Alert>
+                )}
+                {storeNotice && (
+                  <Alert
+                    tone="warning"
+                    action={
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={dismissNotice}
+                        aria-label="Dismiss notice"
+                      >
+                        Dismiss
+                      </Button>
+                    }
                   >
-                    Dismiss
-                  </Button>
-                }
-              >
-                {storeNotice}
-              </Alert>
+                    {storeNotice}
+                  </Alert>
+                )}
+              </div>
             )}
             {children}
           </div>
