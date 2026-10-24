@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./vitest.setup.ts'],
+    setupFiles: [fileURLToPath(new URL('./vitest.setup.ts', import.meta.url))],
     testTimeout: 15000,
     pool: 'threads',
     maxWorkers: 2,
