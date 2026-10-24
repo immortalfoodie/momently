@@ -203,7 +203,7 @@ Client (receives Proposal) <--[Structured Response]---------+
 
 ### Design Philosophy: "The Elegant Event-Planning Studio"
 
-Momently avoids cold corporate AI dashboard aesthetics in favor of a warm, distinguished studio atmosphere. Warm ivory backdrops, deep imperial plum primary accents, golden highlights, and refined serif typography evoke the celebratory gravitas of milestone event planning while rigorously enforcing WCAG 2.1 AA accessibility.
+Momently avoids cold corporate AI dashboard aesthetics in favor of a warm, distinguished studio atmosphere. Warm ivory backdrops, deep imperial plum primary accents, golden highlights, and refined serif typography evoke the celebratory gravitas of milestone event planning while targeting WCAG 2.1 AA accessibility.
 
 ### Design Tokens & Palette
 
@@ -235,7 +235,7 @@ Momently avoids cold corporate AI dashboard aesthetics in favor of a warm, disti
 
 All core text and button foreground/background pairings exceed the WCAG AA minimum threshold of 4.5:1:
 
-| Element Pairing | Foreground | Background | Calculated Ratio | WCAG Compliance |
+| Element Pairing | Foreground | Background | Calculated Ratio | WCAG AA Ratio (≥ 4.5:1) |
 | :--- | :--- | :--- | :--- | :--- |
 | **Primary Ink on Canvas** | `#2B1B2E` | `#FBF7F2` | **15.16:1** | Pass (AAA) |
 | **Primary Ink on Surface** | `#2B1B2E` | `#FFFFFF` | **16.17:1** | Pass (AAA) |
@@ -287,7 +287,7 @@ Momently enforces a multi-layered verification strategy across 115 test suites:
 - **Engine Unit Tests (`tests/engine/`, `tests/domain/`, `tests/lib/`)**: Pure, deterministic tests with injected clocks and seeded ID factories (`createIdFactory`) covering pricing, budget math, patch reducers, conflict detection, schedule delay strategies, Chaos Lab scenarios, guest insights, quote comparisons, and local export builders (RFC 4180 CSV with formula neutralization, RFC 5545 `.ics` with 75-octet UTF-8 folding, and backup validation).
 - **Seeded Property Invariants (`tests/engine/invariants.test.ts`)**: Uses a deterministic `mulberry32` PRNG to run 100 random sequences of up to 12 user edits across all 4 event types (`wedding`, `birthday`, `anniversary`, `community`). After every applied patch, it asserts `eventPlanSchema` validity, monotonic `version + 1` increments, locked-item price immutability, single contingency line presence, non-negative integer INR amounts, `0..1439` schedule bounds, and hard budget cap compliance, printing the failing seed for instant reproduction.
 - **Server Handler & LLM Tests (`tests/server/`, `tests/llm/`)**: Verifies origin guards, payload size limits, sliding-window rate limiting, error scrubbing (zero API key or stack leaks), prompt sanitization, and `runWithFallback` resilience.
-- **Component, Route & Offline Resilience Tests (`tests/ui/`)**: Renders every UI primitive, shell landmark, and route with React Testing Library, verifying single-`<h1>` heading hierarchy, keyboard interactions, `axe-core` WCAG 2.1 AA compliance (`expectNoAxeViolations`), storage-blocked fallback notices, version migration protection, and full offline editing when all API calls fail.
+- **Component, Route & Offline Resilience Tests (`tests/ui/`)**: Renders every UI primitive, shell landmark, and route with React Testing Library, verifying single-`<h1>` heading hierarchy, keyboard interactions, `axe-core` accessibility audits (`expectNoAxeViolations`), storage-blocked fallback notices, version migration protection, and full offline editing when all API calls fail.
 - **End-to-End Journey Integration (`tests/integration/`)**: Exercises full multi-step host journeys (`demoJourney.test.ts`, `chaosLabJourney.test.ts`) from intake to concept selection, budget rebalancing, and crisis recovery.
 - **Static Security & Quality Guards (`tests/security/guards.test.ts`, `tests/quality/jsdoc.test.ts`)**: Enforces DOM/storage/env/fetch boundaries, zero `any`/`console.log`/secrets, and top-level JSDoc coverage across `src/engine` and `src/lib`.
 - **V8 Code Coverage & Thresholds (`npm run test:coverage`)**:
@@ -582,7 +582,7 @@ Spreadsheet applications (Excel, Google Sheets, LibreOffice Calc) evaluate cells
 - **UTF-8 BOM Support**: CSV downloads prepend `\uFEFF` so Excel decodes the Indian Rupee symbol (`₹`) and Indic scripts (`देवनागरी`) without mojibake.
 
 ### ICS Floating Local Times & UTF-8 Octet Folding
-The calendar builder (`src/lib/export/ics.ts`) generates RFC 5545 compliant `VCALENDAR` files:
+The calendar builder (`src/lib/export/ics.ts`) generates RFC 5545 `VCALENDAR` files:
 - **Why Floating Local Time**: `DTSTART` and `DTEND` are formatted as `YYYYMMDDTHHMMSS` without a trailing `Z` or `TZID` parameter. Celebration run-of-show slots (e.g. a 7:00 PM dinner) represent wall-clock times at the event venue; floating time ensures the session appears at 7:00 PM in the host's calendar app regardless of which timezone their device is in when they import the `.ics` file.
 - **UTF-8 Aware 75-Octet Line Folding**: Per RFC 5545 Section 3.1, lines exceeding 75 UTF-8 bytes are folded with CRLF followed by a single space (`\r\n `). `foldIcsLine` iterates by full Unicode code points (`for (const char of line)`) and measures byte length via `TextEncoder`, guaranteeing multi-byte UTF-8 sequences (`₹`, Devanagari, emoji) are never split mid-character.
 

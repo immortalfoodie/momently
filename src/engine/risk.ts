@@ -19,7 +19,14 @@ export interface RiskReport {
   breakdown: Array<{ ruleId: string; points: number }>;
 }
 
-function calculateBand(score: number): RiskBand {
+/**
+ * Maps a numeric risk score (0-100) to its corresponding risk severity band.
+ * WHY: Provides human-readable categorization for UI display and threshold evaluation.
+ *
+ * @param score - Numeric risk score between 0 and 100.
+ * @returns RiskBand ('calm' | 'manageable' | 'exposed' | 'fragile').
+ */
+export function calculateBand(score: number): RiskBand {
   if (score >= 75) return 'fragile';
   if (score >= 50) return 'exposed';
   if (score >= 25) return 'manageable';

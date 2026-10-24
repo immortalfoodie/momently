@@ -73,6 +73,8 @@ describe('UI Primitive: Tabs & LinkTabs', () => {
     const inactiveLink = screen.getByRole('link', { name: 'Budget' });
     expect(inactiveLink).not.toHaveAttribute('aria-current');
 
+    expect(screen.getByRole('navigation', { name: 'Event sub-navigation' })).toBeInTheDocument();
+
     await expectNoAxeViolations(container);
   });
 });

@@ -66,37 +66,35 @@ The user inspects exact price, item, and timeline diffs before clicking "Approve
 ### Budget Guardian, Chaos Lab, and Chaos Score
 - **Budget Guardian**: Intercepts any proposed change or user edit that would exceed the hard budget cap. Rather than simply blocking the host, it computes non-destructive funding options (stepping down flexible, unlocked line items) while strictly protecting locked categories.
 - **Chaos Lab**: Stress-tests plans against four realistic disruptions: monsoon rain, budget cuts, guest surges, and sudden vendor cancellations.
-- **Chaos Score**: A transparent, deterministic sum of rule-based penalty points evaluated directly from the plan, grouped into three risk bands:
-  - *Rock solid* (0–20): High contingency resilience, healthy transition slack, low vulnerability.
-  - *Manageable risk* (21–50): Minor gaps such as missing vendor quotes or tight schedule buffers.
-  - *High vulnerability* (51–100): Critical exposure (e.g., outdoor venue in monsoon without shelter).
+- **Chaos Score**: A transparent, deterministic sum of rule-based penalty points evaluated directly from the plan, grouped into four risk severity bands:
+  - *Calm* (0–24): High contingency resilience, healthy transition slack, low vulnerability.
+  - *Manageable* (25–49): Minor gaps such as missing vendor quotes or tight schedule buffers.
+  - *Exposed* (50–74): Notable exposure such as unconfirmed primary vendors or tight contingency margins.
+  - *Fragile* (75–100): Critical exposure (e.g., outdoor venue in monsoon without shelter).
   The score is a fully explainable vulnerability index, not an opaque probabilistic prediction.
 
 ## How the Solution Works
 
-The user journey proceeds across 7 cohesive steps matching the guided tour:
+The user journey proceeds across 6 cohesive steps matching the interactive demo tour:
 
 1. **Vibe-to-Vision Intake**: The host enters an unstructured celebration narrative in English, Hindi, or Hinglish (e.g., *"Parents' 25th anniversary in Mumbai, ₹1.5 lakh budget, 80 guests, old Bollywood vibe"*).
    - *Why it matters*: Converts ambiguous stories into structured constraints, city tier pricing, and tailored starter concepts.
    - *What to inspect*: The ₹1.5 lakh hard cap, 80 guests, Mumbai tier-1 rates, and 3 concepts initialize automatically.
-2. **Concept Studio**: The host reviews three distinct concepts generated from their story (e.g., Vintage Bollywood, Regal Elegance, Contemporary Minimalist).
+2. **Pick the Vintage Bollywood Concept**: The host reviews three distinct concepts generated from their story and selects Vintage Bollywood.
    - *Why it matters*: Translates aesthetic preferences into concrete rate-card quality tiers without manual arithmetic.
    - *What to inspect*: The assistant proposes a concept patch with exact line-item diffs that waits for your approval click.
-3. **Budget Guardian in Action**: The host upgrades a core item (such as premium stage decor).
-   - *Why it matters*: Prevents over-cap commits by generating zero-sum funding trade-offs across flexible categories.
+3. **Upgrade Decor with Budget Guardian**: The host upgrades a core item (such as premium stage decor).
+   - *Why it matters*: Prevents over-cap commits by generating zero-sum funding trade-offs across flexible categories while protecting locked items.
    - *What to inspect*: The funding options step down flexible items while strictly protecting the upgraded decor family.
-4. **Scale and Headcount**: The host increases guest count from 80 to 110.
+4. **Increase Guests from 80 to 110**: The host increases guest count from 80 to 110.
    - *Why it matters*: A living celebration plan scales catering, seating tables, and contingency reserves dynamically.
    - *What to inspect*: Compare holding the ₹1.5 lakh cap through rebalancing against raising the cap.
-5. **Chaos Lab Stress Test**: The host tests a monsoon rain scenario.
+5. **What If It Rains? (Chaos Lab)**: The host tests a monsoon rain scenario.
    - *Why it matters*: Stress-testing weather risk before contracts are signed turns potential panic into a pre-priced recovery plan.
-   - *What to inspect*: The Chaos Score reduction across canopy cover and standby indoor backup options.
-6. **Execution Coordination**: On Timeline, Checklist, and Guests, the host manages the run of show and guest needs.
-   - *Why it matters*: Eliminates coordination surprises across multi-event schedules, dietary requirements, and vendor deliverables.
-   - *What to inspect*: Transition buffers between sessions, urgency-grouped tasks, and Jain/vegan meal count summaries.
-7. **Event Day & Local Export**: On celebration day, the host uses the calm, phone-first Event Day tracker.
-   - *Why it matters*: Phone-first execution keeps hosts calm under pressure with delay buffer absorption and instant local exports.
-   - *What to inspect*: Live now/next session cards, 15-minute delay absorption, and offline CSV/ICS/print exports.
+   - *What to inspect*: The Chaos Score reduction across canopy cover and standby indoor backup hall recovery options.
+6. **The Event Kit & Final Checklist**: The host reviews the synchronized execution checklist and export center.
+   - *Why it matters*: Every approved decision, contingency task, and vendor requirement flows into an actionable checklist and offline exports.
+   - *What to inspect*: Prioritized task windows (months out, weeks out, week of, day of), offline CSV/ICS exports, and printable run-sheets.
 
 ## Run It
 
@@ -123,24 +121,24 @@ Open `http://localhost:3000` in your browser. Click **Watch the demo** on the ho
   GEMINI_MODEL=gemini-2.5-flash
   AI_PROVIDER=gemini
   ```
-  Set `GEMINI_MODEL` to a model currently available in Google AI Studio (e.g., `gemini-2.5-flash`).
+  Set `GEMINI_MODEL` to a supported Gemini model (e.g., `gemini-2.5-flash`).
 
 ## Evaluation Criteria Alignment
 
 | Parameter | Verifiable Implementation Points | Reference Files |
 |---|---|---|
 | **Code Quality** | Strict TypeScript throughout with zero `any` types and zero `console.log` statements. All source files stay under ~250 lines. Clean architectural layers and restricted import boundaries enforced via ESLint rules preventing server code leaks into client components. | [`eslint.config.mjs`](eslint.config.mjs)<br>[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
-| **Security** | Server-only LLM execution isolating API keys from client bundles. Strict Zod validation on all API requests and responses. In-memory IP rate limiting and 16 KB body caps. Content Security Policy headers, prompt injection defense, and CSV formula injection neutralizing. | [`src/server/`](src/server)<br>[`src/server/rateLimit.ts`](src/server/rateLimit.ts)<br>[`src/lib/export/csv.ts`](src/lib/export/csv.ts)<br>[`tests/server/guard.test.ts`](tests/server/guard.test.ts) |
-| **Efficiency** | Pure deterministic engine executes locally with zero network hops. Derived metrics memoized via module-level `WeakMap` caches keyed by immutable plan references in selectors. Production client JS bundles gzipped < 125 kB per route. | [`src/store/selectors.ts`](src/store/selectors.ts)<br>[`tests/store/memoization.test.ts`](tests/store/memoization.test.ts) |
-| **Testing** | 117 test files and 572 automated tests passing with 88.56% overall statement coverage. Layered pyramid covers pure engine units, 100-sequence property invariants, automated axe accessibility audits, API handlers, and the golden-path tour journey. | [`tests/engine/invariants.test.ts`](tests/engine/invariants.test.ts)<br>[`tests/integration/demoJourney.test.ts`](tests/integration/demoJourney.test.ts) |
-| **Accessibility** | Built to WCAG 2.1 AA standards. Includes semantic landmarks, skip link, ARIA live region announcements, dual-semantic progress meters, keyboard roving tabindex, and zero axe-core audit violations on any view. | [`src/components/ui/LiveRegion.tsx`](src/components/ui/LiveRegion.tsx)<br>[`src/components/ui/ProgressMeter.tsx`](src/components/ui/ProgressMeter.tsx)<br>[`src/components/ui/SkipLink.tsx`](src/components/ui/SkipLink.tsx) |
+| **Security** | Server-only LLM execution isolating API keys from client bundles. Strict Zod validation on all API requests and responses. In-memory IP rate limiting (default 30 req/min, range 1–120) and body caps (8 KB intake, 200 KB message/concepts, 20 KB narrate). Content Security Policy headers, prompt injection defense, and CSV formula injection neutralizing. | [`src/server/`](src/server)<br>[`src/server/rateLimit.ts`](src/server/rateLimit.ts)<br>[`src/lib/export/csv.ts`](src/lib/export/csv.ts)<br>[`tests/server/guard.test.ts`](tests/server/guard.test.ts) |
+| **Efficiency** | Pure deterministic engine executes locally with zero network hops. Derived metrics memoized via module-level `WeakMap` caches keyed by immutable plan references in selectors. Zero unneeded re-renders across tabular and timeline views. | [`src/store/selectors.ts`](src/store/selectors.ts)<br>[`tests/store/memoization.test.ts`](tests/store/memoization.test.ts) |
+| **Testing** | 118 test files and 574 automated tests passing with overall statement coverage over 88%. Layered pyramid covers pure engine units, 100-sequence property invariants, automated axe accessibility audits, API handlers, and the golden-path tour journey. | [`tests/engine/invariants.test.ts`](tests/engine/invariants.test.ts)<br>[`tests/integration/demoJourney.test.ts`](tests/integration/demoJourney.test.ts) |
+| **Accessibility** | Built to WCAG 2.1 AA targets. Automated axe-core checks run in the test suite; colour contrast is verified by calculation (see docs/ARCHITECTURE.md), because jsdom cannot measure it. A manual screen-reader audit has not been done. | [`src/components/ui/LiveRegion.tsx`](src/components/ui/LiveRegion.tsx)<br>[`src/components/ui/ProgressMeter.tsx`](src/components/ui/ProgressMeter.tsx)<br>[`src/components/ui/SkipLink.tsx`](src/components/ui/SkipLink.tsx) |
 | **Problem Alignment** | Purpose-built for Indian hosts: multi-lingual NLP intake (English, Hindi, Hinglish), 3-tier city rate cards, culturally grounded dietary tracking (Jain, vegetarian, allergies), and plain-English host copy validated against banned jargon in automated quality tests. | [`src/engine/pricing.ts`](src/engine/pricing.ts)<br>[`src/engine/guestInsights.ts`](src/engine/guestInsights.ts)<br>[`src/lib/copy.ts`](src/lib/copy.ts)<br>[`tests/quality/copy.test.ts`](tests/quality/copy.test.ts) |
 
 ## Security and Privacy
 
 - **Validated Boundaries**: Every incoming request and outgoing response is validated against strict Zod domain schemas. Malformed payloads, invalid characters, or unauthorized fields are immediately rejected with structured error responses.
 - **Server-Only LLM Isolation**: The `@google/genai` SDK and secret API keys are strictly confined to [`src/server/`](src/server) and [`src/llm/`](src/llm); client-side components cannot import them.
-- **Rate Limiting & Payload Caps**: Endpoints enforce IP-based sliding-window rate limits (10 intake calls/min, 20 message calls/min) and strict body caps (16 KB payload limit, 2 KB text field limit) to prevent denial-of-service and cost spikes.
+- **Rate Limiting & Payload Caps**: Endpoints enforce IP-based sliding-window rate limits (default 30 requests/minute per IP, configurable 1–120) and strict body caps (Intake: 8 KB, Message/Concepts: 200 KB, Narrate: 20 KB) to prevent denial-of-service and cost spikes.
 - **Security Headers**: Standard response headers include strict Content Security Policy (CSP), `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, and `Referrer-Policy: strict-origin-when-cross-origin`.
 - **Zero Server Storage**: Plans, notes, and contacts are stored entirely in client-side browser `localStorage`. No host data is persisted on remote databases.
 - **Privacy by Construction**: Guest lists record numeric counts only (no guest names or phone numbers). Vendor quote records and personal emergency contacts are kept in client memory and never dispatched to the LLM.
@@ -148,10 +146,12 @@ Open `http://localhost:3000` in your browser. Click **Watch the demo** on the ho
 
 ## Accessibility
 
+Built to WCAG 2.1 AA targets. Automated axe-core checks run in the test suite; colour contrast is verified by calculation (see docs/ARCHITECTURE.md), because jsdom cannot measure it. A manual screen-reader audit has not been done.
+
 - **Semantic Landmarks**: Consistent layout landmark hierarchy featuring standard `banner`, `navigation`, `main`, and `complementary` regions on all pages.
 - **Keyboard Navigation**: Skip-to-content shortcut link targeting `#main-content`, roving tabindex on segmented controls and tabs, and trap-and-restore focus across all dialogs and drawers.
 - **Live Screen-Reader Announcements**: A polite ARIA live region announces version increments, concept changes, budget over-cap warnings, and search filtering via `useAnnouncer()`.
-- **Non-Color Indicators**: Color is never the sole communicator of state; every alert badge, progress bar, and health indicator pairs color with distinct icons and plain-text descriptors. Contrast strictly meets WCAG AA ratios (minimum 4.5:1 for normal text).
+- **Non-Color Indicators**: Color is never the sole communicator of state; every alert badge, progress bar, and health indicator pairs color with distinct icons and plain-text descriptors. Calculated contrast targets WCAG AA ratios (minimum 4.5:1 for normal text).
 - **Reduced Motion & Focusable Tables**: Animations respect `prefers-reduced-motion` settings. Wide data tables are wrapped in focusable `role="region"` containers with explicit accessibility labels and keyboard scrolling.
 
 ## Testing
@@ -185,12 +185,12 @@ npm run test:coverage
 | **Components & UI** (`src/components/`) | 83.25% | 72.40% | 82.50% | 86.10% |
 | **Total Project** | **88.56%** | **76.37%** | **87.29%** | **90.25%** |
 
-*Current Suite Status*: **117 test files, 572 tests passed, 0 failures**.
+*Current Suite Status*: **118 test files, 574 tests passed, 0 failures**.
 
 ## Assumptions and Limitations
 
 - **Rate Card Estimates**: Pricing figures originate from curated rate cards covering Tier 1 (Mumbai, Delhi NCR, Bengaluru), Tier 2 (Pune, Jaipur, Ahmedabad, Chandigarh, Hyderabad, Chennai, Kolkata), and Tier 3 (rest of India) cities. They provide realistic planning benchmarks, not binding vendor quotes.
-- **Contingency Formulations**: Backup indoor hall reservations are estimated at an assumed 25% hold fee of the primary banquet venue cost, reflecting standard Indian venue reservation policies.
+- **Contingency Formulations**: Backup indoor hall reservations are estimated at an assumed 20% hold fee of the primary banquet venue cost, reflecting standard Indian venue reservation policies.
 - **Planning Heuristics**: Household sizing of 3 guests per invitation, a 5% catering buffer against food shortages, 8 seats per dining table, and monsoon season spanning June through September are documented planning assumptions.
 - **No Live Vendor Network**: The application does not connect to real-time vendor booking APIs, calendar availability feeds, or payment gateways.
 - **Browser-Only Storage**: Event data exists solely in browser `localStorage`. Clearing site storage deletes local plans; hosts should download JSON backup files from Settings.
@@ -250,4 +250,4 @@ src/
 
 ## License
 
-Apache-2.0. Built for the Google AI Studio / Gemini Developer Challenge.
+Built for a GenAI application challenge. Source code is provided for evaluation.

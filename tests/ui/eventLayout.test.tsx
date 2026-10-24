@@ -79,6 +79,7 @@ describe('Event Layout Shell (/events/[id])', () => {
     );
 
     expect(screen.getByText(/Loaded Event:.*25th Anniversary/i)).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: 'Event sections' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Overview' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Budget' })).toBeInTheDocument();
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { DEMO_SCENARIO } from '@/data/demoScenario';
 import type { EventPlan } from '@/domain/types';
 import { createPlan } from '@/engine/planFactory';
-import { RISK_WEIGHTS, scoreRisks } from '@/engine/risk';
+import { calculateBand, RISK_WEIGHTS, scoreRisks } from '@/engine/risk';
 import { createIdFactory } from '@/lib/id';
 
 function deepFreeze<T>(obj: T): Readonly<T> {
@@ -203,5 +203,21 @@ describe('Chaos Score & Risk Engine', () => {
     });
     const outdoorReport = scoreRisks(outdoorJulyPlan, ctx);
     expect(outdoorReport.score).toBeGreaterThan(indoorReport.score);
+  });
+
+  it('calculateBand strictly returns only calm, manageable, exposed, or fragile across the entire score spectrum', () => {
+    const validBands = new Set(['calm', 'manageable', 'exposed', 'fragile']);
+    for (let score = -10; score <= 120; score++) {
+      const band = calculateBand(score);
+      expect(validBands.has(band)).toBe(true);
+    }
+    expect(calculateBand(0)).toBe('calm');
+    expect(calculateBand(24)).toBe('calm');
+    expect(calculateBand(25)).toBe('manageable');
+    expect(calculateBand(49)).toBe('manageable');
+    expect(calculateBand(50)).toBe('exposed');
+    expect(calculateBand(74)).toBe('exposed');
+    expect(calculateBand(75)).toBe('fragile');
+    expect(calculateBand(100)).toBe('fragile');
   });
 });
