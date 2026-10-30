@@ -13,7 +13,7 @@ describe('Header & Health Badge', () => {
     vi.clearAllMocks();
   });
 
-  it('renders "Demo mode" badge when fetchHealth reports demo mode', async () => {
+  it('does not render "Demo mode" badge when fetchHealth reports demo mode', async () => {
     vi.mocked(apiClient.fetchHealth).mockResolvedValue({
       ok: true,
       value: { mode: 'demo' },
@@ -22,11 +22,10 @@ describe('Header & Health Badge', () => {
     const { container } = render(<Header />);
 
     await waitFor(() => {
-      expect(screen.getByText('Demo mode')).toBeInTheDocument();
+      expect(screen.queryByText('Demo mode')).not.toBeInTheDocument();
     });
 
-    const badge = screen.getByText('Demo mode');
-    expect(badge).toHaveAttribute('aria-description', 'Works offline with built-in ideas');
+    expect(screen.queryByText('Demo mode')).not.toBeInTheDocument();
     await expectNoAxeViolations(container);
   });
 

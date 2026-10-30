@@ -5,6 +5,7 @@ import * as NextNavigation from 'next/navigation';
 import { useAnnouncer } from '@/components/ui/LiveRegion';
 import { sendMessage, slimPlanForRequest, submitIntake, type ClientError } from '@/lib/apiClient';
 import { outcomeToText } from '@/lib/chatText';
+import { INTAKE_CLARIFY_REPLY, looksLikeEventBrief } from '@/lib/intakeGate';
 import { engineContext } from '@/store/engineContext';
 import { useEventsStore } from '@/store/eventsStore';
 import type { ChatMessage } from '@/store/persistSchema';
@@ -162,6 +163,16 @@ export function ChatProvider({ children, initialEventId }: ChatProviderProps) {
         ...prev,
         { id: engineContext.ids('msg'), role: 'user', text: trimmed, createdAt: nowIso },
       ]);
+      if (!looksLikeEventBrief(trimmed)) {
+        setIntakeMessages((prev) => [
+          ...prev,
+          { id: engineContext.ids('msg'), role: 'assistant', text: INTAKE_CLARIFY_REPLY, createdAt: nowIso },
+        ]);
+        lastFailedTextRef.current = null;
+        setCanRetry(false);
+        announce(INTAKE_CLARIFY_REPLY);
+        return;
+      }
       const res = await submitIntake(trimmed);
       if (res.ok) {
         const title = res.value.plan.meta.title;

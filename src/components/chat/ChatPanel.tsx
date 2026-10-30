@@ -37,13 +37,9 @@ function ChatPanelInner({ onClose }: { onClose?: () => void }) {
           <h2 className="font-serif text-base font-bold text-ink truncate">
             Assistant
           </h2>
-          {healthMode === 'live' ? (
+          {healthMode === 'live' && (
             <Badge tone="success" className="whitespace-nowrap shrink-0">
               Live AI
-            </Badge>
-          ) : (
-            <Badge tone="brand" className="whitespace-nowrap shrink-0">
-              Demo mode
             </Badge>
           )}
         </div>

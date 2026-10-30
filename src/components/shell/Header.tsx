@@ -58,16 +58,7 @@ export function Header({ onToggleMobileNav }: HeaderProps) {
           >
             Live AI
           </Badge>
-        ) : health === 'demo' ? (
-          <Badge
-            tone="brand"
-            className="hidden sm:inline-flex"
-            title="Works offline with built-in ideas"
-            aria-description="Works offline with built-in ideas"
-          >
-            Demo mode
-          </Badge>
-        ) : (
+        ) : health === 'offline' ? (
           <Badge
             tone="neutral"
             className="hidden sm:inline-flex"
@@ -76,7 +67,7 @@ export function Header({ onToggleMobileNav }: HeaderProps) {
           >
             Offline
           </Badge>
-        )}
+        ) : null}
 
         <div
           role="img"
