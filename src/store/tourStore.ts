@@ -15,7 +15,7 @@ export interface TourState {
 }
 
 /**
- * Ephemeral, non-persisted Zustand store managing the guided 6-step demo tour.
+ * Ephemeral, non-persisted Zustand store managing the guided 8-step demo tour.
  * WHY: Keeps tour progress in memory across route transitions without polluting persisted user storage
  * or mutating active event plans.
  */

@@ -181,7 +181,17 @@ const scriptedSteps: ScriptedStep[] = [
     userMessage: 'What if it rains?',
   },
   {
-    id: 'step_6_final_checklist',
+    id: 'step_6_compound_request',
+    label: 'Two Requests at Once',
+    userMessage: 'Save ₹10,000 and tell me what happens if the photographer cancels.',
+  },
+  {
+    id: 'step_7_describe_disaster',
+    label: 'Describe Your Own Disaster',
+    userMessage: 'Heavy rain and the photographer just cancelled',
+  },
+  {
+    id: 'step_8_final_checklist',
     label: 'Final Checklist',
     userMessage: 'Generate my final checklist.',
   },

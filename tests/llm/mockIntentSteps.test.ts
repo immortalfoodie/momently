@@ -26,6 +26,12 @@ describe('LLM: compound intent mock', () => {
     expect(splitClauses('Old Bollywood songs and good food')).toEqual(['Old Bollywood songs and good food']);
   });
 
+  it('never splits inside Indian-format numbers', () => {
+    const steps = toIntentSteps(mockIntentSteps(input('Save ₹10,000 and what if the photographer cancels')));
+    expect(steps[0]).toEqual({ kind: 'save_money', amount: 10000 });
+    expect(steps[1]?.kind).toBe('simulate');
+  });
+
   it('returns steps for a two-part request', () => {
     const out = mockIntentSteps(input('Add 20 more guests and what if it rains'));
     expect('steps' in out).toBe(true);

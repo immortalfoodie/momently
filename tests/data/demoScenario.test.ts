@@ -44,8 +44,8 @@ describe('Demo Scenario Data Layer', () => {
     expect(DEMO_SCENARIO.hostBrief).toContain('25th anniversary');
   });
 
-  it('verifies all 6 scripted demo steps exist in proper sequence', () => {
-    expect(DEMO_SCENARIO.scriptedSteps).toHaveLength(6);
+  it('verifies all 8 scripted demo steps exist in proper sequence', () => {
+    expect(DEMO_SCENARIO.scriptedSteps).toHaveLength(8);
 
     const stepIds = DEMO_SCENARIO.scriptedSteps.map((s) => s.id);
     expect(stepIds).toEqual([
@@ -54,7 +54,9 @@ describe('Demo Scenario Data Layer', () => {
       'step_3_upgrade_decor',
       'step_4_increase_guests',
       'step_5_rain_contingency',
-      'step_6_final_checklist',
+      'step_6_compound_request',
+      'step_7_describe_disaster',
+      'step_8_final_checklist',
     ]);
   });
 

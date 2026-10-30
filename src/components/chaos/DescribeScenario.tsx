@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { CHAOS_SCENARIO_CATALOG, type ChaosScenarioInput } from '@/domain/chaosSchemas';
 import type { EventPlan } from '@/domain/types';
 import {
@@ -111,7 +112,9 @@ function OutcomeView({
  * Nothing is applied without the host approving a recovery option.
  */
 export function DescribeScenario({ plan, onRun }: DescribeScenarioProps) {
-  const [text, setText] = useState('');
+  const searchParams = useSearchParams();
+  // The guided tour pre-fills a story via ?describe=; the host still presses the button.
+  const [text, setText] = useState(() => (searchParams.get('describe') ?? '').slice(0, CHAOS_DESCRIBE_MAX_CHARS));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [outcome, setOutcome] = useState<DescribeOutcome | null>(null);

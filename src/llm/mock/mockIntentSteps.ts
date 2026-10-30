@@ -4,9 +4,12 @@ import { mockIntent } from './mockIntent';
 const ACTION_VERBS =
   'what|tell|make|add|increase|decrease|upgrade|downgrade|save|set|change|simulate|lower|raise|cut|reduce|switch|pick|select|combine|find|can|check|show';
 
-/** Splits on ", and", "then", "also", or "and" followed by an action verb. */
+/**
+ * Splits on ", and", "then", "also", or "and" followed by an action verb.
+ * Commas inside numbers ("₹10,000") never split.
+ */
 const CLAUSE_SPLIT = new RegExp(
-  String.raw`\s*(?:,\s*(?:and\s+|then\s+)?|;\s*|\band then\b|\bthen\b|\balso\b|\band\b(?=\s+(?:${ACTION_VERBS})\b))\s*`,
+  String.raw`\s*(?:,(?!\d)\s*(?:and\s+|then\s+)?|;\s*|\band then\b|\bthen\b|\balso\b|\band\b(?=\s+(?:${ACTION_VERBS})\b))\s*`,
   'i',
 );
 

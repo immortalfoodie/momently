@@ -98,6 +98,15 @@ function assertPreApprovalOutcome(
   }
 }
 
+function assertCompoundOutcome(stepId: string, outcome: AssistantOutcome) {
+  if (stepId !== 'step_6_compound_request') return;
+  expect(outcome.kind).toBe('proposal');
+  if (outcome.kind === 'proposal') {
+    expect(outcome.options).toHaveLength(1);
+    expect(outcome.steps?.map((s) => s.status)).toEqual(['planned', 'checked']);
+  }
+}
+
 function lockPhotoVideoItem(eventId: string, planAfter: EventPlan) {
   const photoItem = planAfter.budgetItems.find((i) => i.rateKey?.startsWith('photo_video.'));
   if (!photoItem) return;
@@ -176,7 +185,7 @@ describe('Golden-Path Integration: Guided Demo Tour Journey', () => {
     });
 
     const chatSteps = DEMO_TOUR.filter((s) => s.kind === 'chat');
-    expect(chatSteps).toHaveLength(4);
+    expect(chatSteps).toHaveLength(5);
 
     for (const step of chatSteps) {
       const recordBefore = useEventsStore.getState().events[eventId]!;
@@ -201,6 +210,7 @@ describe('Golden-Path Integration: Guided Demo Tour Journey', () => {
       const { outcome } = (await response.json()) as MessageResponse;
 
       assertPreApprovalOutcome(step.stepId, planBefore, outcome);
+      assertCompoundOutcome(step.stepId, outcome);
 
       const chosenOption = selectOptionForApproval(outcome);
       expect(isRaiseCapOption(chosenOption)).toBe(false);

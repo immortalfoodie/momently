@@ -21,9 +21,10 @@ function getScriptedMessage(stepId: string): string {
 }
 
 /**
- * Six-step guided demo tour aligned 1:1 with DEMO_SCENARIO.scriptedSteps.
+ * Eight-step guided demo tour aligned 1:1 with DEMO_SCENARIO.scriptedSteps.
  * WHY: Walks evaluators through Vibe-to-Vision intake, concept selection, Budget Guardian
- * trade-offs, guest scaling, Chaos Lab rain recovery, and the final event kit without
+ * trade-offs, guest scaling, Chaos Lab rain recovery, a compound chat request, a free-text
+ * disaster, and the final event kit without
  * ever auto-approving changes on the user's behalf.
  */
 export const DEMO_TOUR: readonly DemoTourStep[] = [
@@ -78,7 +79,28 @@ export const DEMO_TOUR: readonly DemoTourStep[] = [
     userMessage: getScriptedMessage('step_5_rain_contingency'),
   },
   {
-    stepId: 'step_6_final_checklist',
+    stepId: 'step_6_compound_request',
+    kind: 'chat',
+    title: 'Two Requests in One Message',
+    whyItMatters:
+      'Real hosts ask for several things at once. The AI splits the message into steps and the planner checks each one against the plan as it would look after the previous step.',
+    lookFor:
+      "A numbered \"What I'll do\" list: the saving goes into one proposal, while the photographer test is a read-only check. Nothing changes until you approve.",
+    userMessage: getScriptedMessage('step_6_compound_request'),
+  },
+  {
+    stepId: 'step_7_describe_disaster',
+    kind: 'navigate',
+    path: `chaos?describe=${encodeURIComponent(getScriptedMessage('step_7_describe_disaster'))}`,
+    title: 'Describe Your Own Disaster',
+    whyItMatters:
+      'Hosts think in stories, not menus. The AI maps a free-text problem to scenarios the planner can price and recover from.',
+    lookFor:
+      'The story is pre-filled in Chaos Lab. Press "Simulate my scenario" to see how it was understood, then switch between the problems it found.',
+    userMessage: getScriptedMessage('step_7_describe_disaster'),
+  },
+  {
+    stepId: 'step_8_final_checklist',
     kind: 'navigate',
     path: 'checklist',
     title: 'The Event Kit & Final Checklist',
@@ -86,6 +108,6 @@ export const DEMO_TOUR: readonly DemoTourStep[] = [
       'Every approved decision and contingency task flows into an actionable execution checklist ready for event week.',
     lookFor:
       'Review the prioritized tasks, due-date windows, and export controls on the checklist page.',
-    userMessage: getScriptedMessage('step_6_final_checklist'),
+    userMessage: getScriptedMessage('step_8_final_checklist'),
   },
 ];

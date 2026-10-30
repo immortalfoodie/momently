@@ -9,12 +9,13 @@ import { useEventsStore } from '@/store/eventsStore';
 import { expectNoAxeViolations } from '../helpers/a11y';
 
 let mockEventId = 'evt_demo';
+let mockSearch = '';
 
 vi.mock('next/navigation', () => ({
   usePathname: () => `/events/${mockEventId}/chaos`,
   useRouter: () => ({ push: vi.fn() }),
   useParams: () => ({ id: mockEventId }),
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => new URLSearchParams(mockSearch),
 }));
 
 function mockFetchOnce(body: unknown, status = 200) {
@@ -35,6 +36,7 @@ function renderPage() {
 
 describe('UI: Chaos Lab free-text disaster', () => {
   beforeEach(() => {
+    mockSearch = '';
     useEventsStore.setState({ events: {}, order: [], hydrated: true });
     const demo = buildDemoPlan({
       ids: createIdFactory('describe_ui'),
@@ -51,6 +53,14 @@ describe('UI: Chaos Lab free-text disaster', () => {
     expect(scenarioChipLabel({ type: 'late_start', delayMinutes: 120 })).toContain('120 min');
     expect(scenarioChipLabel({ type: 'guest_surge', extraGuests: 30 })).toContain('+30');
     expect(scenarioChipLabel({ type: 'rain' })).toMatch(/rain/i);
+  });
+
+  it('pre-fills a story from the tour link without sending it', () => {
+    const fetchMock = mockFetchOnce({});
+    mockSearch = `describe=${encodeURIComponent('Heavy rain and the photographer just cancelled')}`;
+    renderPage();
+    expect(screen.getByLabelText('What could go wrong?')).toHaveValue('Heavy rain and the photographer just cancelled');
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it('asks for a description before calling the server', () => {

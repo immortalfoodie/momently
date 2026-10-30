@@ -41,7 +41,7 @@ describe('UI: Guided Demo TourBar', () => {
     useTourStore.getState().exit();
   });
 
-  it('walks through all 6 steps with fakes, shows manual approval hint, supports Back and Exit, and never calls approveAndApply', async () => {
+  it('walks through all 8 steps with fakes, shows manual approval hint, supports Back and Exit, and never calls approveAndApply', async () => {
     const demo = buildDemoPlan(ctx);
     const approveSpy = vi.spyOn(useEventsStore.getState(), 'approveAndApply');
 
@@ -82,7 +82,7 @@ describe('UI: Guided Demo TourBar', () => {
     );
 
     expect(screen.getByRole('region', { name: 'Demo guide' })).toBeInTheDocument();
-    expect(screen.getByText('Step 1 of 6')).toBeInTheDocument();
+    expect(screen.getByText('Step 1 of 8')).toBeInTheDocument();
     await expectNoAxeViolations(container);
 
     // Run Step 1 (intake)
@@ -92,10 +92,10 @@ describe('UI: Guided Demo TourBar', () => {
     });
     expect(useTourStore.getState().eventId).toBe(demo.plan.id);
 
-    // Walk through Steps 2..5 (chat steps)
-    for (let stepNum = 2; stepNum <= 5; stepNum++) {
+    // Walk through Steps 2..6 (chat steps)
+    for (let stepNum = 2; stepNum <= 6; stepNum++) {
       fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-      expect(screen.getByText(`Step ${stepNum} of 6`)).toBeInTheDocument();
+      expect(screen.getByText(`Step ${stepNum} of 8`)).toBeInTheDocument();
 
       fireEvent.click(screen.getByRole('button', { name: 'Run this step' }));
       await waitFor(() => {
@@ -107,19 +107,27 @@ describe('UI: Guided Demo TourBar', () => {
       });
     }
 
-    expect(sendSpy).toHaveBeenCalledTimes(4);
+    expect(sendSpy).toHaveBeenCalledTimes(5);
 
-    // Step 6 (navigate to checklist)
+    // Step 7 (Chaos Lab with the story pre-filled, never auto-run)
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-    expect(screen.getByText('Step 6 of 6')).toBeInTheDocument();
-    expect(screen.getByText(DEMO_TOUR[5]!.title)).toBeInTheDocument();
+    expect(screen.getByText('Step 7 of 8')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Run this step' }));
+    expect(mockPush).toHaveBeenCalledWith(
+      `/events/${demo.plan.id}/chaos?describe=${encodeURIComponent('Heavy rain and the photographer just cancelled')}`,
+    );
+
+    // Step 8 (navigate to checklist)
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    expect(screen.getByText('Step 8 of 8')).toBeInTheDocument();
+    expect(screen.getByText(DEMO_TOUR[7]!.title)).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Run this step' }));
     expect(mockPush).toHaveBeenCalledWith(`/events/${demo.plan.id}/checklist`);
 
     // Back button works
     fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-    expect(screen.getByText('Step 5 of 6')).toBeInTheDocument();
+    expect(screen.getByText('Step 7 of 8')).toBeInTheDocument();
 
     // Never auto-approved anything
     expect(approveSpy).not.toHaveBeenCalled();

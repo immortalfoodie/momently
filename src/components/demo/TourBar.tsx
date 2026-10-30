@@ -195,7 +195,7 @@ function TourBarInner() {
 }
 
 /**
- * Interactive, non-modal guided tour bar walking users through the 6-step celebration planning flow.
+ * Interactive, non-modal guided tour bar walking users through the 8-step celebration planning flow.
  * Never traps keyboard focus and never auto-approves proposals on the user's behalf.
  */
 export function TourBar() {
