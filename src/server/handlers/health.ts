@@ -14,6 +14,7 @@ export async function handleHealth(
   const body: HealthResponse = {
     mode: deps.mode,
     ...(deps.modeNote ? { note: deps.modeNote } : {}),
+    ...(deps.mode === 'live' && deps.modelName ? { model: deps.modelName } : {}),
   };
 
   return jsonResponse(body);

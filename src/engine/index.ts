@@ -27,3 +27,4 @@ export * from './scheduleDelay';
 export * from './stage';
 export * from './diff';
 export * from './budgetView';
+export * from './budgetFacts';

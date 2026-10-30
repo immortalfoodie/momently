@@ -10,6 +10,8 @@ export interface ProviderFactoryResult {
   provider: LLMProvider;
   mode: 'live' | 'demo';
   note?: string;
+  /** Model identifier in live mode. Not secret; shown to hosts so they know which AI answered. */
+  model?: string;
 }
 
 /**
@@ -39,6 +41,7 @@ export function createProviderFromEnv(
       return {
         provider: new GeminiProvider({ apiKey, model }),
         mode: 'live',
+        model,
       };
     }
     return {

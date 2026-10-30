@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import type { BudgetCategory, BudgetItem } from '@/domain/types';
+import { NarrationButton } from '@/components/review/NarrationButton';
 import { OptionCard } from '@/components/review/OptionCard';
+import { buildBudgetFacts } from '@/engine/budgetFacts';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
 import { Icon } from '@/components/ui/Icon';
@@ -143,6 +145,12 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
           Your budget at a glance
         </h2>
         <BudgetSummary plan={plan} onEditCap={() => setIsCapEditorOpen(true)} />
+        <NarrationButton
+          purpose="budget_explainer"
+          buildFacts={() => buildBudgetFacts(plan)}
+          label="Explain my budget"
+          regionLabel="Budget in plain words"
+        />
       </section>
 
       {/* Region 2: Distributions */}

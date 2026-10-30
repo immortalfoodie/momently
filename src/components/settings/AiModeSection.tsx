@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { fetchHealth } from '@/lib/apiClient';
+import { useAiMode } from '@/lib/useAiMode';
 
 type DisplayMode = 'Demo mode' | 'Live AI' | 'Offline';
 
@@ -16,27 +15,18 @@ const MODE_DESCRIPTIONS: Record<DisplayMode, string> = {
     'The AI service could not be reached right now. All local planning tools, budget calculations, timelines, checklists, chaos simulations and exports continue to work offline.',
 };
 
-export function AiModeSection() {
-  const [mode, setMode] = useState<DisplayMode>('Demo mode');
+const STATUS_TO_DISPLAY: Record<'live' | 'demo' | 'offline', DisplayMode> = {
+  live: 'Live AI',
+  demo: 'Demo mode',
+  offline: 'Offline',
+};
 
-  useEffect(() => {
-    let active = true;
-    fetchHealth()
-      .then((res) => {
-        if (!active) return;
-        if (!res.ok) {
-          setMode('Offline');
-          return;
-        }
-        setMode(res.value.mode === 'live' ? 'Live AI' : 'Demo mode');
-      })
-      .catch(() => {
-        if (active) setMode('Offline');
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+/**
+ * Settings section explaining which AI is active and what data it receives.
+ */
+export function AiModeSection() {
+  const { status, model } = useAiMode();
+  const mode = STATUS_TO_DISPLAY[status];
 
   return (
     <section aria-labelledby="settings-ai-mode-heading" className="space-y-3">
@@ -55,6 +45,7 @@ export function AiModeSection() {
           <Badge tone={mode === 'Live AI' ? 'success' : mode === 'Offline' ? 'warning' : 'info'}>
             {mode}
           </Badge>
+          {model && <span className="text-xs text-[#5B4A5E]">Model: {model}</span>}
         </div>
 
         <p className="text-sm text-[#5B4A5E] leading-relaxed">

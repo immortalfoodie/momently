@@ -6,3 +6,4 @@ export * from './OptionCard';
 export * from './ScoreDelta';
 export * from './useApproveOption';
 export * from './StepList';
+export * from './NarrationButton';

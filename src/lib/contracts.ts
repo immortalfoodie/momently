@@ -61,6 +61,7 @@ export interface ChaosDescribeResponse {
 export interface HealthResponse {
   mode: 'live' | 'demo';
   note?: string;
+  model?: string;
 }
 
 export interface IntakeResponse {

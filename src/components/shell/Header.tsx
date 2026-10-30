@@ -1,15 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Icon } from '@/components/ui/Icon';
-import { fetchHealth } from '@/lib/apiClient';
+import { useAiMode } from '@/lib/useAiMode';
 
 export interface HeaderProps {
   onToggleMobileNav?: () => void;
 }
-
-type HealthState = 'demo' | 'live' | 'offline';
 
 /**
  * Top application header banner landmark.
@@ -19,26 +16,8 @@ type HealthState = 'demo' | 'live' | 'offline';
  * status badge with accessible description, and mobile drawer trigger.
  */
 export function Header({ onToggleMobileNav }: HeaderProps) {
-  const [health, setHealth] = useState<HealthState>('demo');
-
-  useEffect(() => {
-    let mounted = true;
-    fetchHealth()
-      .then((res) => {
-        if (!mounted) return;
-        if (res.ok) {
-          setHealth(res.value.mode === 'live' ? 'live' : 'demo');
-        } else {
-          setHealth('offline');
-        }
-      })
-      .catch(() => {
-        if (mounted) setHealth('offline');
-      });
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const { status: health, model } = useAiMode();
+  const liveDescription = model ? `Connected to live AI (${model})` : 'Connected to live AI provider';
 
   return (
     <header className="sticky top-0 z-30 h-[var(--header-h)] bg-white border-b border-[#E6DCD2] px-4 sm:px-6 flex items-center justify-between shadow-2xs">
@@ -74,8 +53,8 @@ export function Header({ onToggleMobileNav }: HeaderProps) {
           <Badge
             tone="success"
             className="hidden sm:inline-flex"
-            title="Connected to live AI provider"
-            aria-description="Connected to live AI provider"
+            title={liveDescription}
+            aria-description={liveDescription}
           >
             Live AI
           </Badge>

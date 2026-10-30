@@ -14,6 +14,7 @@ export interface Deps {
   provider: LLMProvider;
   mode: 'live' | 'demo';
   modeNote?: string;
+  modelName?: string;
   cache: LlmCache;
   rateLimiter: RateLimiter;
   clock: () => Date;
@@ -47,6 +48,7 @@ export function createDeps(overrides: Partial<Deps> = {}): Deps {
   return {
     provider: factoryResult.provider,
     modeNote: factoryResult.note,
+    modelName: factoryResult.model,
     cache: new LlmCache(),
     rateLimiter: resolveDefaultRateLimiter(mode),
     clock: () => new Date(),

@@ -1,11 +1,11 @@
 'use client';
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
 import { Icon } from '@/components/ui/Icon';
-import { fetchHealth } from '@/lib/apiClient';
+import { useAiMode } from '@/lib/useAiMode';
 import { ChatContext, ChatProvider, useChat } from './ChatProvider';
 import { Composer } from './Composer';
 import { MessageList } from './MessageList';
@@ -14,29 +14,7 @@ import { SuggestedPrompts } from './SuggestedPrompts';
 type AssistantHealthMode = 'demo' | 'live';
 
 function useAssistantHealthMode(): AssistantHealthMode {
-  const [healthMode, setHealthMode] = useState<AssistantHealthMode>('demo');
-
-  useEffect(() => {
-    if (typeof fetchHealth !== 'function') return;
-    let mounted = true;
-    fetchHealth()
-      .then((res) => {
-        if (!mounted) return;
-        if (res.ok && res.value.mode === 'live') {
-          setHealthMode('live');
-        } else {
-          setHealthMode('demo');
-        }
-      })
-      .catch(() => {
-        if (mounted) setHealthMode('demo');
-      });
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  return healthMode;
+  return useAiMode().status === 'live' ? 'live' : 'demo';
 }
 
 function ChatPanelInner({ onClose }: { onClose?: () => void }) {
