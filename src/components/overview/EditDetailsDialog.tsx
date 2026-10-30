@@ -17,6 +17,51 @@ export interface EditDetailsDialogProps {
   onTriggerComplexFlow: (changes: { guestCount?: number; setting?: EventSetting }) => void;
 }
 
+type DetailErrors = { title?: string; dateIso?: string };
+type SimpleChanges = { title?: string; city?: string; dateIso?: string };
+type ComplexChanges = { guestCount?: number; setting?: EventSetting };
+
+interface DetailValues {
+  title: string;
+  city: string;
+  dateIso: string;
+  guestCount: number;
+  setting: EventSetting;
+}
+
+function validateDetails(title: string, dateIso: string): DetailErrors {
+  const newErrors: DetailErrors = {};
+
+  if (!title.trim()) {
+    newErrors.title = 'Please provide an event title.';
+  }
+
+  const todayStr = new Date().toISOString().split('T')[0] ?? '2026-01-01';
+  if (dateIso && dateIso < todayStr) {
+    newErrors.dateIso = 'Event date cannot be in the past.';
+  }
+  return newErrors;
+}
+
+function collectSimpleChanges(values: DetailValues, meta: EventPlan['meta']): SimpleChanges {
+  const simpleChanges: SimpleChanges = {};
+  if (values.title.trim() !== meta.title) simpleChanges.title = values.title.trim();
+  if (values.city.trim() !== meta.city) simpleChanges.city = values.city.trim();
+  if (values.dateIso !== (meta.dateIso ?? '')) simpleChanges.dateIso = values.dateIso || undefined;
+  return simpleChanges;
+}
+
+function collectComplexChanges(values: DetailValues, meta: EventPlan['meta']): ComplexChanges {
+  const complexChanges: ComplexChanges = {};
+  if (values.guestCount !== meta.guestCount) complexChanges.guestCount = values.guestCount;
+  if (values.setting !== meta.setting) complexChanges.setting = values.setting;
+  return complexChanges;
+}
+
+function hasKeys(obj: object): boolean {
+  return Object.keys(obj).length > 0;
+}
+
 /**
  * EditDetailsDialog managing host parameter updates with two-phase routing.
  * WHY: Applies title/city/date immediately via set_meta while delegating headcount
@@ -34,7 +79,7 @@ export function EditDetailsDialog({
   const [dateIso, setDateIso] = useState(plan.meta.dateIso ?? '');
   const [guestCount, setGuestCount] = useState(plan.meta.guestCount);
   const [setting, setSetting] = useState<EventSetting>(plan.meta.setting);
-  const [errors, setErrors] = useState<{ title?: string; dateIso?: string }>({});
+  const [errors, setErrors] = useState<DetailErrors>({});
 
   const [prevOpen, setPrevOpen] = useState(open);
   if (open !== prevOpen) {
@@ -49,41 +94,26 @@ export function EditDetailsDialog({
     }
   }
 
-  // eslint-disable-next-line complexity
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors: { title?: string; dateIso?: string } = {};
+    const newErrors = validateDetails(title, dateIso);
 
-    if (!title.trim()) {
-      newErrors.title = 'Please provide an event title.';
-    }
-
-    const todayStr = new Date().toISOString().split('T')[0] ?? '2026-01-01';
-    if (dateIso && dateIso < todayStr) {
-      newErrors.dateIso = 'Event date cannot be in the past.';
-    }
-
-    if (Object.keys(newErrors).length > 0) {
+    if (hasKeys(newErrors)) {
       setErrors(newErrors);
       return;
     }
 
-    const simpleChanges: { title?: string; city?: string; dateIso?: string } = {};
-    if (title.trim() !== plan.meta.title) simpleChanges.title = title.trim();
-    if (city.trim() !== plan.meta.city) simpleChanges.city = city.trim();
-    if (dateIso !== (plan.meta.dateIso ?? '')) simpleChanges.dateIso = dateIso || undefined;
-
-    const complexChanges: { guestCount?: number; setting?: EventSetting } = {};
-    if (guestCount !== plan.meta.guestCount) complexChanges.guestCount = guestCount;
-    if (setting !== plan.meta.setting) complexChanges.setting = setting;
+    const values: DetailValues = { title, city, dateIso, guestCount, setting };
+    const simpleChanges = collectSimpleChanges(values, plan.meta);
+    const complexChanges = collectComplexChanges(values, plan.meta);
 
     // Apply simple changes first
-    if (Object.keys(simpleChanges).length > 0) {
+    if (hasKeys(simpleChanges)) {
       await onSaveSimple(simpleChanges);
     }
 
     // Trigger complex flow if headcount or setting shifted
-    if (Object.keys(complexChanges).length > 0) {
+    if (hasKeys(complexChanges)) {
       onTriggerComplexFlow(complexChanges);
     }
 

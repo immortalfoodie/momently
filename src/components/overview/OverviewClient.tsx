@@ -5,13 +5,9 @@ import { useParams } from 'next/navigation';
 import type { EventSetting, PlanImpact } from '@/domain/types';
 import type { AssistantOutcome } from '@/engine/assistant/types';
 import { resolveIntent } from '@/engine/assistant/resolveIntent';
-import { AssistantOutcomeView } from '@/components/review/AssistantOutcomeView';
 import { ConflictList } from '@/components/review/ConflictList';
-import { ImpactSummary } from '@/components/review/ImpactSummary';
-import { Dialog } from '@/components/ui/Dialog';
 import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Skeleton } from '@/components/ui/Skeleton';
 import { useOptionalCurrentEvent } from '@/components/events/EventContext';
 import { PAGE_COPY } from '@/lib/copy';
 import { engineContext } from '@/store/engineContext';
@@ -22,6 +18,7 @@ import { EditDetailsDialog } from './EditDetailsDialog';
 import { EventFactsCard } from './EventFactsCard';
 import { ForgottenTeaser } from './ForgottenTeaser';
 import { NextSteps } from './NextSteps';
+import { ComplexOutcomeDialog, OverviewNav, OverviewSkeleton, RepriceImpactDialog } from './OverviewClientParts';
 import { TopRisks } from './TopRisks';
 import { VersionHistory } from './VersionHistory';
 
@@ -29,12 +26,7 @@ export interface OverviewClientProps {
   eventId?: string;
 }
 
-/**
- * OverviewClient coordinates the holistic event hub, facts editing, and deep-linked audit views.
- * WHY: Answers "Where do we stand right now?" with deep links, two-phase editing, and version auditing.
- */
-// eslint-disable-next-line complexity
-export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {}) {
+function useOverviewEvent(eventIdProp: string | undefined) {
   const context = useOptionalCurrentEvent();
   const params = useParams();
   const paramId = (params?.id as string) || '';
@@ -43,7 +35,15 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
   const isReady = useStoreReady();
   const storeEvent = useEvent(eventId);
   const event = context?.event ?? storeEvent;
-  const plan = event?.plan;
+  return { eventId, isReady, event, plan: event?.plan };
+}
+
+/**
+ * OverviewClient coordinates the holistic event hub, facts editing, and deep-linked audit views.
+ * WHY: Answers "Where do we stand right now?" with deep links, two-phase editing, and version auditing.
+ */
+export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {}) {
+  const { eventId, isReady, event, plan } = useOverviewEvent(eventIdProp);
   const history = event?.history ?? [];
 
   const applyUserEdit = useEventsStore((s) => s.applyUserEdit);
@@ -53,19 +53,7 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
   const [complexOutcome, setComplexOutcome] = useState<AssistantOutcome | null>(null);
 
   if (!isReady || !event || !plan) {
-    return (
-      <PageContainer width="full" className="space-y-6">
-        <PageHeader
-          title={PAGE_COPY.overview.title}
-          description={PAGE_COPY.overview.description}
-        />
-        <div className="space-y-4">
-          <Skeleton className="h-44 w-full rounded-xl" />
-          <Skeleton className="h-64 w-full rounded-xl" />
-          <Skeleton className="h-48 w-full rounded-xl" />
-        </div>
-      </PageContainer>
-    );
+    return <OverviewSkeleton />;
   }
 
   const handleSaveSimple = async (changes: { title?: string; city?: string; dateIso?: string }) => {
@@ -113,16 +101,7 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
       />
 
       {/* Sticky navigation strip with scroll-margin-top links */}
-      <nav aria-label="Overview sections" className="sticky top-0 z-10 bg-surface-warm/95 backdrop-blur-xs py-2 border-b border-border">
-        <ul className="flex items-center gap-4 text-xs font-semibold text-ink-muted overflow-x-auto">
-          <li><a href="#facts" className="hover:text-primary hover:underline whitespace-nowrap">Facts</a></li>
-          <li><a href="#concept" className="hover:text-primary hover:underline whitespace-nowrap">Concept</a></li>
-          <li><a href="#conflicts" className="hover:text-primary hover:underline whitespace-nowrap">Conflicts</a></li>
-          <li><a href="#risks" className="hover:text-primary hover:underline whitespace-nowrap">Risks</a></li>
-          <li><a href="#next-steps" className="hover:text-primary hover:underline whitespace-nowrap">Next Steps</a></li>
-          <li><a href="#history" className="hover:text-primary hover:underline whitespace-nowrap">History</a></li>
-        </ul>
-      </nav>
+      <OverviewNav />
 
       {/* Section 1: Facts */}
       <section id="facts" aria-labelledby="heading-facts" className="space-y-3">
@@ -190,46 +169,15 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
       />
 
       {/* City Tier Reprice Impact Dialog */}
-      <Dialog
-        open={Boolean(repriceImpact)}
-        onClose={() => setRepriceImpact(null)}
-        title="Prices Re-estimated for City Rate Tier"
-        description="Estimate items in your budget have been repriced based on your updated host city's vendor tier."
-      >
-        {repriceImpact && (
-          <div className="pt-2 space-y-4">
-            <ImpactSummary impact={repriceImpact} />
-            <div className="flex justify-end pt-2 border-t border-border">
-              <button
-                type="button"
-                onClick={() => setRepriceImpact(null)}
-                className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-[#5B254E]"
-              >
-                Acknowledge
-              </button>
-            </div>
-          </div>
-        )}
-      </Dialog>
+      <RepriceImpactDialog impact={repriceImpact} onClose={() => setRepriceImpact(null)} />
 
       {/* Complex change proposal dialog */}
-      <Dialog
-        open={Boolean(complexOutcome)}
+      <ComplexOutcomeDialog
+        outcome={complexOutcome}
+        eventId={eventId}
+        plan={plan}
         onClose={() => setComplexOutcome(null)}
-        title="Proposed Parameter Adjustment"
-        description="Headcount or setting adjustments require approval to evaluate resource constraints."
-      >
-        {complexOutcome && (
-          <div className="pt-2">
-            <AssistantOutcomeView
-              outcome={complexOutcome}
-              eventId={eventId}
-              plan={plan}
-              currentVersion={plan.version}
-            />
-          </div>
-        )}
-      </Dialog>
+      />
     </PageContainer>
   );
 }

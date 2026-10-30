@@ -2,10 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import type { BudgetStatus } from '@/engine/budget';
 import type { RiskBand } from '@/engine/risk';
 import { formatInr } from '@/lib/format';
 import { Badge } from '@/components/ui/Badge';
-import { Icon } from '@/components/ui/Icon';
+import { Icon, type IconName } from '@/components/ui/Icon';
 import { useAnnouncer } from '@/components/ui/LiveRegion';
 import { Money } from '@/components/ui/Money';
 import { ProgressMeter } from '@/components/ui/ProgressMeter';
@@ -30,6 +31,37 @@ function formatConflictSummary(blockingCount: number, warningCount: number): str
   return parts.join(', ');
 }
 
+function isBudgetOverCap(status: BudgetStatus | undefined): boolean {
+  if (!status || status.cap === null) return false;
+  return status.total > status.cap;
+}
+
+function conflictIndicator(blockingCount: number, warningCount: number): { icon: IconName; className: string } {
+  if (blockingCount > 0) return { icon: 'alert', className: 'text-danger' };
+  if (warningCount > 0) return { icon: 'alert', className: 'text-warning' };
+  return { icon: 'check', className: 'text-success' };
+}
+
+function BudgetMeter({ status }: { status: BudgetStatus }) {
+  if (status.cap !== null) {
+    return (
+      <ProgressMeter
+        value={status.total}
+        max={status.cap}
+        label={`Budget: ${formatInr(status.total)} / ${formatInr(status.cap)}`}
+        aria-label="Budget cap progress"
+      />
+    );
+  }
+  return (
+    <div className="flex items-center gap-1.5 text-sm font-medium text-ink">
+      <span className="text-ink-muted">Budget:</span>
+      <Money amount={status.total} />
+      <Badge tone="neutral" className="text-xs">No budget cap set</Badge>
+    </div>
+  );
+}
+
 /**
  * PlanHealthStrip provides high-level vitals for active event planning.
  *
@@ -38,7 +70,6 @@ function formatConflictSummary(blockingCount: number, warningCount: number): str
  * Emits screen reader announcements ONLY on status transitions (cap exceeded or band shift),
  * preventing notification noise during normal editing cycles.
  */
-// eslint-disable-next-line complexity
 export function PlanHealthStrip({ eventId, className = '' }: PlanHealthStripProps) {
   const { announce } = useAnnouncer();
   const event = useEvent(eventId);
@@ -48,10 +79,7 @@ export function PlanHealthStrip({ eventId, className = '' }: PlanHealthStripProp
   const prevBandRef = useRef<RiskBand | null>(null);
 
   const budgetStatus = derived?.budgetStatus;
-  const isOverCap =
-    budgetStatus?.cap !== null &&
-    budgetStatus?.cap !== undefined &&
-    budgetStatus.total > budgetStatus.cap;
+  const isOverCap = isBudgetOverCap(budgetStatus);
   const chaosBand = derived?.scoreRisks.band;
 
   useEffect(() => {
@@ -81,6 +109,7 @@ export function PlanHealthStrip({ eventId, className = '' }: PlanHealthStripProp
   const blockingCount = conflicts.filter((c) => c.severity === 'blocking').length;
   const warningCount = conflicts.filter((c) => c.severity === 'warning').length;
   const conflictText = formatConflictSummary(blockingCount, warningCount);
+  const indicator = conflictIndicator(blockingCount, warningCount);
 
   return (
     <section
@@ -91,20 +120,7 @@ export function PlanHealthStrip({ eventId, className = '' }: PlanHealthStripProp
       <div className="max-w-[72rem] w-full flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
         {/* 1. Budget progress meter or plain total */}
         <div className="flex-1 max-w-sm">
-          {status.cap !== null ? (
-            <ProgressMeter
-              value={status.total}
-              max={status.cap}
-              label={`Budget: ${formatInr(status.total)} / ${formatInr(status.cap)}`}
-              aria-label="Budget cap progress"
-            />
-          ) : (
-            <div className="flex items-center gap-1.5 text-sm font-medium text-ink">
-              <span className="text-ink-muted">Budget:</span>
-              <Money amount={status.total} />
-              <Badge tone="neutral" className="text-xs">No budget cap set</Badge>
-            </div>
-          )}
+          <BudgetMeter status={status} />
         </div>
 
         {/* 2. Chaos Score & Band */}
@@ -125,10 +141,10 @@ export function PlanHealthStrip({ eventId, className = '' }: PlanHealthStripProp
             className="inline-flex items-center gap-1.5 text-ink hover:text-primary hover:underline font-medium transition-colors"
           >
             <Icon
-              name={blockingCount > 0 ? 'alert' : warningCount > 0 ? 'alert' : 'check'}
+              name={indicator.icon}
               size={14}
               aria-hidden="true"
-              className={blockingCount > 0 ? 'text-danger' : warningCount > 0 ? 'text-warning' : 'text-success'}
+              className={indicator.className}
             />
             <span>{conflictText}</span>
           </Link>
