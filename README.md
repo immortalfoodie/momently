@@ -2,6 +2,10 @@
 
 Momently: your AI event director. From a vague idea to a plan that survives real life.
 
+Describe your celebration in your own words. Momently turns it into a costed plan with three concepts, a budget that respects your hard cap, a run-of-show, vendor checklists and a day-of coordinator. Then it stress-tests the plan: tell it "heavy rain and the photographer cancelled" and it prices the recovery before you approve anything.
+
+**Try it in 2 minutes:** `npm install && npm run dev`, open http://localhost:3000 and press **Watch the demo**. No API key needed. To deploy with live Gemini, see [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
 ## Chosen Vertical
 
 **Celebration & Event Planner** for milestone weddings, birthdays, anniversaries, and community festivals.
@@ -30,7 +34,7 @@ Momently transforms unstructured celebration ideas into complete, mathematically
 - **`/events/[id]/checklist` (Checklist)**: Due-date categorized task manager (months out, weeks out, week of, day of).
 - **`/events/[id]/guests` (Guests)**: Headcount scaling, dietary requirements (Jain, vegan, vegetarian), and dining table seating calculator.
 - **`/events/[id]/vendors` (Vendors)**: Quote comparison tracker and sanitized vendor brief generator.
-- **`/events/[id]/chaos` (Chaos Lab)**: Stress-test lab simulating rain, budget cuts, guest surges, and vendor cancellations.
+- **`/events/[id]/chaos` (Chaos Lab)**: Describe your own disaster in free text (English or Hinglish), or pick from six scenarios: rain, budget cuts, guest surges, vendor cancellations, late starts and unavailable items. Every recovery is priced and needs your approval.
 - **`/events/[id]/day-of` (Event Day)**: Calm, phone-first coordinator with live now/next tracking and delay buffer absorption.
 - **`/events/[id]/kit` & `/kit/plan` (Event Kit)**: Local export center for printable plans, CSV spreadsheets, and ICS calendars.
 
@@ -63,9 +67,23 @@ The user inspects exact price, item, and timeline diffs before clicking "Approve
 - **Checklist Tasks**: `add_task` (creates a dated task), `update_task` (updates text or due days), `remove_task` (deletes a task), `set_task_status` (marks todo, in-progress, or done).
 - **Guests & Vendors**: `set_guest_needs` (updates dietary and accessibility counts), `update_vendor_need` (changes category status), `upsert_vendor_quote` (records or replaces vendor bid), `remove_vendor_quote` (clears a quote).
 
+### How the AI Is Used
+
+The language model reads and writes words. The engine does every calculation. Each AI task has a Zod-validated output, one automatic correction retry, and an offline fallback so the app never breaks.
+
+| AI task | What the AI decides | What the engine decides | Offline fallback |
+|---|---|---|---|
+| `intake` | Event type, city, guests, budget, style and must-haves from a free-text story | Prices, tier, plan structure, conflicts | Keyword extractor |
+| `concepts` | Three distinct creative directions and why each fits | Concept cost against the cap | Template concepts |
+| `intent` | What a chat message asks for, split into up to 3 ordered steps | Applies steps on a draft plan, merges them into one proposal, re-checks the hard cap, flags clashing steps | Clause splitter plus keyword matcher |
+| `chaos_describe` | Which scenarios a free-text disaster maps to | Rejects invented vendors or items, checks applicability, simulates and prices recovery | Keyword mapper (English and Hinglish) |
+| `narrate` | Plain-English explanations of budget and chaos results | Supplies the only numbers the AI may mention | Template narrator |
+
+The header badge shows **Live AI** (with the model name) or **Demo mode**, so it is always clear which one answered.
+
 ### Budget Guardian, Chaos Lab, and Chaos Score
 - **Budget Guardian**: Intercepts any proposed change or user edit that would exceed the hard budget cap. Rather than simply blocking the host, it computes non-destructive funding options (stepping down flexible, unlocked line items) while strictly protecting locked categories.
-- **Chaos Lab**: Stress-tests plans against four realistic disruptions: monsoon rain, budget cuts, guest surges, and sudden vendor cancellations.
+- **Chaos Lab**: Stress-tests plans against six disruptions (monsoon rain, budget cuts, guest surges, vendor cancellations, late starts, unavailable items). Hosts can also describe a disaster in their own words; the AI maps it to scenarios and the engine refuses anything that does not match the real plan.
 - **Chaos Score**: A transparent, deterministic sum of rule-based penalty points evaluated directly from the plan, grouped into four risk severity bands:
   - *Calm* (0–24): High contingency resilience, healthy transition slack, low vulnerability.
   - *Manageable* (25–49): Minor gaps such as missing vendor quotes or tight schedule buffers.
@@ -75,7 +93,7 @@ The user inspects exact price, item, and timeline diffs before clicking "Approve
 
 ## How the Solution Works
 
-The user journey proceeds across 6 cohesive steps matching the interactive demo tour:
+The user journey proceeds across 8 steps matching the interactive demo tour:
 
 1. **Vibe-to-Vision Intake**: The host enters an unstructured celebration narrative in English, Hindi, or Hinglish (e.g., *"Parents' 25th anniversary in Mumbai, ₹1.5 lakh budget, 80 guests, old Bollywood vibe"*).
    - *Why it matters*: Converts ambiguous stories into structured constraints, city tier pricing, and tailored starter concepts.
@@ -92,7 +110,13 @@ The user journey proceeds across 6 cohesive steps matching the interactive demo 
 5. **What If It Rains? (Chaos Lab)**: The host tests a monsoon rain scenario.
    - *Why it matters*: Stress-testing weather risk before contracts are signed turns potential panic into a pre-priced recovery plan.
    - *What to inspect*: The Chaos Score reduction across canopy cover and standby indoor backup hall recovery options.
-6. **The Event Kit & Final Checklist**: The host reviews the synchronized execution checklist and export center.
+6. **Two Requests in One Message**: The host asks *"Save ₹10,000 and tell me what happens if the photographer cancels."*
+   - *Why it matters*: Real hosts ask for several things at once. Each step is resolved against the plan as it would look after the previous one.
+   - *What to inspect*: A numbered "What I'll do" list. The saving goes into one proposal, the cancellation test is a read-only check, and nothing changes until approval.
+7. **Describe Your Own Disaster**: Chaos Lab opens with *"Heavy rain and the photographer just cancelled"* pre-filled.
+   - *Why it matters*: Hosts think in stories, not menus.
+   - *What to inspect*: "Here's how I understood it", then switch between the two problems found. Invented vendors or items are skipped with a reason.
+8. **The Event Kit & Final Checklist**: The host reviews the synchronized execution checklist and export center.
    - *Why it matters*: Every approved decision, contingency task, and vendor requirement flows into an actionable checklist and offline exports.
    - *What to inspect*: Prioritized task windows (months out, weeks out, week of, day of), offline CSV/ICS exports, and printable run-sheets.
 
@@ -123,14 +147,17 @@ Open `http://localhost:3000` in your browser. Click **Watch the demo** on the ho
   ```
   Set `GEMINI_MODEL` to a supported Gemini model (e.g., `gemini-2.5-flash`).
 
+### Deploy
+A multi-stage [`Dockerfile`](Dockerfile) builds a minimal, non-root image on port 8080. [`docs/DEPLOY.md`](docs/DEPLOY.md) has the exact Google Cloud Run commands, with the Gemini key stored in Secret Manager rather than in the image or repository.
+
 ## Evaluation Criteria Alignment
 
 | Parameter | Verifiable Implementation Points | Reference Files |
 |---|---|---|
 | **Code Quality** | Strict TypeScript throughout with zero `any` types and zero `console.log` statements. All source files stay under ~250 lines. Clean architectural layers and restricted import boundaries enforced via ESLint rules preventing server code leaks into client components. | [`eslint.config.mjs`](eslint.config.mjs)<br>[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
-| **Security** | Server-only LLM execution isolating API keys from client bundles. Strict Zod validation on all API requests and responses. In-memory IP rate limiting (default 30 req/min, range 1–120) and body caps (8 KB intake, 200 KB message/concepts, 20 KB narrate). Content Security Policy headers, prompt injection defense, and CSV formula injection neutralizing. | [`src/server/`](src/server)<br>[`src/server/rateLimit.ts`](src/server/rateLimit.ts)<br>[`src/lib/export/csv.ts`](src/lib/export/csv.ts)<br>[`tests/server/guard.test.ts`](tests/server/guard.test.ts) |
+| **Security** | Server-only LLM execution isolating API keys from client bundles. Strict Zod validation on all API requests and responses. In-memory IP rate limiting (default 30 req/min, range 1–120) and body caps (8 KB intake and chaos describe, 200 KB message/concepts, 20 KB narrate). Content Security Policy headers, prompt injection defense, and CSV formula injection neutralizing. | [`src/server/`](src/server)<br>[`src/server/rateLimit.ts`](src/server/rateLimit.ts)<br>[`src/lib/export/csv.ts`](src/lib/export/csv.ts)<br>[`tests/server/guard.test.ts`](tests/server/guard.test.ts) |
 | **Efficiency** | Pure deterministic engine executes locally with zero network hops. Derived metrics memoized via module-level `WeakMap` caches keyed by immutable plan references in selectors. Zero unneeded re-renders across tabular and timeline views. | [`src/store/selectors.ts`](src/store/selectors.ts)<br>[`tests/store/memoization.test.ts`](tests/store/memoization.test.ts) |
-| **Testing** | 118 test files and 574 automated tests passing with overall statement coverage over 88%. Layered pyramid covers pure engine units, 100-sequence property invariants, automated axe accessibility audits, API handlers, and the golden-path tour journey. | [`tests/engine/invariants.test.ts`](tests/engine/invariants.test.ts)<br>[`tests/integration/demoJourney.test.ts`](tests/integration/demoJourney.test.ts) |
+| **Testing** | 130 test files and 630 automated tests passing with overall statement coverage over 89%. Layered pyramid covers pure engine units, 100-sequence property invariants, automated axe accessibility audits, API handlers, and the golden-path tour journey. | [`tests/engine/invariants.test.ts`](tests/engine/invariants.test.ts)<br>[`tests/integration/demoJourney.test.ts`](tests/integration/demoJourney.test.ts) |
 | **Accessibility** | Built to WCAG 2.1 AA targets. Automated axe-core checks run in the test suite; colour contrast is verified by calculation (see docs/ARCHITECTURE.md), because jsdom cannot measure it. A manual screen-reader audit has not been done. | [`src/components/ui/LiveRegion.tsx`](src/components/ui/LiveRegion.tsx)<br>[`src/components/ui/ProgressMeter.tsx`](src/components/ui/ProgressMeter.tsx)<br>[`src/components/ui/SkipLink.tsx`](src/components/ui/SkipLink.tsx) |
 | **Problem Alignment** | Purpose-built for Indian hosts: multi-lingual NLP intake (English, Hindi, Hinglish), 3-tier city rate cards, culturally grounded dietary tracking (Jain, vegetarian, allergies), and plain-English host copy validated against banned jargon in automated quality tests. | [`src/engine/pricing.ts`](src/engine/pricing.ts)<br>[`src/engine/guestInsights.ts`](src/engine/guestInsights.ts)<br>[`src/lib/copy.ts`](src/lib/copy.ts)<br>[`tests/quality/copy.test.ts`](tests/quality/copy.test.ts) |
 
@@ -138,7 +165,7 @@ Open `http://localhost:3000` in your browser. Click **Watch the demo** on the ho
 
 - **Validated Boundaries**: Every incoming request and outgoing response is validated against strict Zod domain schemas. Malformed payloads, invalid characters, or unauthorized fields are immediately rejected with structured error responses.
 - **Server-Only LLM Isolation**: The `@google/genai` SDK and secret API keys are strictly confined to [`src/server/`](src/server) and [`src/llm/`](src/llm); client-side components cannot import them.
-- **Rate Limiting & Payload Caps**: Endpoints enforce IP-based sliding-window rate limits (default 30 requests/minute per IP, configurable 1–120) and strict body caps (Intake: 8 KB, Message/Concepts: 200 KB, Narrate: 20 KB) to prevent denial-of-service and cost spikes.
+- **Rate Limiting & Payload Caps**: Endpoints enforce IP-based sliding-window rate limits (default 30 requests/minute per IP, configurable 1–120) and strict body caps (Intake and Chaos Describe: 8 KB, Message/Concepts: 200 KB, Narrate: 20 KB) to prevent denial-of-service and cost spikes.
 - **Security Headers**: Standard response headers include strict Content Security Policy (CSP), `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, and `Referrer-Policy: strict-origin-when-cross-origin`.
 - **Zero Server Storage**: Plans, notes, and contacts are stored entirely in client-side browser `localStorage`. No host data is persisted on remote databases.
 - **Privacy by Construction**: Guest lists record numeric counts only (no guest names or phone numbers). Vendor quote records and personal emergency contacts are kept in client memory and never dispatched to the LLM.
@@ -170,22 +197,22 @@ npm run test:coverage
 - **Seeded Property Invariants**: Executes 100 random edit sequences asserting that total budgets never drop negative, locked items remain unmutated, and session durations never exceed midnight boundaries ([`tests/engine/invariants.test.ts`](tests/engine/invariants.test.ts)).
 - **Security & Guard Tests**: Verifies schema rejections, rate limit exhaustion, prompt injection resilience, and architectural import isolation ([`tests/server/`](tests/server)).
 - **Component & Axe Audits**: Every page, dialog, and interactive component is rendered in jsdom and audited for accessibility violations using `axe-core` ([`tests/ui/`](tests/ui)).
-- **Integration Tour Journey**: Simulates the complete golden path of the 7-step demo tour through the API handler, mock LLM, and store reducers ([`tests/integration/demoJourney.test.ts`](tests/integration/demoJourney.test.ts)).
+- **Integration Tour Journey**: Simulates the complete golden path of every chat step in the 8-step demo tour through the API handler, mock LLM, and store reducers ([`tests/integration/demoJourney.test.ts`](tests/integration/demoJourney.test.ts)).
 
 ### Coverage Summary (v8)
 | Module / Folder | Statements | Branches | Functions | Lines |
 |---|---|---|---|---|
-| **Domain Models** (`src/domain/`) | 100.00% | 100.00% | 100.00% | 100.00% |
-| **Deterministic Engine** (`src/engine/`) | 96.02% | 85.37% | 94.73% | 96.88% |
-| **Utilities & Export** (`src/lib/`) | 97.50% | 86.84% | 96.96% | 97.77% |
-| **Templates & Data** (`src/data/`) | 91.89% | 78.57% | 88.88% | 93.75% |
-| **LLM & Mocks** (`src/llm/`) | 91.88% | 83.33% | 90.90% | 92.50% |
-| **Server Handlers** (`src/server/`) | 88.18% | 75.00% | 85.71% | 89.28% |
-| **Store & Selectors** (`src/store/`) | 85.35% | 76.92% | 83.33% | 87.50% |
-| **Components & UI** (`src/components/`) | 83.25% | 72.40% | 82.50% | 86.10% |
-| **Total Project** | **88.56%** | **76.37%** | **87.29%** | **90.25%** |
+| **Domain Models** (`src/domain/`) | 100.00% | n/a | 100.00% | 100.00% |
+| **Utilities & Export** (`src/lib/`) | 96.96% | 80.15% | 98.77% | 98.17% |
+| **Deterministic Engine** (`src/engine/`) | 93.96% | 79.89% | 96.30% | 95.55% |
+| **Templates & Data** (`src/data/`) | 92.68% | 81.48% | 100.00% | 93.59% |
+| **Server Handlers** (`src/server/`) | 90.95% | 81.95% | 90.32% | 91.15% |
+| **LLM & Mocks** (`src/llm/`) | 90.28% | 77.31% | 95.80% | 91.54% |
+| **Store & Selectors** (`src/store/`) | 85.35% | 70.71% | 95.40% | 87.59% |
+| **Components & UI** (`src/components/`) | 83.96% | 75.02% | 80.24% | 85.79% |
+| **Total Project** | **89.08%** | **77.20%** | **87.72%** | **90.64%** |
 
-*Current Suite Status*: **118 test files, 574 tests passed, 0 failures**.
+*Current Suite Status*: **130 test files, 630 tests passed, 0 failures**.
 
 ## Assumptions and Limitations
 

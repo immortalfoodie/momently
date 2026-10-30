@@ -78,7 +78,8 @@ The LLM layer is strictly an untrusted translation boundary: it converts unstruc
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `intake` | Extracts event type, city, date, guest count, budget cap, setting, and style preferences from initial host brief | 0.1 | 2048 | 15s | `intakeOutputSchema` (rejects budget_cap and guest_count in constraints) |
 | `concepts` | Synthesizes 3 genuinely distinct celebration concepts (budget-lean, balanced, signature) with rate-card quality profiles | 0.7 | 3000 | 20s | `conceptsOutputSchema` (enforces exactly 3 concepts, validated quality profiles) |
-| `intent` | Classifies host follow-up requests against the active plan into typed action intents | 0.1 | 1024 | 10s | `intentOutputSchema` (discriminated union of 18 typed intents) |
+| `intent` | Classifies host follow-up requests against the active plan into typed action intents, splitting compound messages into up to 3 ordered steps | 0.1 | 1024 | 10s | `intentTaskOutputSchema` (one of 18 typed intents, or `{ steps: [1-3 intents] }`) |
+| `chaos_describe` | Maps a free-text disaster ("baarish and the DJ cancelled") to up to 3 typed chaos scenarios, using only the plan's real vendor categories and item families | 0.1 | 1024 | 10s | `chaosDescribeOutputSchema` (reuses `chaosScenarioInputSchema`; honest `unsupported` note) |
 | `narrate` | Generates short, warm narrative summaries grounded purely in verified engine facts | 0.4 | 1024 | 10s | `narrateOutputSchema` (max 700 chars, up to 4 key highlights) |
 
 ### The Trust Boundary
@@ -95,12 +96,13 @@ The LLM layer is strictly an untrusted translation boundary: it converts unstruc
 The assistant engine (`src/engine/assistant/`) provides the pure, non-mutating bridge between validated LLM extractions and approvable engine proposals:
 
 ```text
-User Text -> LLM (intent task) -> IntentOutput -> resolveIntent -> AssistantOutcome (proposal) -> User Approval -> applyPatch
+User Text -> LLM (intent task) -> 1-3 IntentOutput steps -> resolveSteps -> AssistantOutcome (proposal) -> User Approval -> applyPatch
 ```
 
 - **Intake Synthesis (`fromIntake.ts`)**: Converts structured briefs into an initialized `EventPlan`. Every default (e.g. 50 guests, tier-2 city pricing, undecided setting) is explicitly recorded in `assumptions`, and past dates relative to the reference date are omitted.
 - **Concept Operations (`concepts.ts`)**: Applies concept quality profiles (`selectConceptOps`), computes true previewed totals with dynamic contingency (`priceConcept`), and supports hybrid combination with target savings (`combineConcepts`).
 - **Intent Resolution (`resolveIntent.ts`)**: Dispatches all 18 intent kinds through focused pure resolvers without side-effects. Conflicting requests return structured conflict explanations and funding paths rather than silent compromises.
+- **Compound Requests (`resolveSteps.ts`, `stepLabels.ts`)**: A single step delegates to `resolveIntent`. For 2-3 steps, each is resolved against a pure *draft* of the plan as it would look after the previous steps, so "upgrade decor and what if it rains" tests rain against the upgraded plan. Planned changes merge into ONE `RecoveryOption` (source `'ai'`) that `buildOption` re-checks against the hard cap, attaching funding options when over. Simulations and answers are reported as read-only `checked` steps; failed steps are reported as `skipped` with the reason; contradictory steps (two guest counts, upgrade and downgrade of the same item) return a clarifying question instead of guessing. The combined patch is capped at the 30-op patch limit.
 - **Approvable Proposals**: Nothing in the assistant layer directly mutates plan state. Every actionable response is returned as an approvable `RecoveryOption` (source `'user'`), maintaining the strict invariant: *LLM proposes, engine decides, user approves*.
 
 ---
@@ -139,7 +141,7 @@ Client (receives Proposal) <--[Structured Response]---------+
 
 2. **Malicious & Bloated Payloads (DoS / Memory Exhaustion)**:
    - *Threat*: Attackers submitting multi-megabyte payloads, deeply nested JSON, or oversized arrays to crash the Node process.
-   - *Control*: Strict body reader `readJsonBody` enforces Content-Type verification (`application/json`), header `Content-Length` checks, and stream byte length enforcement (`MAX_BODY_BYTES_INTAKE 8KB`, `MAX_BODY_BYTES_MESSAGE 200KB`, `MAX_BODY_BYTES_NARRATE 20KB`). Domain schemas enforce hard bounds on arrays (`eventPlanSchema` restricts constraints &le; 40, concepts &le; 3, budget items &le; 60, schedule slots &le; 40, tasks &le; 80, vendors &le; 20, quotes &le; 10, ledger &le; 500).
+   - *Control*: Strict body reader `readJsonBody` enforces Content-Type verification (`application/json`), header `Content-Length` checks, and stream byte length enforcement (`MAX_BODY_BYTES_INTAKE 8KB`, `MAX_BODY_BYTES_MESSAGE 200KB`, `MAX_BODY_BYTES_NARRATE 20KB`, `MAX_BODY_BYTES_CHAOS_DESCRIBE 8KB`). Domain schemas enforce hard bounds on arrays (`eventPlanSchema` restricts constraints &le; 40, concepts &le; 3, budget items &le; 60, schedule slots &le; 40, tasks &le; 80, vendors &le; 20, quotes &le; 10, ledger &le; 500).
 
 3. **API Key & Secret Leakage**:
    - *Threat*: Exposing Gemini API keys or internal credentials to the browser, client telemetry, or error messages.
@@ -176,6 +178,9 @@ Client (receives Proposal) <--[Structured Response]---------+
 - **What Is Cached & Trimmed Across the Network**:
   - **In-Memory LLM LRU Cache (`LlmCache`)**: Computes deterministic SHA-256 hashes of normalized task inputs (`stableStringify`), caching validated LLM responses with TTL expiration so repeated or identical prompts never trigger redundant provider calls.
   - **Slim Request Payloads (`slimPlanForRequest`)**: Strips historical ledger entries down to the 20 most recent items before calling `/api/message` or `/api/concepts`, keeping request bodies under 60 KB while the client applies patches to its full local plan.
+  - **Vocabulary-Only Chaos Requests**: `/api/chaos/describe` receives only the plan's vendor categories and item families (a few hundred bytes), never the plan itself.
+  - **Shared Health Check (`useAiMode`)**: The header, assistant panel and settings mount together; they share one in-flight `/api/health` request instead of sending three.
+- **One Round-Trip for Compound Requests**: A three-part chat message is classified in a single `intent` call and resolved locally by `resolveSteps`, instead of three separate requests.
 - **Zero Server State**: Eliminating server sessions and backend databases removes synchronization overhead, memory leaks, and cache invalidation bugs.
 - **Resilient Fallback Gating**: `runWithFallback` detects provider-level downtime, rate limits, or persistent schema validation errors, immediately degrading to `MockProvider` and avoiding repeated failing network calls.
 
@@ -449,7 +454,7 @@ Persisting full `AssistantOutcome` trees (containing candidate `PlanPatch` paylo
 
 ### Guided Demo Tour Invariant: Never Auto-Approve
 
-The 6-step guided tour (`DEMO_TOUR` in `src/data/demoTour.ts`, driven by the non-persisted `useTourStore` and `TourBar`) walks evaluators through Vibe-to-Vision intake, concept selection, Budget Guardian decor upgrades, guest count scaling (80 to 110), Chaos Lab rain recovery, and the final event checklist:
+The 8-step guided tour (`DEMO_TOUR` in `src/data/demoTour.ts`, driven by the non-persisted `useTourStore` and `TourBar`) walks evaluators through Vibe-to-Vision intake, concept selection, Budget Guardian decor upgrades, guest count scaling (80 to 110), Chaos Lab rain recovery, a compound two-part chat request, a free-text disaster in Chaos Lab (pre-filled via `?describe=`, never auto-run), and the final event checklist:
 - **Zero Auto-Approval**: Running a tour chat step only sends the scripted host message through `ChatProvider.send` to display the resulting proposal card. It **never** calls `approveAndApply` on the user's behalf.
 - **Explicit Guidance**: After each chat step runs, `TourBar` surfaces the reminder: *"Now review the proposal and approve it yourself. Momently never applies a change on its own."*
 - **Resilient Offline Fallback**: Step 1 attempts `/api/intake` and gracefully falls back to `store.createDemoEvent()` if offline.
@@ -477,6 +482,13 @@ Disruptions produce structured `RecoveryOption` proposals with concrete trade-of
 - **Host Consent Required**: Simulating NEVER mutates the active plan; only host approval through `useApproveOption` and `store.approveAndApply` commits changes to the ledger.
 - **Budget Feasibility & Funding**: Recovery options that exceed the hard budget cap cannot be directly approved (`disabled` with clear rationale) and attach interactive `fundingOptions` from Budget Guardian.
 - **Staleness Isolation**: If the plan version advances while an outcome is displayed, proposal cards automatically dim as stale, preventing outdated patch applications.
+
+### Describe Your Own Disaster (Free Text)
+`DescribeScenario` lets hosts type a problem in their own words:
+- **Vocabulary, Not the Plan**: `buildDescribeContext` sends only the plan's vendor categories, rate-card item families, setting and guest count (8 KB body cap on `/api/chaos/describe`).
+- **Engine Re-Check**: `reconcileDescribedScenarios` drops scenarios that reference vendors or items not in the plan, are not applicable (rain at an indoor venue), or duplicate a type, and shows each skipped one with a reason.
+- **Same Simulator, Same Approval Gate**: Accepted scenarios run through `simulateScenario`; the host switches between them and approves recoveries exactly as with the picker.
+- **Honesty**: Problems outside the catalog (illness, power cuts) return an `unsupported` note instead of a forced mapping.
 
 ### Transparent Chaos Score: Points-Based Risk Sum
 The Chaos Score (0–100) measures event resilience across four descriptive bands (`calm`, `manageable`, `exposed`, `fragile`):
