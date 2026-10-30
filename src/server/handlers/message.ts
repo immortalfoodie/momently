@@ -1,8 +1,9 @@
-import { resolveIntent } from '@/engine/assistant/resolveIntent';
+import { resolveSteps } from '@/engine/assistant/resolveSteps';
 import type { AssistantOutcome } from '@/engine/assistant/types';
 import { buildChaosFacts } from '@/engine/chaos/facts';
 import { messageRequestSchema, type MessageResponse } from '@/lib/contracts';
 import { summarizePlanForLlm } from '@/llm/context';
+import { toIntentSteps } from '@/llm/schemas/intent';
 import { MAX_BODY_BYTES_MESSAGE } from '../config';
 import type { Deps } from '../deps';
 import { runWithFallback } from '../fallback';
@@ -88,17 +89,17 @@ export async function handleMessage(
     return jsonResponse(fallbackClarify);
   }
 
-  const intent = intentFallback.result.value;
+  const steps = toIntentSteps(intentFallback.result.value);
   const today = deps.clock().toISOString().slice(0, 10);
   const ctx = { ids: deps.ids, clock: deps.clock };
 
   // 5. Pure engine intent resolution with defensive error boundary
   let outcome: AssistantOutcome;
   try {
-    outcome = resolveIntent(plan, intent, ctx, today);
+    outcome = resolveSteps(plan, steps, ctx, today);
   } catch (err) {
     const errorName = err instanceof Error ? err.name : 'Error';
-    console.error(`[api/message] resolveIntent failed with: ${errorName}`);
+    console.error(`[api/message] resolveSteps failed with: ${errorName}`);
     outcome = {
       kind: 'error',
       message: "I couldn't work that change out. Please rephrase or try a smaller change.",

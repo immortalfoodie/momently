@@ -2,7 +2,7 @@ import { ok, type Result } from '@/lib/result';
 import type { LlmError, LlmRequest, LLMProvider } from '@/llm/types';
 import { mockIntake } from './mockIntake';
 import { mockConcepts } from './mockConcepts';
-import { mockIntent } from './mockIntent';
+import { mockIntentSteps } from './mockIntentSteps';
 import { mockNarrate } from './mockNarrate';
 import { mockChaosDescribe } from './mockChaosDescribe';
 import type { IntakeInput } from '@/llm/schemas/intake';
@@ -29,7 +29,7 @@ export class MockProvider implements LLMProvider {
         return ok(JSON.stringify(result));
       }
       case 'intent': {
-        const result = mockIntent(request.input as IntentInput);
+        const result = mockIntentSteps(request.input as IntentInput);
         return ok(JSON.stringify(result));
       }
       case 'narrate': {

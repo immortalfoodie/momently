@@ -147,6 +147,35 @@ export const intentOutputSchema = z.discriminatedUnion('kind', [
 ]);
 
 export type IntentOutput = z.infer<typeof intentOutputSchema>;
+
+/** Maximum number of separate requests handled from one chat message. */
+export const MAX_INTENT_STEPS = 3;
+
+/**
+ * Ordered list of intents for a compound message ("upgrade decor and what if it rains").
+ * WHY: Lets the model split multi-part requests while every step stays a typed engine operation.
+ */
+export const intentStepsSchema = z.object({
+  steps: z.array(intentOutputSchema).min(1).max(MAX_INTENT_STEPS),
+});
+
+/**
+ * Output of the intent task: either one intent or an ordered list of steps.
+ * WHY: Single intents stay backward compatible; compound requests use `steps`.
+ */
+export const intentTaskOutputSchema = z.union([intentStepsSchema, intentOutputSchema]);
+
+export type IntentTaskOutput = z.infer<typeof intentTaskOutputSchema>;
+
+/**
+ * Normalises intent task output into an ordered list of intents.
+ *
+ * @param output - Validated intent task output.
+ * @returns One to three intents in the order the host asked for them.
+ */
+export function toIntentSteps(output: IntentTaskOutput): IntentOutput[] {
+  return 'steps' in output ? output.steps : [output];
+}
 export type IntentKind = IntentOutput['kind'];
 
 export type ChangeGuestCountIntent = z.infer<typeof changeGuestCountIntentSchema>;

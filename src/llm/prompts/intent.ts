@@ -1,4 +1,4 @@
-import { intentOutputSchema, type IntentInput } from '@/llm/schemas/intent';
+import { intentTaskOutputSchema, type IntentInput } from '@/llm/schemas/intent';
 import { sanitizeUserText, wrapUntrusted } from '@/llm/sanitize';
 import { SHARED_RULES } from './shared';
 import type { PromptPayload } from './intake';
@@ -12,14 +12,21 @@ export function buildIntentPrompt(input: IntentInput): PromptPayload {
   const sanitized = sanitizeUserText(input.message, 500);
   const wrappedMessage = wrapUntrusted(sanitized.text);
 
-  const jsonSchema = JSON.stringify(z.toJSONSchema(intentOutputSchema));
+  const jsonSchema = JSON.stringify(z.toJSONSchema(intentTaskOutputSchema));
 
   const system = `${SHARED_RULES}
 
 Task: Host Intent Classification
 The user's message is a request or question regarding the CURRENT active event plan.
-Map the message to the SINGLE closest intent kind in the discriminated union schema:
+Map the message to the closest intent kind in the discriminated union schema:
 ${jsonSchema}
+
+Compound Requests:
+- If the message contains 2 or 3 separate requests, return { "steps": [intent, intent, ...] } in the order asked.
+- Otherwise return a single intent object (not wrapped in steps).
+- Never return more than 3 steps. Do not split one request into several steps.
+- Example: "Upgrade the decor to premium and tell me what happens if it rains" ->
+  { "steps": [ { "kind": "upgrade", "family": "decor_theme", "toQuality": "premium" }, { "kind": "simulate", "scenario": { "type": "rain" } } ] }
 
 Classification Rules & Keyword Mappings:
 1. "decor" or "decoration" -> rate family 'decor_theme'.
@@ -68,7 +75,7 @@ Total Budget: ${input.planSummary.budgetStatus.total}
 User Message:
 ${wrappedMessage}
 
-Classify into single JSON intent:`;
+Classify into JSON (single intent or steps):`;
 
   return { system, user };
 }

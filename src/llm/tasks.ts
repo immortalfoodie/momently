@@ -5,7 +5,7 @@ import {
   conceptsInputSchema,
   conceptsOutputSchema,
   intentInputSchema,
-  intentOutputSchema,
+  intentTaskOutputSchema,
   narrateInputSchema,
   narrateOutputSchema,
   chaosDescribeInputSchema,
@@ -53,7 +53,7 @@ export const LLM_TASKS = {
   },
   intent: {
     inputSchema: intentInputSchema,
-    outputSchema: intentOutputSchema,
+    outputSchema: intentTaskOutputSchema,
     build: buildIntentPrompt,
     temperature: 0.1,
     maxOutputTokens: 1024,

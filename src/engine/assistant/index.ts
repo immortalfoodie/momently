@@ -9,6 +9,8 @@ import type { AssistantOutcome } from './types';
 export * from './concepts';
 export * from './fromIntake';
 export * from './resolveIntent';
+export * from './resolveSteps';
+export * from './stepLabels';
 export * from './types';
 export * from './withFunding';
 
