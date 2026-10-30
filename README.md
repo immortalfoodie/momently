@@ -38,7 +38,7 @@ Momently transforms unstructured celebration ideas into complete, mathematically
 - **`/events/[id]/day-of` (Event Day)**: Calm, phone-first coordinator with live now/next tracking and delay buffer absorption.
 - **`/events/[id]/kit` & `/kit/plan` (Event Kit)**: Local export center for printable plans, CSV spreadsheets, and ICS calendars.
 
-For full architectural blueprints and invariants, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+For a plain-English walkthrough of how every feature works, see [`docs/FEATURES.md`](docs/FEATURES.md). For full architectural blueprints and invariants, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Approach and Logic
 
