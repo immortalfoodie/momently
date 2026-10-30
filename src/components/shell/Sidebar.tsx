@@ -16,6 +16,8 @@ export interface NavItem {
 export interface SidebarProps {
   className?: string;
   onNavigate?: () => void;
+  collapsed?: boolean;
+  onToggleCollapsed?: () => void;
 }
 
 const GLOBAL_NAV_ITEMS: NavItem[] = [
@@ -40,99 +42,127 @@ function getEventNavItems(eventId: string): NavItem[] {
   ];
 }
 
-function SidebarContent({ className = '', onNavigate }: SidebarProps) {
+interface NavListProps {
+  items: NavItem[];
+  pathname: string;
+  collapsed: boolean;
+  compact?: boolean;
+  onNavigate?: () => void;
+}
+
+function NavList({ items, pathname, collapsed, compact = false, onNavigate }: NavListProps) {
+  return (
+    <ul role="list" className="flex flex-col gap-1 p-0 m-0 list-none">
+      {items.map((item) => {
+        const isActive = pathname === item.href;
+        return (
+          <li key={item.href}>
+            <Link
+              href={item.href}
+              onClick={onNavigate}
+              aria-current={isActive ? 'page' : undefined}
+              aria-label={collapsed ? item.label : undefined}
+              title={collapsed ? item.label : undefined}
+              className={`flex items-center rounded-[10px] text-sm font-medium transition-colors border-l-4 no-underline ${compact ? 'py-2' : 'py-2.5'} ${collapsed ? 'justify-center px-2' : 'gap-3 px-3'} ${
+                isActive
+                  ? 'border-[#6B2D5C] bg-[#F4EDE6] text-[#6B2D5C] font-semibold'
+                  : 'border-transparent text-[#2B1B2E] hover:bg-[#F4EDE6]/60 hover:text-[#2B1B2E]'
+              }`}
+            >
+              <Icon
+                name={item.icon}
+                size={18}
+                className={isActive ? 'text-[#6B2D5C]' : 'text-[#5B4A5E]'}
+                aria-hidden="true"
+              />
+              <span className={collapsed ? 'sr-only' : ''}>{item.label}</span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function CollapseToggle({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={collapsed ? 'Expand workspace navigation' : 'Collapse workspace navigation'}
+      aria-controls="workspace-navigation"
+      aria-expanded={!collapsed}
+      title={collapsed ? 'Expand navigation' : 'Collapse navigation'}
+      className="absolute right-0 top-1/2 z-20 flex h-14 w-5 -translate-y-1/2 items-center justify-center rounded-l-lg border border-r-0 border-[#E6DCD2] bg-white text-[#6B2D5C] shadow-sm transition-colors hover:bg-[#F4EDE6] focus-visible:z-30"
+    >
+      <Icon name="chevron-right" size={15} className={collapsed ? '' : 'rotate-180'} aria-hidden="true" />
+    </button>
+  );
+}
+
+interface EventNavGroupProps {
+  eventId: string;
+  pathname: string;
+  collapsed: boolean;
+  onNavigate?: () => void;
+}
+
+function EventNavGroup({ eventId, pathname, collapsed, onNavigate }: EventNavGroupProps) {
+  const eventTitle = useEventsStore((s) => s.events[eventId]?.plan.meta.title);
+  return (
+    <div data-testid="event-nav-group">
+      <div className={`mb-2 px-3 ${collapsed ? 'sr-only' : ''}`}>
+        <h2 className="text-xs font-bold uppercase tracking-wider text-[#5B4A5E]">This Event</h2>
+        {eventTitle ? (
+          <p
+            data-testid="sidebar-event-title"
+            className="text-sm font-semibold text-[#2B1B2E] truncate mt-1"
+            title={eventTitle}
+          >
+            {eventTitle}
+          </p>
+        ) : null}
+      </div>
+      <NavList
+        items={getEventNavItems(eventId)}
+        pathname={pathname}
+        collapsed={collapsed}
+        compact
+        onNavigate={onNavigate}
+      />
+    </div>
+  );
+}
+
+function SidebarContent({
+  className = '',
+  onNavigate,
+  collapsed = false,
+  onToggleCollapsed,
+}: SidebarProps) {
   const pathname = usePathname() || '/';
 
   // Detect /events/[id] context (excluding /events itself)
-  const eventMatch = pathname.match(/^\/events\/([^/]+)/);
-  const eventId = eventMatch?.[1];
-  const isEventScope = typeof eventId === 'string' && eventId.length > 0;
-  const eventNavItems = isEventScope ? getEventNavItems(eventId) : [];
-  const eventTitle = useEventsStore((s) => (eventId ? s.events[eventId]?.plan.meta.title : undefined));
+  const eventId = pathname.match(/^\/events\/([^/]+)/)?.[1];
 
   return (
     <nav
+      id={onToggleCollapsed ? 'workspace-navigation' : undefined}
       aria-label="Main"
-      className={`w-64 bg-[#FBF7F2] border-r border-[#E6DCD2] flex flex-col p-4 gap-6 select-none shrink-0 ${className}`}
+      className={`relative flex shrink-0 select-none flex-col border-r border-[#E6DCD2] bg-[#FBF7F2] transition-[width,padding] duration-200 ease-out ${collapsed ? 'w-[76px] gap-6 p-2' : 'w-64 gap-6 p-4'} ${className}`}
     >
       <div>
-        <h2 className="text-xs font-bold uppercase tracking-wider text-[#5B4A5E] px-3 mb-2">
+        <h2 className={`mb-2 px-3 text-xs font-bold uppercase tracking-wider text-[#5B4A5E] ${collapsed ? 'sr-only' : ''}`}>
           Workspace
         </h2>
-        <ul role="list" className="flex flex-col gap-1 p-0 m-0 list-none">
-          {GLOBAL_NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={onNavigate}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm font-medium transition-colors border-l-4 no-underline ${
-                    isActive
-                      ? 'border-[#6B2D5C] bg-[#F4EDE6] text-[#6B2D5C] font-semibold'
-                      : 'border-transparent text-[#2B1B2E] hover:bg-[#F4EDE6]/60 hover:text-[#2B1B2E]'
-                  }`}
-                >
-                  <Icon
-                    name={item.icon}
-                    size={18}
-                    className={isActive ? 'text-[#6B2D5C]' : 'text-[#5B4A5E]'}
-                    aria-hidden="true"
-                  />
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <NavList items={GLOBAL_NAV_ITEMS} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
       </div>
 
-      {isEventScope ? (
-        <div data-testid="event-nav-group">
-          <div className="px-3 mb-2">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-[#5B4A5E]">
-              This Event
-            </h2>
-            {eventTitle ? (
-              <p
-                data-testid="sidebar-event-title"
-                className="text-sm font-semibold text-[#2B1B2E] truncate mt-1"
-                title={eventTitle}
-              >
-                {eventTitle}
-              </p>
-            ) : null}
-          </div>
-          <ul role="list" className="flex flex-col gap-1 p-0 m-0 list-none">
-            {eventNavItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={onNavigate}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-[10px] text-sm font-medium transition-colors border-l-4 no-underline ${
-                      isActive
-                        ? 'border-[#6B2D5C] bg-[#F4EDE6] text-[#6B2D5C] font-semibold'
-                        : 'border-transparent text-[#2B1B2E] hover:bg-[#F4EDE6]/60 hover:text-[#2B1B2E]'
-                    }`}
-                  >
-                    <Icon
-                      name={item.icon}
-                      size={18}
-                      className={isActive ? 'text-[#6B2D5C]' : 'text-[#5B4A5E]'}
-                      aria-hidden="true"
-                    />
-                    <span>{item.label}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+      {eventId ? (
+        <EventNavGroup eventId={eventId} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
       ) : null}
+
+      {onToggleCollapsed ? <CollapseToggle collapsed={collapsed} onToggle={onToggleCollapsed} /> : null}
     </nav>
   );
 }
@@ -146,7 +176,9 @@ export function Sidebar(props: SidebarProps) {
       fallback={
         <nav
           aria-label="Main"
-          className={`w-64 bg-[#FBF7F2] border-r border-[#E6DCD2] flex flex-col p-4 gap-6 select-none shrink-0 ${
+          className={`relative flex shrink-0 select-none flex-col border-r border-[#E6DCD2] bg-[#FBF7F2] ${
+            props.collapsed ? 'w-[76px] gap-6 p-2' : 'w-64 gap-6 p-4'
+          } ${
             props.className ?? ''
           }`}
         >

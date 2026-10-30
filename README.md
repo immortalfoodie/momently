@@ -119,7 +119,7 @@ Open `http://localhost:3000` in your browser. Click **Watch the demo** on the ho
   ```env
   GEMINI_API_KEY=your_gemini_api_key_here
   GEMINI_MODEL=gemini-2.5-flash
-  AI_PROVIDER=gemini
+  LLM_PROVIDER=gemini
   ```
   Set `GEMINI_MODEL` to a supported Gemini model (e.g., `gemini-2.5-flash`).
 

@@ -12,7 +12,7 @@ vi.mock('next/navigation', () => ({
 describe('Home page smoke test', () => {
   it('renders the main heading', () => {
     render(<Home />);
-    const heading = screen.getByRole('heading', { level: 1, name: /plan better celebrations/i });
+    const heading = screen.getByRole('heading', { level: 1, name: /big moments deserve a better plan/i });
     expect(heading).toBeInTheDocument();
   });
 });

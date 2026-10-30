@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getTemplate } from '@/data/templates';
 import type { EventType } from '@/domain/types';
+import { Icon } from '@/components/ui/Icon';
 
 interface EventTypeInfo {
   type: EventType;
@@ -33,11 +34,12 @@ const EVENT_TYPES: EventTypeInfo[] = [
 
 export function EventTypes() {
   return (
-    <section aria-labelledby="event-types-heading" className="mb-10">
-      <div className="mb-4">
+    <section aria-labelledby="event-types-heading" className="mb-12">
+      <div className="mb-5">
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#8A5A00]">A GOOD PLACE TO BEGIN</p>
         <h2
           id="event-types-heading"
-          className="font-serif text-2xl font-bold text-[#2B1B2E]"
+          className="mt-1 font-serif text-2xl font-bold text-[#2B1B2E]"
         >
           What are you celebrating?
         </h2>
@@ -55,19 +57,27 @@ export function EventTypes() {
             <Link
               key={item.type}
               href={`/new?type=${item.type}`}
-              className="bg-white rounded-[16px] border border-[#E6DCD2] p-5 shadow-2xs hover:border-[#6B2D5C] hover:shadow-xs transition-all no-underline text-inherit group flex flex-col h-full"
+              className="group flex h-full flex-col rounded-[16px] border border-[#E6DCD2] bg-white p-5 text-inherit no-underline shadow-[0_2px_8px_rgba(43,27,46,0.03)] transition-all hover:-translate-y-0.5 hover:border-[#6B2D5C]/40 hover:shadow-[0_12px_26px_rgba(43,27,46,0.08)]"
             >
               <div>
-                <h3 className="font-serif text-lg font-bold text-[#2B1B2E] group-hover:text-[#6B2D5C] transition-colors">
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#F4EDE6] text-[#6B2D5C]">
+                    <Icon name={item.type === 'wedding' ? 'sparkle' : item.type === 'birthday' ? 'bulb' : item.type === 'anniversary' ? 'calendar' : 'users'} size={19} aria-hidden="true" />
+                  </span>
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E6DCD2] text-[#6B2D5C] transition-all group-hover:border-[#6B2D5C] group-hover:bg-[#6B2D5C] group-hover:text-white" aria-hidden="true">
+                    <Icon name="chevron-right" size={16} />
+                  </span>
+                </div>
+                <h3 className="font-serif text-lg font-bold text-[#2B1B2E] transition-colors group-hover:text-[#6B2D5C]">
                   {item.title}
                 </h3>
-                <p className="text-xs text-[#5B4A5E] mt-1.5 leading-relaxed">
+                <p className="mt-1.5 text-xs leading-relaxed text-[#5B4A5E]">
                   {item.tagline}
                 </p>
               </div>
 
-              <div className="mt-auto pt-3 border-t border-[#E6DCD2]/60">
-                <span className="text-[11px] font-semibold text-[#5B4A5E] uppercase tracking-wider block mb-2">
+              <div className="mt-auto border-t border-[#E6DCD2]/70 pt-4">
+                <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.14em] text-[#8A5A00]">
                   Popular aesthetics
                 </span>
                 <div className="flex flex-wrap gap-1.5">

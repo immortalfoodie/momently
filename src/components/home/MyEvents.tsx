@@ -22,12 +22,13 @@ export function MyEvents() {
   };
 
   return (
-    <section aria-labelledby="my-celebrations-heading" className="mb-10">
-      <div className="flex items-center justify-between mb-4">
+    <section aria-labelledby="my-celebrations-heading" className="mb-12">
+      <div className="mb-5 flex items-end justify-between gap-4">
         <div>
+          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#8A5A00]">YOUR WORKSPACE</p>
           <h2
             id="my-celebrations-heading"
-            className="font-serif text-2xl font-bold text-[#2B1B2E]"
+            className="mt-1 font-serif text-2xl font-bold text-[#2B1B2E]"
           >
             My Celebrations
           </h2>
@@ -47,16 +48,16 @@ export function MyEvents() {
       </div>
 
       {!hydrated ? (
-        <div data-testid="events-skeleton" className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div data-testid="events-skeleton" role="status" aria-label="Loading your celebrations" aria-busy="true" className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {[1, 2, 3].map((idx) => (
             <div
               key={idx}
-              className="bg-white rounded-[16px] border border-[#E6DCD2] p-5 shadow-2xs space-y-3"
+              className={`space-y-3 rounded-[16px] border border-[#E6DCD2] bg-white p-4 shadow-[0_2px_8px_rgba(43,27,46,0.03)] ${idx > 1 ? 'hidden md:block' : ''}`}
             >
-              <Skeleton className="h-32 w-full rounded-[12px]" />
+              <Skeleton className="h-24 w-full rounded-[12px]" />
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-1/2" />
-              <Skeleton className="h-8 w-full mt-4" />
+              <Skeleton className="mt-4 h-2 w-full" />
             </div>
           ))}
         </div>

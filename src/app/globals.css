@@ -115,6 +115,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.home-hero {
+  container-type: inline-size;
+}
+
+@container (min-width: 56rem) {
+  .home-hero-layout {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: center;
+    gap: 3rem;
+    padding: 3.5rem;
+  }
+}
+
 /* Accessible global focus ring: 3px solid #1D4F91 with 2px offset */
 :focus-visible {
   outline: 3px solid #1D4F91 !important;

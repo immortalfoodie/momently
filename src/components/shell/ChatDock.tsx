@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { ChatPanel } from '@/components/chat/ChatPanel';
 import { ChatContext, ChatProvider, useChat } from '@/components/chat/ChatProvider';
 import { Drawer } from '@/components/ui/Dialog';
@@ -8,16 +8,32 @@ import { Icon } from '@/components/ui/Icon';
 
 function ChatDockInner() {
   const { isMobileOpen, setIsMobileOpen } = useChat();
+  const [isDesktopOpen, setIsDesktopOpen] = useState(true);
 
   return (
     <>
       {/* Desktop Column: fixed right column on xl+ */}
-      <aside
-        aria-label="Assistant"
-        className="hidden xl:flex xl:w-[22rem] 2xl:w-[24rem] bg-white border-l border-[#E6DCD2] flex-col shrink-0 sticky top-[var(--header-h)] h-[calc(100dvh-var(--header-h))] overflow-hidden min-h-0"
-      >
-        <ChatPanel />
-      </aside>
+      {isDesktopOpen ? (
+        <aside
+          id="desktop-assistant-panel"
+          aria-label="Assistant"
+          className="hidden xl:flex xl:w-[22rem] 2xl:w-[24rem] bg-white border-l border-[#E6DCD2] flex-col shrink-0 sticky top-[var(--header-h)] h-[calc(100dvh-var(--header-h))] overflow-hidden min-h-0"
+        >
+          <ChatPanel onClose={() => setIsDesktopOpen(false)} />
+        </aside>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setIsDesktopOpen(true)}
+          aria-label="Open AI Event Assistant"
+          aria-controls="desktop-assistant-panel"
+          aria-expanded={false}
+          title="Open AI assistant"
+          className="fixed right-0 top-1/2 z-30 hidden h-14 w-8 -translate-y-1/2 items-center justify-center rounded-l-xl border border-r-0 border-[#E6DCD2] bg-white text-[#6B2D5C] shadow-md transition-colors hover:bg-[#F4EDE6] focus-visible:z-40 xl:flex"
+        >
+          <Icon name="sparkle" size={18} aria-hidden="true" />
+        </button>
+      )}
 
       {/* Mobile Floating Trigger: below xl */}
       <div className="xl:hidden">

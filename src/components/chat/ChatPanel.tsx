@@ -39,7 +39,7 @@ function useAssistantHealthMode(): AssistantHealthMode {
   return healthMode;
 }
 
-function ChatPanelInner() {
+function ChatPanelInner({ onClose }: { onClose?: () => void }) {
   const { mode, messages, welcomeVisible, clear } = useChat();
   const healthMode = useAssistantHealthMode();
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
@@ -70,18 +70,34 @@ function ChatPanelInner() {
           )}
         </div>
 
-        {messages.length > 0 && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => setConfirmClearOpen(true)}
-            aria-label="Clear conversation"
-            className="text-xs shrink-0 text-[#2B1B2E]"
-          >
-            Clear
-          </Button>
-        )}
+        <div className="flex shrink-0 items-center gap-1">
+          {messages.length > 0 && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setConfirmClearOpen(true)}
+              aria-label="Clear conversation"
+              className="text-xs text-[#2B1B2E]"
+            >
+              Clear
+            </Button>
+          )}
+          {onClose ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              aria-label="Close AI assistant"
+              title="Close assistant"
+              className="px-2 text-[#5B4A5E]"
+              icon={<Icon name="close" size={17} aria-hidden="true" />}
+            >
+              <span className="sr-only">Close</span>
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       <MessageList />
@@ -127,20 +143,21 @@ function ChatPanelInner() {
 
 export interface ChatPanelProps {
   eventId?: string;
+  onClose?: () => void;
 }
 
 /**
  * Complete AI Event Assistant panel combining header status, message log, context-aware
  * prompt chips, and the message composer.
  */
-export function ChatPanel({ eventId }: ChatPanelProps = {}) {
+export function ChatPanel({ eventId, onClose }: ChatPanelProps = {}) {
   const parentContext = useContext(ChatContext);
   if (!parentContext) {
     return (
       <ChatProvider initialEventId={eventId}>
-        <ChatPanelInner />
+        <ChatPanelInner onClose={onClose} />
       </ChatProvider>
     );
   }
-  return <ChatPanelInner />;
+  return <ChatPanelInner onClose={onClose} />;
 }

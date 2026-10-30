@@ -24,6 +24,7 @@ const STORAGE_FALLBACK_NOTICE =
 function AppShellInner({ children }: AppShellProps) {
   const hydrated = useHydrateStore();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isDesktopNavCollapsed, setIsDesktopNavCollapsed] = useState(false);
   const [storageNoticeDismissed, setStorageNoticeDismissed] = useState(false);
   const tourActive = useTourStore((s) => s.active);
   const storeNotice = useEventsStore((s) => s.notice);
@@ -38,7 +39,11 @@ function AppShellInner({ children }: AppShellProps) {
 
       <div className="flex-1 flex min-w-0">
         {/* Desktop Sidebar: visible on lg+ */}
-        <Sidebar className="hidden lg:flex sticky top-[var(--header-h)] h-[calc(100dvh-var(--header-h))] overflow-y-auto min-h-0" />
+        <Sidebar
+          collapsed={isDesktopNavCollapsed}
+          onToggleCollapsed={() => setIsDesktopNavCollapsed((collapsed) => !collapsed)}
+          className="hidden lg:flex sticky top-[var(--header-h)] h-[calc(100dvh-var(--header-h))] overflow-y-auto min-h-0 duration-200 ease-out"
+        />
 
         {/* Mobile Navigation Drawer */}
         <Drawer
