@@ -64,10 +64,10 @@ export function ShiftSchedule({ plan, eventId, className = '' }: ShiftSchedulePr
   };
 
   return (
-    <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
+    <Card className={`p-5 bg-white border border-border space-y-4 ${className}`}>
       <div>
-        <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">Move the whole schedule</h3>
-        <p className="text-xs text-[#5B4A5E] mt-0.5">
+        <h3 className="font-serif font-bold text-lg text-ink">Move the whole schedule</h3>
+        <p className="text-xs text-ink-muted mt-0.5">
           Push all or later activities forward or backward by a set duration without altering relative gaps.
         </p>
       </div>
@@ -103,7 +103,7 @@ export function ShiftSchedule({ plan, eventId, className = '' }: ShiftSchedulePr
         </Field>
       </div>
 
-      <div className="flex justify-end pt-2 border-t border-[#E6DCD2]">
+      <div className="flex justify-end pt-2 border-t border-border">
         <Button variant="secondary" onClick={handleShift}>
           Apply Shift
         </Button>

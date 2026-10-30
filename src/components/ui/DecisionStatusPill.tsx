@@ -22,27 +22,27 @@ interface StatusConfig {
 const CONFIG: Record<DecisionStatus, StatusConfig> = {
   locked: {
     label: 'Locked',
-    toneClass: 'bg-[#F4EDE6] text-[#2B1B2E] border-[#E6DCD2]',
+    toneClass: 'bg-surface-muted text-ink border-border',
     iconName: 'lock',
   },
   proposed: {
     label: 'Proposed',
-    toneClass: 'bg-[#E8F0F8] text-[#2B5C8A] border-[#C3DBEE]',
+    toneClass: 'bg-info-bg text-info border-info-border',
     iconName: 'sparkle',
   },
   'awaiting approval': {
     label: 'Awaiting approval',
-    toneClass: 'bg-[#FFF4DC] text-[#8A5A00] border-[#FFE2A8]',
+    toneClass: 'bg-warning-bg text-warning border-warning-border',
     iconName: 'clock',
   },
   approved: {
     label: 'Approved',
-    toneClass: 'bg-[#E7F4EE] text-[#1F6F54] border-[#C3E6D7]',
+    toneClass: 'bg-success-bg text-success border-success-border',
     iconName: 'check',
   },
   rejected: {
     label: 'Rejected',
-    toneClass: 'bg-[#FBE9EB] text-[#A12B3A] border-[#F4C5CB]',
+    toneClass: 'bg-danger-bg text-danger border-danger-border',
     iconName: 'close',
   },
 };

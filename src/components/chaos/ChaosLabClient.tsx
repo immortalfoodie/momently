@@ -146,7 +146,7 @@ function ChaosLabContent({ eventId, plan, derived }: ChaosLabContentProps) {
 
       {/* 1. Your Chaos Score */}
       <section aria-labelledby="chaos-score-heading" className="space-y-3">
-        <h2 id="chaos-score-heading" className="text-lg font-serif font-bold text-[#2B1B2E]">
+        <h2 id="chaos-score-heading" className="text-lg font-serif font-bold text-ink">
           Your Chaos Score
         </h2>
         <ChaosScoreCard plan={plan} derived={derived} />
@@ -155,7 +155,7 @@ function ChaosLabContent({ eventId, plan, derived }: ChaosLabContentProps) {
       {/* 2. Simulate a problem */}
       <section aria-labelledby="simulate-heading" className="space-y-3" ref={pickerRef}>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 id="simulate-heading" className="text-lg font-serif font-bold text-[#2B1B2E]">
+          <h2 id="simulate-heading" className="text-lg font-serif font-bold text-ink">
             Simulate a problem
           </h2>
 
@@ -195,7 +195,7 @@ function ChaosLabContent({ eventId, plan, derived }: ChaosLabContentProps) {
       {/* 3. Result (only when present) */}
       {result && (
         <section aria-labelledby="result-heading" className="space-y-3">
-          <h2 id="result-heading" className="text-lg font-serif font-bold text-[#2B1B2E]">
+          <h2 id="result-heading" className="text-lg font-serif font-bold text-ink">
             Result
           </h2>
           <ScenarioResultView
@@ -213,7 +213,7 @@ function ChaosLabContent({ eventId, plan, derived }: ChaosLabContentProps) {
 
       {/* 4. Full stress test */}
       <section aria-labelledby="stress-test-heading" className="space-y-3">
-        <h2 id="stress-test-heading" className="text-lg font-serif font-bold text-[#2B1B2E]">
+        <h2 id="stress-test-heading" className="text-lg font-serif font-bold text-ink">
           Full stress test
         </h2>
         <StressTestPanel
@@ -228,7 +228,7 @@ function ChaosLabContent({ eventId, plan, derived }: ChaosLabContentProps) {
 
       {/* 5. Risk register */}
       <section aria-labelledby="risk-register-heading" className="space-y-3">
-        <h2 id="risk-register-heading" className="text-lg font-serif font-bold text-[#2B1B2E]">
+        <h2 id="risk-register-heading" className="text-lg font-serif font-bold text-ink">
           Risk register
         </h2>
         <RiskRegister

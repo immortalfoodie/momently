@@ -47,12 +47,12 @@ export function QuickTools() {
     <section aria-labelledby="quick-tools-heading" className="mb-12">
       <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#8A5A00]">THE DETAILS, TAKEN CARE OF</p>
-          <h2 id="quick-tools-heading" className="mt-1 font-serif text-2xl font-bold text-[#2B1B2E]">
+          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-warning">THE DETAILS, TAKEN CARE OF</p>
+          <h2 id="quick-tools-heading" className="mt-1 font-serif text-2xl font-bold text-ink">
             Keep every moving part in view
           </h2>
         </div>
-        <p className="max-w-md text-sm text-[#5B4A5E]">A clear home for the decisions that make a celebration feel effortless.</p>
+        <p className="max-w-md text-sm text-ink-muted">A clear home for the decisions that make a celebration feel effortless.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -62,23 +62,23 @@ export function QuickTools() {
             <Link
               key={tool.title}
               href={href}
-              className="group flex min-h-[174px] flex-col justify-between rounded-[16px] border border-[#E6DCD2] bg-white p-5 text-inherit no-underline shadow-[0_2px_8px_rgba(43,27,46,0.03)] transition-all hover:-translate-y-0.5 hover:border-[#6B2D5C]/40 hover:shadow-[0_12px_26px_rgba(43,27,46,0.08)]"
+              className="group flex min-h-[174px] flex-col justify-between rounded-[16px] border border-border bg-white p-5 text-inherit no-underline shadow-[0_2px_8px_rgba(43,27,46,0.03)] transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_12px_26px_rgba(43,27,46,0.08)]"
             >
               <div>
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#F4EDE6] text-[#6B2D5C] transition-colors group-hover:bg-[#6B2D5C] group-hover:text-white">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-[12px] bg-surface-muted text-primary transition-colors group-hover:bg-primary group-hover:text-white">
                   <Icon name={tool.icon} size={18} aria-hidden="true" />
                 </div>
-                <h3 className="font-serif text-base font-bold text-[#2B1B2E] transition-colors group-hover:text-[#6B2D5C]">
+                <h3 className="font-serif text-base font-bold text-ink transition-colors group-hover:text-primary">
                   {tool.title}
                 </h3>
-                <p className="mt-1.5 text-xs leading-relaxed text-[#5B4A5E]">
+                <p className="mt-1.5 text-xs leading-relaxed text-ink-muted">
                   {tool.description}
                 </p>
               </div>
 
-              <div className="mt-4 flex items-center justify-between border-t border-[#E6DCD2]/70 pt-3 text-xs font-semibold text-[#6B2D5C]">
+              <div className="mt-4 flex items-center justify-between border-t border-border/70 pt-3 text-xs font-semibold text-primary">
                 <span>Open workspace</span>
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F4EDE6] transition-transform group-hover:translate-x-0.5" aria-hidden="true">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-surface-muted transition-transform group-hover:translate-x-0.5" aria-hidden="true">
                   <Icon name="chevron-right" size={15} />
                 </span>
               </div>

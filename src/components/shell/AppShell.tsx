@@ -34,7 +34,7 @@ function AppShellInner({ children }: AppShellProps) {
     hydrated && !storageNoticeDismissed && !safeStorage.isPersistent();
 
   return (
-    <div className="min-h-screen bg-[#FBF7F2] text-[#2B1B2E] flex flex-col">
+    <div className="min-h-screen bg-bg text-ink flex flex-col">
       <Header onToggleMobileNav={() => setIsMobileNavOpen(true)} />
 
       <div className="flex-1 flex min-w-0">

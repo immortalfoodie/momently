@@ -22,13 +22,13 @@ export interface LinkButtonProps extends Omit<ComponentProps<typeof Link>, 'chil
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary:
-    'bg-[#6B2D5C] text-white hover:bg-[#55224A] active:bg-[#431A3A] border border-transparent shadow-sm',
+    'bg-primary text-white hover:bg-primary-hover active:bg-[#431A3A] border border-transparent shadow-sm',
   secondary:
-    'bg-white text-[#2B1B2E] border border-[#E6DCD2] hover:bg-[#F4EDE6] active:bg-[#EADBCC]',
+    'bg-white text-ink border border-border hover:bg-surface-muted active:bg-[#EADBCC]',
   ghost:
-    'bg-transparent text-[#2B1B2E] hover:bg-[#F4EDE6] active:bg-[#EADBCC] border border-transparent',
+    'bg-transparent text-ink hover:bg-surface-muted active:bg-[#EADBCC] border border-transparent',
   danger:
-    'bg-[#A12B3A] text-white hover:bg-[#82212E] active:bg-[#681823] border border-transparent shadow-sm',
+    'bg-danger text-white hover:bg-[#82212E] active:bg-[#681823] border border-transparent shadow-sm',
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {
@@ -82,7 +82,7 @@ export function Button({
       type={props.type ?? 'button'}
       disabled={isDisabled}
       aria-busy={loading || undefined}
-      className={`inline-flex items-center justify-center font-medium transition-colors cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
+      className={`inline-flex items-center justify-center font-medium transition-colors cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
       {...props}
     >
       {loading ? <Spinner /> : icon ? <span aria-hidden="true">{icon}</span> : null}
@@ -105,7 +105,7 @@ export function LinkButton({
 }: LinkButtonProps) {
   return (
     <Link
-      className={`inline-flex items-center justify-center font-medium transition-colors cursor-pointer select-none no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
+      className={`inline-flex items-center justify-center font-medium transition-colors cursor-pointer select-none no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
       {...props}
     >
       {icon ? <span aria-hidden="true">{icon}</span> : null}

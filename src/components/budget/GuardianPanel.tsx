@@ -63,7 +63,7 @@ export function GuardianPanel({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs text-[#5B4A5E]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs text-ink-muted">
         <p>Instant evaluation: no network calls, runs completely offline.</p>
         <p className="italic">
           Prices are your own numbers or regional estimates; nothing is a vendor quote yet.
@@ -83,15 +83,15 @@ export function GuardianPanel({
         <Card
           className={`p-4 bg-white border transition-colors ${
             activeTool === 'premium'
-              ? 'border-[#6B2D5C] ring-1 ring-[#6B2D5C]'
-              : 'border-[#E6DCD2]'
+              ? 'border-primary ring-1 ring-primary'
+              : 'border-border'
           }`}
         >
           <div className="flex items-center gap-2 mb-1.5">
-            <Icon name="sparkle" size={16} className="text-[#6B2D5C]" aria-hidden="true" />
-            <h3 className="font-serif font-bold text-sm text-[#2B1B2E]">Make it feel expensive</h3>
+            <Icon name="sparkle" size={16} className="text-primary" aria-hidden="true" />
+            <h3 className="font-serif font-bold text-sm text-ink">Make it feel expensive</h3>
           </div>
-          <p className="text-xs text-[#5B4A5E] mb-3">
+          <p className="text-xs text-ink-muted mb-3">
             Guests notice lighting, decor, and music far more than favours or transport.
           </p>
           <Button size="sm" variant="secondary" onClick={runPremium} className="w-full">
@@ -103,15 +103,15 @@ export function GuardianPanel({
         <Card
           className={`p-4 bg-white border transition-colors ${
             activeTool === 'forgotten'
-              ? 'border-[#6B2D5C] ring-1 ring-[#6B2D5C]'
-              : 'border-[#E6DCD2]'
+              ? 'border-primary ring-1 ring-primary'
+              : 'border-border'
           }`}
         >
           <div className="flex items-center gap-2 mb-1.5">
-            <Icon name="alert" size={16} className="text-[#8A5A00]" aria-hidden="true" />
-            <h3 className="font-serif font-bold text-sm text-[#2B1B2E]">What am I forgetting?</h3>
+            <Icon name="alert" size={16} className="text-warning" aria-hidden="true" />
+            <h3 className="font-serif font-bold text-sm text-ink">What am I forgetting?</h3>
           </div>
-          <p className="text-xs text-[#5B4A5E] mb-3">
+          <p className="text-xs text-ink-muted mb-3">
             Uncover unpriced gotchas: venue security deposits, licenses, taxes, and overtime.
           </p>
           <Button size="sm" variant="secondary" onClick={runForgotten} className="w-full">
@@ -121,9 +121,9 @@ export function GuardianPanel({
       </div>
 
       {currentOutcome && (
-        <Card className="p-4 bg-[#FAF5F0] border border-[#E6DCD2] space-y-3">
+        <Card className="p-4 bg-surface-warm border border-border space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="font-serif font-semibold text-sm text-[#2B1B2E]">
+            <h4 className="font-serif font-semibold text-sm text-ink">
               Guardian Recommendation
             </h4>
             <Button variant="ghost" size="sm" onClick={() => setOutcome(null)}>

@@ -31,25 +31,25 @@ export function QuoteComparison({
   const { questions, columns, observations } = comparison;
 
   return (
-    <Card className={`p-4 sm:p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
-      <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">Quotes side by side</h3>
+    <Card className={`p-4 sm:p-5 bg-white border border-border space-y-4 ${className}`}>
+      <h3 className="font-serif font-bold text-lg text-ink">Quotes side by side</h3>
 
       {/* Focusable horizontally scrollable wrapper for WCAG compliance */}
       <div
         tabIndex={0}
         role="region"
         aria-label="Quote comparison table"
-        className="overflow-x-auto rounded-[12px] border border-[#E6DCD2] focus:outline-none focus:ring-2 focus:ring-[#2B1B2E]"
+        className="overflow-x-auto rounded-[12px] border border-border focus:outline-none focus:ring-2 focus:ring-ink"
       >
         <table className="w-full text-left text-sm border-collapse min-w-[500px]">
           <caption className="sr-only">Your quotes side by side</caption>
           <thead>
-            <tr className="bg-[#F5F2EB] border-b border-[#E6DCD2]">
-              <th scope="col" className="py-3 px-4 font-semibold text-[#2B1B2E] w-48">
+            <tr className="bg-surface-warm border-b border-border">
+              <th scope="col" className="py-3 px-4 font-semibold text-ink w-48">
                 Criteria
               </th>
               {columns.map((col) => (
-                <th key={col.vendorName} scope="col" className="py-3 px-4 font-semibold text-[#2B1B2E]">
+                <th key={col.vendorName} scope="col" className="py-3 px-4 font-semibold text-ink">
                   <div className="flex items-center justify-between gap-2">
                     <span className="truncate">{col.vendorName}</span>
                     <Button
@@ -60,7 +60,7 @@ export function QuoteComparison({
                         if (original) onEditQuote(original);
                       }}
                       aria-label={`Edit quote for ${col.vendorName}`}
-                      className="text-xs text-[#5B4A5E] hover:text-[#2B1B2E] min-h-[32px] px-2 py-1"
+                      className="text-xs text-ink-muted hover:text-ink min-h-[32px] px-2 py-1"
                     >
                       Edit
                     </Button>
@@ -69,14 +69,14 @@ export function QuoteComparison({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E6DCD2]">
+          <tbody className="divide-y divide-border">
             {/* Price row */}
             <tr>
-              <th scope="row" className="py-3 px-4 font-medium text-[#2B1B2E] bg-[#FAF7F2]">
+              <th scope="row" className="py-3 px-4 font-medium text-ink bg-bg">
                 Price
               </th>
               {columns.map((col) => (
-                <td key={col.vendorName} className="py-3 px-4 font-bold text-[#2B1B2E]">
+                <td key={col.vendorName} className="py-3 px-4 font-bold text-ink">
                   {formatInr(col.price)}
                 </td>
               ))}
@@ -84,11 +84,11 @@ export function QuoteComparison({
 
             {/* Completeness row */}
             <tr>
-              <th scope="row" className="py-3 px-4 font-medium text-[#2B1B2E] bg-[#FAF7F2]">
+              <th scope="row" className="py-3 px-4 font-medium text-ink bg-bg">
                 Completeness
               </th>
               {columns.map((col) => (
-                <td key={col.vendorName} className="py-3 px-4 text-[#5B4A5E]">
+                <td key={col.vendorName} className="py-3 px-4 text-ink-muted">
                   {col.completenessPercent}% ({col.answered}/{col.total} answered)
                 </td>
               ))}
@@ -97,17 +97,17 @@ export function QuoteComparison({
             {/* Questions rows */}
             {questions.map((q) => (
               <tr key={q}>
-                <th scope="row" className="py-3 px-4 text-xs font-medium text-[#5B4A5E] bg-[#FAF7F2] align-top">
+                <th scope="row" className="py-3 px-4 text-xs font-medium text-ink-muted bg-bg align-top">
                   {q}
                 </th>
                 {need.quotes.map((quote) => {
                   const ans = quote.answers[q]?.trim();
                   return (
-                    <td key={quote.vendorName} className="py-3 px-4 text-xs text-[#2B1B2E] align-top">
+                    <td key={quote.vendorName} className="py-3 px-4 text-xs text-ink align-top">
                       {ans ? (
                         <span>{ans}</span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[#7A6B7E] italic">
+                        <span className="inline-flex items-center gap-1 text-ink-muted italic">
                           <Icon name="info" size={14} aria-hidden="true" />
                           Not answered yet
                         </span>
@@ -120,7 +120,7 @@ export function QuoteComparison({
 
             {/* Action row */}
             <tr>
-              <th scope="row" className="py-3 px-4 bg-[#FAF7F2]">
+              <th scope="row" className="py-3 px-4 bg-bg">
                 <span className="sr-only">Budget action</span>
               </th>
               {need.quotes.map((quote) => (
@@ -147,7 +147,7 @@ export function QuoteComparison({
               ? `+${formatInr(col.vsBudget.difference)}`
               : `-${formatInr(Math.abs(col.vsBudget.difference))}`;
           return (
-            <p key={col.vendorName} className="text-xs text-[#5B4A5E]">
+            <p key={col.vendorName} className="text-xs text-ink-muted">
               <strong>{col.vendorName}</strong>: {diffText} ({col.vsBudget.percent > 0 ? `+${col.vsBudget.percent}` : col.vsBudget.percent}% vs your current budget allocation)
             </p>
           );
@@ -156,14 +156,14 @@ export function QuoteComparison({
 
       {/* Factual observations */}
       {observations.length > 0 && (
-        <div className="p-3.5 rounded-[12px] bg-[#FAF7F2] border border-[#E6DCD2] space-y-1.5">
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-[#7A6B7E]">
+        <div className="p-3.5 rounded-[12px] bg-bg border border-border space-y-1.5">
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
             Observations
           </h4>
           <ul className="space-y-1">
             {observations.map((obs) => (
-              <li key={obs} className="text-xs text-[#2B1B2E] flex items-start gap-1.5">
-                <span className="text-[#6B2D5C]">•</span>
+              <li key={obs} className="text-xs text-ink flex items-start gap-1.5">
+                <span className="text-primary">•</span>
                 <span>{obs}</span>
               </li>
             ))}
@@ -172,7 +172,7 @@ export function QuoteComparison({
       )}
 
       {/* Fixed disclaimer */}
-      <p className="text-xs text-[#7A6B7E] italic pt-1 border-t border-[#E6DCD2]">
+      <p className="text-xs text-ink-muted italic pt-1 border-t border-border">
         Based only on what you entered. Momently has no vendor ratings, reviews or availability data, and doesn&apos;t invent any.
       </p>
     </Card>

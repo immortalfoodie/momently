@@ -40,11 +40,11 @@ export function CompareVersionDialog({
     >
       <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1 text-xs">
         {/* Budget comparison */}
-        <div className="p-3 rounded-lg border border-[#E6DCD2] bg-[#FAF5F0] space-y-1">
-          <h4 className="font-semibold text-sm text-[#2B1B2E]">Budget Impact</h4>
-          <p className="text-[#5B4A5E]">
-            v{versionNumber}: <span className="font-medium text-[#2B1B2E]">{formatInr(diff.budgetTotalBefore)}</span> → Current:{' '}
-            <span className="font-bold text-[#2B1B2E]">{formatInr(diff.budgetTotalAfter)}</span>{' '}
+        <div className="p-3 rounded-lg border border-border bg-surface-warm space-y-1">
+          <h4 className="font-semibold text-sm text-ink">Budget Impact</h4>
+          <p className="text-ink-muted">
+            v{versionNumber}: <span className="font-medium text-ink">{formatInr(diff.budgetTotalBefore)}</span> → Current:{' '}
+            <span className="font-bold text-ink">{formatInr(diff.budgetTotalAfter)}</span>{' '}
             (diff: {diff.budgetTotalAfter >= diff.budgetTotalBefore ? '+' : ''}
             {formatInr(diff.budgetTotalAfter - diff.budgetTotalBefore)})
           </p>
@@ -53,22 +53,22 @@ export function CompareVersionDialog({
         {/* Meta changes table */}
         {diff.meta.length > 0 && (
           <div className="space-y-1.5">
-            <h4 className="font-semibold text-[#2B1B2E]">Celebration Details</h4>
-            <table className="w-full text-left border-collapse border border-[#E6DCD2]">
+            <h4 className="font-semibold text-ink">Celebration Details</h4>
+            <table className="w-full text-left border-collapse border border-border">
               <caption className="sr-only">Celebration Detail Changes</caption>
               <thead>
-                <tr className="bg-[#FAF5F0] text-[#5B4A5E] border-b border-[#E6DCD2]">
+                <tr className="bg-surface-warm text-ink-muted border-b border-border">
                   <th scope="col" className="p-2">Field</th>
                   <th scope="col" className="p-2">In v{versionNumber}</th>
                   <th scope="col" className="p-2">In Current</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E6DCD2]">
+              <tbody className="divide-y divide-border">
                 {diff.meta.map((m) => (
                   <tr key={m.field}>
-                    <th scope="row" className="p-2 font-medium capitalize text-[#2B1B2E]">{m.field}</th>
-                    <td className="p-2 text-[#5B4A5E]">{String(m.before)}</td>
-                    <td className="p-2 font-medium text-[#2B1B2E]">{String(m.after)}</td>
+                    <th scope="row" className="p-2 font-medium capitalize text-ink">{m.field}</th>
+                    <td className="p-2 text-ink-muted">{String(m.before)}</td>
+                    <td className="p-2 font-medium text-ink">{String(m.after)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -79,12 +79,12 @@ export function CompareVersionDialog({
         {/* Line item changes */}
         {(diff.items.added.length > 0 || diff.items.removed.length > 0 || diff.items.changed.length > 0) && (
           <div className="space-y-2">
-            <h4 className="font-semibold text-[#2B1B2E]">Budget Line Changes</h4>
+            <h4 className="font-semibold text-ink">Budget Line Changes</h4>
 
             {diff.items.added.length > 0 && (
               <div className="space-y-1">
-                <span className="font-medium text-[#1F6F54]">Added Items:</span>
-                <ul className="list-disc pl-5 text-[#5B4A5E] space-y-0.5">
+                <span className="font-medium text-success">Added Items:</span>
+                <ul className="list-disc pl-5 text-ink-muted space-y-0.5">
                   {diff.items.added.map((item, i) => (
                     <li key={i}>
                       {item.label} (+{formatInr(item.total)})
@@ -96,8 +96,8 @@ export function CompareVersionDialog({
 
             {diff.items.removed.length > 0 && (
               <div className="space-y-1">
-                <span className="font-medium text-[#A12B3A]">Removed Items:</span>
-                <ul className="list-disc pl-5 text-[#5B4A5E] space-y-0.5">
+                <span className="font-medium text-danger">Removed Items:</span>
+                <ul className="list-disc pl-5 text-ink-muted space-y-0.5">
                   {diff.items.removed.map((item, i) => (
                     <li key={i}>
                       {item.label} (-{formatInr(item.total)})
@@ -109,8 +109,8 @@ export function CompareVersionDialog({
 
             {diff.items.changed.length > 0 && (
               <div className="space-y-1">
-                <span className="font-medium text-[#8A5A00]">Price Adjustments:</span>
-                <ul className="list-disc pl-5 text-[#5B4A5E] space-y-0.5">
+                <span className="font-medium text-warning">Price Adjustments:</span>
+                <ul className="list-disc pl-5 text-ink-muted space-y-0.5">
                   {diff.items.changed.map((item, i) => (
                     <li key={i}>
                       {item.label}: {formatInr(item.before)} → {formatInr(item.after)}
@@ -124,21 +124,21 @@ export function CompareVersionDialog({
 
         {/* Concept diff */}
         {diff.concept && (
-          <div className="p-2.5 rounded bg-[#FAF5F0] border border-[#E6DCD2]">
-            <span className="font-semibold text-[#2B1B2E]">Concept change: </span>
-            <span className="text-[#5B4A5E]">{diff.concept.before ?? 'None'}</span> →{' '}
-            <span className="font-medium text-[#6B2D5C]">{diff.concept.after ?? 'None'}</span>
+          <div className="p-2.5 rounded bg-surface-warm border border-border">
+            <span className="font-semibold text-ink">Concept change: </span>
+            <span className="text-ink-muted">{diff.concept.before ?? 'None'}</span> →{' '}
+            <span className="font-medium text-primary">{diff.concept.after ?? 'None'}</span>
           </div>
         )}
 
         {/* Logistics & task counters */}
-        <div className="flex gap-4 pt-1 text-[#5B4A5E]">
-          <span>Schedule adjustments: <strong className="text-[#2B1B2E]">{diff.scheduleChanges}</strong></span>
-          <span>Checklist adjustments: <strong className="text-[#2B1B2E]">{diff.taskChanges}</strong></span>
+        <div className="flex gap-4 pt-1 text-ink-muted">
+          <span>Schedule adjustments: <strong className="text-ink">{diff.scheduleChanges}</strong></span>
+          <span>Checklist adjustments: <strong className="text-ink">{diff.taskChanges}</strong></span>
         </div>
       </div>
 
-      <div className="flex justify-end pt-3 border-t border-[#E6DCD2] mt-4">
+      <div className="flex justify-end pt-3 border-t border-border mt-4">
         <Button variant="ghost" onClick={onClose}>
           Close
         </Button>

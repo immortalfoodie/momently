@@ -16,27 +16,27 @@ const TONE_STYLES: Record<
   { bg: string; text: string; border: string; icon: IconName }
 > = {
   danger: {
-    bg: 'bg-[#FBE9EB]',
-    text: 'text-[#A12B3A]',
-    border: 'border-[#F4C5CB]',
+    bg: 'bg-danger-bg',
+    text: 'text-danger',
+    border: 'border-danger-border',
     icon: 'alert',
   },
   warning: {
-    bg: 'bg-[#FFF4DC]',
-    text: 'text-[#8A5A00]',
-    border: 'border-[#FFE2A8]',
+    bg: 'bg-warning-bg',
+    text: 'text-warning',
+    border: 'border-warning-border',
     icon: 'alert',
   },
   info: {
-    bg: 'bg-[#E8F0F8]',
-    text: 'text-[#2B5C8A]',
-    border: 'border-[#C3DBEE]',
+    bg: 'bg-info-bg',
+    text: 'text-info',
+    border: 'border-info-border',
     icon: 'info',
   },
   success: {
-    bg: 'bg-[#E7F4EE]',
-    text: 'text-[#1F6F54]',
-    border: 'border-[#C3E6D7]',
+    bg: 'bg-success-bg',
+    text: 'text-success',
+    border: 'border-success-border',
     icon: 'check',
   },
 };

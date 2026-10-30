@@ -23,8 +23,8 @@ export function ForgottenCostsList({
 
   if (reminders.length === 0) {
     return (
-      <Card className={`p-5 bg-white border border-[#E6DCD2] ${className}`}>
-        <p className="text-sm text-[#1F6F54] font-medium flex items-center gap-1.5">
+      <Card className={`p-5 bg-white border border-border ${className}`}>
+        <p className="text-sm text-success font-medium flex items-center gap-1.5">
           <Icon name="check" size={16} aria-hidden="true" />
           No common hidden gotchas detected for this celebration format.
         </p>
@@ -33,12 +33,12 @@ export function ForgottenCostsList({
   }
 
   return (
-    <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
+    <Card className={`p-5 bg-white border border-border space-y-4 ${className}`}>
       <div>
-        <h3 className="font-serif font-bold text-base text-[#2B1B2E]">
+        <h3 className="font-serif font-bold text-base text-ink">
           Common Hidden Gotchas
         </h3>
-        <p className="text-xs text-[#5B4A5E] mt-0.5">
+        <p className="text-xs text-ink-muted mt-0.5">
           Frequently overlooked fees, deposits, and venue setup costs for your celebration.
         </p>
       </div>
@@ -47,20 +47,20 @@ export function ForgottenCostsList({
         {reminders.map((rem) => (
           <div
             key={rem.id}
-            className="p-3.5 rounded-lg border border-[#E6DCD2] bg-[#FAF5F0] flex flex-col justify-between gap-2.5"
+            className="p-3.5 rounded-lg border border-border bg-surface-warm flex flex-col justify-between gap-2.5"
           >
             <div>
               <div className="flex items-start gap-1.5">
                 <Icon
                   name="alert"
                   size={14}
-                  className="text-[#8A5A00] shrink-0 mt-0.5"
+                  className="text-warning shrink-0 mt-0.5"
                   aria-hidden="true"
                 />
-                <h4 className="font-semibold text-sm text-[#2B1B2E]">{rem.title}</h4>
+                <h4 className="font-semibold text-sm text-ink">{rem.title}</h4>
               </div>
-              <p className="text-xs text-[#5B4A5E] mt-1 pl-5">{rem.why}</p>
-              <p className="text-xs font-medium text-[#8A5A00] mt-1.5 pl-5 italic">
+              <p className="text-xs text-ink-muted mt-1 pl-5">{rem.why}</p>
+              <p className="text-xs font-medium text-warning mt-1.5 pl-5 italic">
                 Reminder: no estimate included
               </p>
             </div>

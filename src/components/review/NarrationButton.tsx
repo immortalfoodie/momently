@@ -61,7 +61,7 @@ export function NarrationButton({ purpose, buildFacts, label, regionLabel, class
       </Button>
 
       {errorMessage && (
-        <p className="text-xs text-[#A12B3A] italic bg-[#FBE9EB] p-2.5 rounded-lg border border-[#F4C5CB]">
+        <p className="text-xs text-danger italic bg-danger-bg p-2.5 rounded-lg border border-danger-border">
           {errorMessage}
         </p>
       )}
@@ -70,13 +70,13 @@ export function NarrationButton({ purpose, buildFacts, label, regionLabel, class
         <div
           role="region"
           aria-label={regionLabel}
-          className="p-4 rounded-xl bg-[#FAF5F0] border border-[#E6DCD2] space-y-2 text-xs text-[#2B1B2E]"
+          className="p-4 rounded-xl bg-surface-warm border border-border space-y-2 text-xs text-ink"
         >
           <p className="leading-relaxed whitespace-pre-wrap">{explanation.text}</p>
           {explanation.highlights.length > 0 && (
-            <ul className="list-disc pl-5 space-y-0.5 text-[#5C4556]">
+            <ul className="list-disc pl-5 space-y-0.5 text-ink-muted">
               {explanation.highlights.map((highlight, idx) => (
-                <li key={idx} className="font-medium text-[#6B2D5C]">
+                <li key={idx} className="font-medium text-primary">
                   {highlight}
                 </li>
               ))}

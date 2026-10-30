@@ -33,7 +33,7 @@ function ComposerInner() {
   return (
     <form
       onSubmit={handleFormSubmit}
-      className="p-3 border-t border-[#E6DCD2] bg-white space-y-2"
+      className="p-3 border-t border-border bg-white space-y-2"
     >
       <div className="flex items-end gap-2">
         <div className="flex-1 min-w-0">
@@ -56,7 +56,7 @@ function ComposerInner() {
           type="submit"
           disabled={pending}
           aria-label="Send message"
-          className="w-11 h-11 mb-5 rounded-[12px] bg-[#6B2D5C] text-white hover:bg-[#55224A] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0 transition-colors cursor-pointer"
+          className="w-11 h-11 mb-5 rounded-[12px] bg-primary text-white hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0 transition-colors cursor-pointer"
         >
           <Icon name="send" size={18} aria-hidden="true" />
         </button>

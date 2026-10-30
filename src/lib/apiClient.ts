@@ -45,7 +45,46 @@ export function slimPlanForRequest(plan: EventPlan): EventPlan {
   return { ...plan, ledger: plan.ledger.slice(-SLIM_LEDGER_ENTRIES) };
 }
 
-// eslint-disable-next-line complexity
+function buildHeaders(hasBody: boolean): Record<string, string> {
+  return hasBody
+    ? { Accept: 'application/json', 'Content-Type': 'application/json' }
+    : { Accept: 'application/json' };
+}
+
+function parseRetryAfter(header: string | null): number | undefined {
+  if (!header) return undefined;
+  const seconds = parseInt(header, 10);
+  return Number.isNaN(seconds) ? undefined : seconds;
+}
+
+async function readErrorBody(
+  response: Response,
+): Promise<{ error?: { code?: string; message?: string } } | undefined> {
+  try {
+    return await response.json();
+  } catch {
+    // Non-JSON error response from an edge proxy
+    return undefined;
+  }
+}
+
+async function toClientError(response: Response): Promise<ClientError> {
+  const errorBody = await readErrorBody(response);
+  const retryAfterSeconds = parseRetryAfter(response.headers.get('retry-after'));
+  return {
+    code: errorBody?.error?.code ?? `http_${response.status}`,
+    message: errorBody?.error?.message ?? response.statusText ?? 'Request failed',
+    ...(retryAfterSeconds !== undefined ? { retryAfterSeconds } : {}),
+  };
+}
+
+function toNetworkError(e: unknown): ClientError {
+  if (e instanceof Error && e.name === 'AbortError') {
+    return { code: 'network', message: 'Request timed out after 45 seconds' };
+  }
+  return { code: 'network', message: e instanceof Error ? e.message : 'Network connection failure' };
+}
+
 async function executeJsonRequest<TResponse>(
   url: string,
   method: 'GET' | 'POST',
@@ -53,68 +92,22 @@ async function executeJsonRequest<TResponse>(
   options?: ApiClientOptions,
 ): Promise<Result<TResponse, ClientError>> {
   const fetchFn = options?.fetchFn ?? fetch;
-  const timeoutMs = options?.timeoutMs ?? DEFAULT_TIMEOUT_MS;
-  const baseUrl = options?.baseUrl ?? '';
-
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const timer = setTimeout(() => controller.abort(), options?.timeoutMs ?? DEFAULT_TIMEOUT_MS);
 
   try {
-    const headers: Record<string, string> = {
-      Accept: 'application/json',
-    };
-    if (body !== undefined) {
-      headers['Content-Type'] = 'application/json';
-    }
-
-    const response = await fetchFn(`${baseUrl}${url}`, {
+    const response = await fetchFn(`${options?.baseUrl ?? ''}${url}`, {
       method,
-      headers,
+      headers: buildHeaders(body !== undefined),
       body: body !== undefined ? JSON.stringify(body) : undefined,
       signal: controller.signal,
     });
-
-    clearTimeout(timer);
-
-    if (!response.ok) {
-      let errorBody: { error?: { code?: string; message?: string } } | undefined;
-      try {
-        errorBody = await response.json();
-      } catch {
-        // Non-JSON error response from edge proxy
-      }
-
-      const retryAfterHeader = response.headers.get('retry-after');
-      const parsedRetry = retryAfterHeader ? parseInt(retryAfterHeader, 10) : undefined;
-      const retryAfterSeconds = Number.isNaN(parsedRetry) ? undefined : parsedRetry;
-
-      const code = errorBody?.error?.code ?? `http_${response.status}`;
-      const message =
-        errorBody?.error?.message ?? response.statusText ?? 'Request failed';
-
-      return err({
-        code,
-        message,
-        ...(retryAfterSeconds !== undefined ? { retryAfterSeconds } : {}),
-      });
-    }
-
-    const json = (await response.json()) as TResponse;
-    return ok(json);
+    if (!response.ok) return err(await toClientError(response));
+    return ok((await response.json()) as TResponse);
   } catch (e) {
+    return err(toNetworkError(e));
+  } finally {
     clearTimeout(timer);
-
-    if (e instanceof Error && e.name === 'AbortError') {
-      return err({
-        code: 'network',
-        message: 'Request timed out after 45 seconds',
-      });
-    }
-
-    return err({
-      code: 'network',
-      message: e instanceof Error ? e.message : 'Network connection failure',
-    });
   }
 }
 

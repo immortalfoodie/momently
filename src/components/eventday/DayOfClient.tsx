@@ -59,7 +59,7 @@ export function DayOfClient({ eventId: propEventId }: DayOfClientProps) {
       {/* 1. Right now */}
       <section aria-labelledby="right-now-heading" className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 id="right-now-heading" className="text-xl font-serif font-bold text-[#2B1B2E]">
+          <h2 id="right-now-heading" className="text-xl font-serif font-bold text-ink">
             Right now
           </h2>
           <KeepScreenOn />
@@ -81,7 +81,7 @@ export function DayOfClient({ eventId: propEventId }: DayOfClientProps) {
 
       {/* 2. Today's to-do list */}
       <section aria-labelledby="today-todo-heading" className="space-y-3">
-        <h2 id="today-todo-heading" className="text-xl font-serif font-bold text-[#2B1B2E]">
+        <h2 id="today-todo-heading" className="text-xl font-serif font-bold text-ink">
           Today&apos;s to-do list
         </h2>
         <DayTasks plan={plan} eventId={eventId} />
@@ -89,7 +89,7 @@ export function DayOfClient({ eventId: propEventId }: DayOfClientProps) {
 
       {/* 3. Something went wrong? */}
       <section aria-labelledby="something-wrong-heading" className="space-y-3">
-        <h2 id="something-wrong-heading" className="text-xl font-serif font-bold text-[#2B1B2E]">
+        <h2 id="something-wrong-heading" className="text-xl font-serif font-bold text-ink">
           Something went wrong?
         </h2>
         <ProblemSolver plan={plan} minute={clock.minute} eventId={eventId} />
@@ -97,7 +97,7 @@ export function DayOfClient({ eventId: propEventId }: DayOfClientProps) {
 
       {/* 4. Key contacts */}
       <section aria-labelledby="key-contacts-heading" className="space-y-3">
-        <h2 id="key-contacts-heading" className="text-xl font-serif font-bold text-[#2B1B2E]">
+        <h2 id="key-contacts-heading" className="text-xl font-serif font-bold text-ink">
           Key contacts
         </h2>
         <ContactsPanel plan={plan} eventId={eventId} />

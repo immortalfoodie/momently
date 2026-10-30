@@ -32,10 +32,10 @@ export function KitOrderQuantitiesCard({
     <Card className="p-5 space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="space-y-1">
-          <h2 className="text-lg font-serif font-bold text-[#2B1B2E]">
+          <h2 className="text-lg font-serif font-bold text-ink">
             Order quantities
           </h2>
-          <p className="text-sm text-[#5B4A5E]">
+          <p className="text-sm text-ink-muted">
             Practical catering, seating, invitation and favour counts derived from your guest breakdown.
           </p>
         </div>
@@ -58,7 +58,7 @@ export function KitOrderQuantitiesCard({
             Quantities to share with your caterer and decorator
           </caption>
           <thead>
-            <tr className="border-b border-[#E6DCD2] text-xs font-semibold uppercase tracking-wider text-[#5B4A5E]">
+            <tr className="border-b border-border text-xs font-semibold uppercase tracking-wider text-ink-muted">
               <th scope="col" className="py-2.5 pr-4">
                 Item
               </th>
@@ -70,16 +70,16 @@ export function KitOrderQuantitiesCard({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E6DCD2]">
+          <tbody className="divide-y divide-border">
             {rows.map((row) => (
               <tr key={row.label}>
-                <th scope="row" className="py-3 pr-4 font-semibold text-[#2B1B2E]">
+                <th scope="row" className="py-3 pr-4 font-semibold text-ink">
                   {row.label}
                 </th>
-                <td className="py-3 px-4 font-medium text-[#2B1B2E]">
+                <td className="py-3 px-4 font-medium text-ink">
                   {row.value}
                 </td>
-                <td className="py-3 pl-4 text-[#5B4A5E]">{row.how}</td>
+                <td className="py-3 pl-4 text-ink-muted">{row.how}</td>
               </tr>
             ))}
           </tbody>

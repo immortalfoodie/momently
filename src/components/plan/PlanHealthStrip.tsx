@@ -86,7 +86,7 @@ export function PlanHealthStrip({ eventId, className = '' }: PlanHealthStripProp
     <section
       role="region"
       aria-label="Plan health"
-      className={`w-full bg-[#FAF5F0] border-b border-[#E6DCD2] px-4 sm:px-6 lg:px-8 py-2.5 sticky top-[var(--header-h)] z-20 shadow-xs ${className}`}
+      className={`w-full bg-surface-warm border-b border-border px-4 sm:px-6 lg:px-8 py-2.5 sticky top-[var(--header-h)] z-20 shadow-xs ${className}`}
     >
       <div className="max-w-[72rem] w-full flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
         {/* 1. Budget progress meter or plain total */}
@@ -99,8 +99,8 @@ export function PlanHealthStrip({ eventId, className = '' }: PlanHealthStripProp
               aria-label="Budget cap progress"
             />
           ) : (
-            <div className="flex items-center gap-1.5 text-sm font-medium text-[#2B1B2E]">
-              <span className="text-[#5C4556]">Budget:</span>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-ink">
+              <span className="text-ink-muted">Budget:</span>
               <Money amount={status.total} />
               <Badge tone="neutral" className="text-xs">No budget cap set</Badge>
             </div>
@@ -111,24 +111,24 @@ export function PlanHealthStrip({ eventId, className = '' }: PlanHealthStripProp
         <div className="flex items-center gap-4">
           <Link
             href={`/events/${eventId}/chaos`}
-            className="inline-flex items-center gap-1.5 text-[#2B1B2E] hover:text-[#6B2D5C] hover:underline font-medium transition-colors"
+            className="inline-flex items-center gap-1.5 text-ink hover:text-primary hover:underline font-medium transition-colors"
           >
-            <Icon name="storm" size={16} aria-hidden="true" className="text-[#6B2D5C]" />
+            <Icon name="storm" size={16} aria-hidden="true" className="text-primary" />
             <span>Chaos Score:</span>
             <span className="font-semibold">{derived.scoreRisks.score}</span>
-            <span className="text-[#5C4556]">({derived.scoreRisks.band})</span>
+            <span className="text-ink-muted">({derived.scoreRisks.band})</span>
           </Link>
 
           {/* 3. Conflict Count */}
           <Link
             href={`/events/${eventId}#conflicts`}
-            className="inline-flex items-center gap-1.5 text-[#2B1B2E] hover:text-[#6B2D5C] hover:underline font-medium transition-colors"
+            className="inline-flex items-center gap-1.5 text-ink hover:text-primary hover:underline font-medium transition-colors"
           >
             <Icon
               name={blockingCount > 0 ? 'alert' : warningCount > 0 ? 'alert' : 'check'}
               size={14}
               aria-hidden="true"
-              className={blockingCount > 0 ? 'text-[#A12B3A]' : warningCount > 0 ? 'text-[#8A5A00]' : 'text-[#1F6F54]'}
+              className={blockingCount > 0 ? 'text-danger' : warningCount > 0 ? 'text-warning' : 'text-success'}
             />
             <span>{conflictText}</span>
           </Link>
@@ -136,7 +136,7 @@ export function PlanHealthStrip({ eventId, className = '' }: PlanHealthStripProp
           {/* 4. Plan Version */}
           <Link
             href={`/events/${eventId}#history`}
-            className="inline-flex items-center gap-1 text-[#5C4556] hover:text-[#2B1B2E] hover:underline transition-colors"
+            className="inline-flex items-center gap-1 text-ink-muted hover:text-ink hover:underline transition-colors"
           >
             <Icon name="clock" size={13} aria-hidden="true" />
             <span>Version {event.plan.version}</span>

@@ -54,11 +54,11 @@ export function RunOfShow({ plan, eventId, className = '' }: RunOfShowProps) {
         </Alert>
       )}
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#5B4A5E] pb-2 border-b border-[#E6DCD2]">
-        <span className="font-semibold text-sm text-[#2B1B2E]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-ink-muted pb-2 border-b border-border">
+        <span className="font-semibold text-sm text-ink">
           Run of show ({view.slots.length} sessions)
         </span>
-        <span className="tabular-nums font-medium text-[#2B1B2E]">
+        <span className="tabular-nums font-medium text-ink">
           Total: {spanHours} hours {spanMins} minutes, slack {view.totalSlackMinutes} minutes
         </span>
       </div>
@@ -82,7 +82,7 @@ export function RunOfShow({ plan, eventId, className = '' }: RunOfShowProps) {
                   style={{ height: h }}
                 />
                 {idx < view.slots.length - 1 && sv.gapBeforeMinutes === 0 && (
-                  <div className="w-0.5 h-3 bg-[#E6DCD2]" />
+                  <div className="w-0.5 h-3 bg-border" />
                 )}
               </div>
             );
@@ -104,14 +104,14 @@ export function RunOfShow({ plan, eventId, className = '' }: RunOfShowProps) {
                     <span>{gapBeforeMinutes}m slack buffer</span>
                   </div>
                 )}
-                <Card className="p-4 bg-white border border-[#E6DCD2] hover:border-[#6B2D5C]/30 transition-colors">
+                <Card className="p-4 bg-white border border-border hover:border-primary/30 transition-colors">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="space-y-1.5">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs font-mono font-bold text-[#7C2D37] bg-[#FAF7F2] px-2 py-0.5 rounded border border-[#E6DCD2]">
+                        <span className="text-xs font-mono font-bold text-[#7C2D37] bg-bg px-2 py-0.5 rounded border border-border">
                           {startTimeFormatted} – {endTimeFormatted}
                         </span>
-                        <h3 className="font-semibold text-base text-[#2B1B2E]">{slot.title}</h3>
+                        <h3 className="font-semibold text-base text-ink">{slot.title}</h3>
                         <Badge tone={priorityTone(slot.priority)} className="text-[10px]">
                           {priorityLabel(slot.priority)}
                         </Badge>
@@ -121,7 +121,7 @@ export function RunOfShow({ plan, eventId, className = '' }: RunOfShowProps) {
                       </div>
 
                       {slot.note && (
-                        <p className="text-xs text-[#5B4A5E] italic pl-1">{slot.note}</p>
+                        <p className="text-xs text-ink-muted italic pl-1">{slot.note}</p>
                       )}
                     </div>
 

@@ -37,14 +37,14 @@ export function CopyFallbackDialog({
   return (
     <Dialog open={open} onClose={onClose} title={title}>
       <div className="space-y-4">
-        <p className="text-xs text-[#5B4A5E]">{description}</p>
+        <p className="text-xs text-ink-muted">{description}</p>
 
         <TextArea
           ref={textRef}
           value={text}
           readOnly
           rows={10}
-          className="font-mono text-xs bg-[#FAF7F2]"
+          className="font-mono text-xs bg-bg"
           aria-label={ariaLabel ?? title}
         />
 

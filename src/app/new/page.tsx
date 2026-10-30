@@ -18,7 +18,7 @@ export default function NewEventPage() {
         description={PAGE_COPY.new.description}
       />
 
-      <div className="bg-white rounded-[20px] border border-[#E6DCD2] p-6 sm:p-8 shadow-xs">
+      <div className="bg-white rounded-[20px] border border-border p-6 sm:p-8 shadow-xs">
         <IntakeForm />
       </div>
     </PageContainer>

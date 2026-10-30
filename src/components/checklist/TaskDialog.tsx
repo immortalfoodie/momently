@@ -66,10 +66,10 @@ function RemoveTaskConfirmDialog({
       description="Are you sure you want to remove this task from your checklist?"
     >
       <div className="space-y-4 py-2">
-        <p className="text-sm text-[#5B4A5E]">
+        <p className="text-sm text-ink-muted">
           Removing &ldquo;{title}&rdquo; cannot be undone without restoring a saved version.
         </p>
-        <div className="flex justify-end gap-2 pt-2 border-t border-[#E6DCD2]">
+        <div className="flex justify-end gap-2 pt-2 border-t border-border">
           <Button variant="ghost" onClick={onClose}>Cancel</Button>
           <Button variant="danger" onClick={onConfirm}>Confirm Remove</Button>
         </div>
@@ -183,7 +183,7 @@ export function TaskDialog({
           <Field label="Notes (optional)">
             <TextArea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={300} placeholder="Special instructions, contact info, or specifications" />
           </Field>
-          <div className="flex items-center justify-between pt-3 border-t border-[#E6DCD2]">
+          <div className="flex items-center justify-between pt-3 border-t border-border">
             {isEditing ? (
               <Button variant="danger" size="sm" onClick={() => setConfirmRemoveOpen(true)}>
                 Remove

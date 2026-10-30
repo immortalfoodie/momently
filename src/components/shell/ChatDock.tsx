@@ -17,7 +17,7 @@ function ChatDockInner() {
         <aside
           id="desktop-assistant-panel"
           aria-label="Assistant"
-          className="hidden xl:flex xl:w-[22rem] 2xl:w-[24rem] bg-white border-l border-[#E6DCD2] flex-col shrink-0 sticky top-[var(--header-h)] h-[calc(100dvh-var(--header-h))] overflow-hidden min-h-0"
+          className="hidden xl:flex xl:w-[22rem] 2xl:w-[24rem] bg-white border-l border-border flex-col shrink-0 sticky top-[var(--header-h)] h-[calc(100dvh-var(--header-h))] overflow-hidden min-h-0"
         >
           <ChatPanel onClose={() => setIsDesktopOpen(false)} />
         </aside>
@@ -29,7 +29,7 @@ function ChatDockInner() {
           aria-controls="desktop-assistant-panel"
           aria-expanded={false}
           title="Open AI assistant"
-          className="fixed right-0 top-1/2 z-30 hidden h-14 w-8 -translate-y-1/2 items-center justify-center rounded-l-xl border border-r-0 border-[#E6DCD2] bg-white text-[#6B2D5C] shadow-md transition-colors hover:bg-[#F4EDE6] focus-visible:z-40 xl:flex"
+          className="fixed right-0 top-1/2 z-30 hidden h-14 w-8 -translate-y-1/2 items-center justify-center rounded-l-xl border border-r-0 border-border bg-white text-primary shadow-md transition-colors hover:bg-surface-muted focus-visible:z-40 xl:flex"
         >
           <Icon name="sparkle" size={18} aria-hidden="true" />
         </button>
@@ -41,7 +41,7 @@ function ChatDockInner() {
           type="button"
           onClick={() => setIsMobileOpen(true)}
           aria-label="Open AI Event Assistant"
-          className="fixed bottom-5 right-5 z-40 p-3.5 rounded-full bg-[#6B2D5C] text-white shadow-xl hover:bg-[#55224A] cursor-pointer"
+          className="fixed bottom-5 right-5 z-40 p-3.5 rounded-full bg-primary text-white shadow-xl hover:bg-primary-hover cursor-pointer"
         >
           <Icon name="sparkle" size={24} aria-hidden="true" />
         </button>

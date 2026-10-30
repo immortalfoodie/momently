@@ -28,17 +28,17 @@ export function EmptyState({
 
   return (
     <div
-      className={`flex flex-col items-center justify-center text-center p-8 rounded-[16px] border border-dashed border-[#E6DCD2] bg-[#F4EDE6]/50 ${className}`}
+      className={`flex flex-col items-center justify-center text-center p-8 rounded-[16px] border border-dashed border-border bg-surface-muted/50 ${className}`}
     >
       {icon ? (
-        <div className="mb-3 text-[#6B2D5C] p-3 rounded-full bg-white shadow-sm" aria-hidden="true">
+        <div className="mb-3 text-primary p-3 rounded-full bg-white shadow-sm" aria-hidden="true">
           {icon}
         </div>
       ) : null}
-      <HeadingTag className="font-serif text-lg font-semibold text-[#2B1B2E] mb-1">
+      <HeadingTag className="font-serif text-lg font-semibold text-ink mb-1">
         {title}
       </HeadingTag>
-      <p className="text-sm text-[#5B4A5E] max-w-md mb-4">{description}</p>
+      <p className="text-sm text-ink-muted max-w-md mb-4">{description}</p>
       {action ? <div className="mt-1">{action}</div> : null}
     </div>
   );

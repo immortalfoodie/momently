@@ -60,7 +60,7 @@ export function EventsListClient() {
           {[1, 2, 3].map((idx) => (
             <div
               key={idx}
-              className="bg-white rounded-[16px] border border-[#E6DCD2] p-5 shadow-2xs space-y-3"
+              className="bg-white rounded-[16px] border border-border p-5 shadow-2xs space-y-3"
             >
               <Skeleton className="h-32 w-full rounded-[12px]" />
               <Skeleton className="h-6 w-3/4" />
@@ -103,7 +103,7 @@ export function EventsListClient() {
                   type="button"
                   onClick={() => setDeleteTarget(event)}
                   aria-label={`Delete event ${event.plan.meta.title}`}
-                  className="p-1.5 rounded-lg text-[#5B4A5E] hover:text-[#A12B3A] hover:bg-[#FBE9EB] transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg text-ink-muted hover:text-danger hover:bg-danger-bg transition-colors cursor-pointer"
                 >
                   <Icon name="close" size={16} aria-hidden="true" />
                 </button>

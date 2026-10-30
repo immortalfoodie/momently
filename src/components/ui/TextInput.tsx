@@ -36,8 +36,8 @@ export function TextInput({
       aria-describedby={bindings.describedBy}
       aria-invalid={bindings.isInvalid}
       required={bindings.isRequired}
-      className={`w-full min-h-[44px] px-3.5 py-2 rounded-[12px] border border-[#E6DCD2] bg-white text-[#2B1B2E] placeholder-[#5B4A5E]/60 text-base transition-colors hover:border-[#6B2D5C]/40 focus:border-[#6B2D5C] disabled:bg-[#F4EDE6] disabled:cursor-not-allowed ${
-        bindings.hasError ? 'border-[#A12B3A] focus:border-[#A12B3A]' : ''
+      className={`w-full min-h-[44px] px-3.5 py-2 rounded-[12px] border border-border bg-white text-ink placeholder-ink-muted/60 text-base transition-colors hover:border-primary/40 focus:border-primary disabled:bg-surface-muted disabled:cursor-not-allowed ${
+        bindings.hasError ? 'border-danger focus:border-danger' : ''
       } ${className}`}
       {...props}
     />

@@ -85,14 +85,14 @@ export function PreferencesManager({ plan, eventId, className = '' }: Preference
   };
 
   return (
-    <Card className={`p-4 sm:p-6 bg-white border border-[#E6DCD2] space-y-6 ${className}`}>
+    <Card className={`p-4 sm:p-6 bg-white border border-border space-y-6 ${className}`}>
       <div className="space-y-1">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-lg font-serif font-bold text-[#2B1B2E]">
+            <h3 className="text-lg font-serif font-bold text-ink">
               Traditions and requirements
             </h3>
-            <p className="text-sm text-[#5B4A5E]">
+            <p className="text-sm text-ink-muted">
               Tell us about any traditions or religious requirements you want respected. We never assume any.
             </p>
           </div>
@@ -105,13 +105,13 @@ export function PreferencesManager({ plan, eventId, className = '' }: Preference
             Add requirement
           </Button>
         </div>
-        <p className="text-xs text-[#7A6B7E]">
+        <p className="text-xs text-ink-muted">
           These notes may be processed by the AI to personalise ideas: please don&apos;t include names.
         </p>
       </div>
 
       {preferences.length === 0 ? (
-        <div className="p-4 rounded-[12px] bg-[#F5F2EB] border border-[#E6DCD2] text-xs sm:text-sm text-[#5B4A5E]">
+        <div className="p-4 rounded-[12px] bg-surface-warm border border-border text-xs sm:text-sm text-ink-muted">
           No custom traditions or requirements recorded yet. Add must-have elements, dietary traditions, or layout rules above.
         </div>
       ) : (
@@ -124,7 +124,7 @@ export function PreferencesManager({ plan, eventId, className = '' }: Preference
               <div
                 key={pref.id}
                 role="listitem"
-                className="p-3.5 sm:p-4 rounded-[12px] bg-[#FAF7F2] border border-[#E6DCD2] flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                className="p-3.5 sm:p-4 rounded-[12px] bg-bg border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
                 <div className="space-y-1 flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
@@ -133,7 +133,7 @@ export function PreferencesManager({ plan, eventId, className = '' }: Preference
                       {isHard ? 'Must respect' : 'Nice to have'}
                     </Badge>
                   </div>
-                  <p className="text-sm font-medium text-[#2B1B2E] break-words">
+                  <p className="text-sm font-medium text-ink break-words">
                     {pref.description}
                   </p>
                 </div>
@@ -156,8 +156,8 @@ export function PreferencesManager({ plan, eventId, className = '' }: Preference
 
       {/* Warnings relating to must-haves */}
       {mustHaveConflicts.length > 0 && (
-        <div className="pt-4 border-t border-[#E6DCD2] space-y-2">
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-[#8A5A00]">
+        <div className="pt-4 border-t border-border space-y-2">
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-warning">
             Must-have budget warnings
           </h4>
           <ConflictList eventId={eventId} conflicts={mustHaveConflicts} />
@@ -178,7 +178,7 @@ export function PreferencesManager({ plan, eventId, className = '' }: Preference
           title="Remove requirement?"
         >
           <div className="space-y-4">
-            <p className="text-sm text-[#5B4A5E]">
+            <p className="text-sm text-ink-muted">
               Are you sure you want to remove &ldquo;{removingConstraint.description}&rdquo; from your plan?
             </p>
             <div className="flex items-center justify-end gap-2">

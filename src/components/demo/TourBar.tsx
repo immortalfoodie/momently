@@ -115,7 +115,7 @@ function TourBarInner() {
     <div
       role="region"
       aria-label="Demo guide"
-      className="fixed bottom-0 left-0 right-0 z-30 border-t-2 border-[#6B2D5C] bg-[#FAF5F0] text-[#2B1B2E] shadow-xl px-4 py-3 sm:px-6"
+      className="fixed bottom-0 left-0 right-0 z-30 border-t-2 border-primary bg-surface-warm text-ink shadow-xl px-4 py-3 sm:px-6"
     >
       <div className="max-w-5xl mx-auto flex flex-col gap-2.5">
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -123,7 +123,7 @@ function TourBarInner() {
             <Badge tone="brand">
               Step {index + 1} of {totalSteps}
             </Badge>
-            <h2 className="font-serif text-base font-bold text-[#2B1B2E]">
+            <h2 className="font-serif text-base font-bold text-ink">
               {step.title}
             </h2>
           </div>
@@ -169,23 +169,23 @@ function TourBarInner() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#5B4A5E]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-ink-muted">
           <p>
-            <strong className="text-[#2B1B2E]">Why it matters:</strong> {step.whyItMatters}
+            <strong className="text-ink">Why it matters:</strong> {step.whyItMatters}
           </p>
           <p>
-            <strong className="text-[#2B1B2E]">What to look for:</strong> {step.lookFor}
+            <strong className="text-ink">What to look for:</strong> {step.lookFor}
           </p>
         </div>
 
         {showApprovalHint && (
-          <p className="text-xs font-semibold text-[#6B2D5C] bg-[#F4EDE6] border border-[#E2D2DC] rounded-lg px-3 py-1.5">
+          <p className="text-xs font-semibold text-primary bg-surface-muted border border-[#E2D2DC] rounded-lg px-3 py-1.5">
             Now review the proposal and approve it yourself. Momently never applies a change on its own.
           </p>
         )}
 
         {warningStepIndex === index && (
-          <p role="alert" className="text-xs font-semibold text-[#A12B3A]">
+          <p role="alert" className="text-xs font-semibold text-danger">
             Step 1 must run first to create the demo celebration before running this step.
           </p>
         )}

@@ -48,9 +48,9 @@ export function ScenarioPicker({
   };
 
   return (
-    <Card className={`p-6 border-[#E6DCD2] bg-white space-y-6 ${className}`}>
+    <Card className={`p-6 border-border bg-white space-y-6 ${className}`}>
       <fieldset className="space-y-4">
-        <legend className="text-base font-semibold text-[#2B1B2E]">
+        <legend className="text-base font-semibold text-ink">
           Choose a problem to simulate
         </legend>
 
@@ -65,10 +65,10 @@ export function ScenarioPicker({
                 key={item.type}
                 className={`flex flex-col p-4 rounded-xl border text-left transition-all ${
                   isDisabled
-                    ? 'border-[#E6DCD2] bg-[#FAF5F0]/60 opacity-60 cursor-not-allowed'
+                    ? 'border-border bg-surface-warm/60 opacity-60 cursor-not-allowed'
                     : isSelected
-                      ? 'border-[#6B2D5C] bg-[#FAF5F0] ring-2 ring-[#6B2D5C]/30 cursor-pointer shadow-xs'
-                      : 'border-[#E6DCD2] bg-white hover:border-[#6B2D5C]/50 cursor-pointer'
+                      ? 'border-primary bg-surface-warm ring-2 ring-primary/30 cursor-pointer shadow-xs'
+                      : 'border-border bg-white hover:border-primary/50 cursor-pointer'
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -82,17 +82,17 @@ export function ScenarioPicker({
                       setParamError(null);
                       onSelectType(item.type);
                     }}
-                    className="mt-0.5 text-[#6B2D5C] focus:ring-[#6B2D5C] disabled:cursor-not-allowed"
+                    className="mt-0.5 text-primary focus:ring-primary disabled:cursor-not-allowed"
                   />
                   <div className="space-y-1 min-w-0">
-                    <span className="text-sm font-semibold text-[#2B1B2E] block">
+                    <span className="text-sm font-semibold text-ink block">
                       {item.label}
                     </span>
-                    <p className="text-xs text-[#5C4556] leading-relaxed">
+                    <p className="text-xs text-ink-muted leading-relaxed">
                       {item.description}
                     </p>
                     {isDisabled && avail.reason && (
-                      <p className="text-xs font-medium text-[#A12B3A] pt-1">
+                      <p className="text-xs font-medium text-danger pt-1">
                         {avail.reason}
                       </p>
                     )}
@@ -104,8 +104,8 @@ export function ScenarioPicker({
         </div>
       </fieldset>
 
-      <div className="pt-2 border-t border-[#F4EDE6] space-y-4">
-        <h3 className="text-sm font-semibold text-[#2B1B2E]">
+      <div className="pt-2 border-t border-surface-muted space-y-4">
+        <h3 className="text-sm font-semibold text-ink">
           Customize scenario parameters
         </h3>
 

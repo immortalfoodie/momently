@@ -22,14 +22,14 @@ export function PageHeader({
 }: PageHeaderProps) {
   return (
     <div
-      className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 mb-6 border-b border-[#E6DCD2] ${className}`}
+      className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 mb-6 border-b border-border ${className}`}
     >
       <div>
-        <h1 className="font-serif text-3xl font-bold text-[#2B1B2E] tracking-tight">
+        <h1 className="font-serif text-3xl font-bold text-ink tracking-tight">
           {title}
         </h1>
         {description ? (
-          <p className="mt-1.5 text-base text-[#5B4A5E] leading-relaxed max-w-2xl">
+          <p className="mt-1.5 text-base text-ink-muted leading-relaxed max-w-2xl">
             {description}
           </p>
         ) : null}

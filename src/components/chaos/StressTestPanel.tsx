@@ -33,14 +33,14 @@ export function StressTestPanel({ plan, onOpenScenario, className = '' }: Stress
   };
 
   return (
-    <Card className={`p-6 border-[#E6DCD2] bg-white space-y-5 ${className}`}>
+    <Card className={`p-6 border-border bg-white space-y-5 ${className}`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <h3 className="text-base font-semibold text-[#2B1B2E]">Full stress test</h3>
+            <h3 className="text-base font-semibold text-ink">Full stress test</h3>
             {isStale && <Badge tone="neutral">Out of date</Badge>}
           </div>
-          <p className="text-xs text-[#5C4556]">
+          <p className="text-xs text-ink-muted">
             Run all six disruption models against your current plan version to locate the weakest resilience link.
           </p>
         </div>
@@ -56,7 +56,7 @@ export function StressTestPanel({ plan, onOpenScenario, className = '' }: Stress
         </Button>
       </div>
 
-      <p className="text-xs text-[#5C4556] bg-[#FAF5F0] p-3 rounded-lg border border-[#F4EDE6] leading-relaxed">
+      <p className="text-xs text-ink-muted bg-surface-warm p-3 rounded-lg border border-surface-muted leading-relaxed">
         Simulations never change your plan. Only a recovery you approve does. Momently never contacts vendors: you contact them yourself.
       </p>
 
@@ -64,11 +64,11 @@ export function StressTestPanel({ plan, onOpenScenario, className = '' }: Stress
         <div className={`space-y-4 ${isStale ? 'opacity-65' : ''}`}>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
-              <caption className="font-semibold text-xs text-[#2B1B2E] mb-2 text-left">
+              <caption className="font-semibold text-xs text-ink mb-2 text-left">
                 Stress test: every scenario against your current plan
               </caption>
               <thead>
-                <tr className="border-b border-[#E6DCD2] text-[#5C4556]">
+                <tr className="border-b border-border text-ink-muted">
                   <th scope="col" className="py-2 pr-3 font-semibold">Problem</th>
                   <th scope="col" className="py-2 px-3 font-semibold">Result</th>
                   <th scope="col" className="py-2 px-3 font-semibold">Best recovery</th>
@@ -78,7 +78,7 @@ export function StressTestPanel({ plan, onOpenScenario, className = '' }: Stress
                   <th scope="col" className="py-2 pl-3 font-semibold text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E6DCD2]/60 text-[#2B1B2E]">
+              <tbody className="divide-y divide-border/60 text-ink">
                 {report.rows.map((row) => {
                   const isWeakest = report.weakestType === row.type;
                   const formatCost = () => {
@@ -101,20 +101,20 @@ export function StressTestPanel({ plan, onOpenScenario, className = '' }: Stress
                           )}
                         </div>
                       </td>
-                      <td className="py-2.5 px-3 max-w-xs text-[#5C4556]">
+                      <td className="py-2.5 px-3 max-w-xs text-ink-muted">
                         {row.applicable ? row.headline : `Unavailable: ${row.headline}`}
                       </td>
                       <td className="py-2.5 px-3 max-w-xs">{row.bestOptionLabel ?? '—'}</td>
                       <td className="py-2.5 px-3 text-right tabular-nums font-medium">
                         {formatCost()}
                       </td>
-                      <td className="py-2.5 px-3 text-right tabular-nums font-semibold text-[#6B2D5C]">
+                      <td className="py-2.5 px-3 text-right tabular-nums font-semibold text-primary">
                         {row.scoreAfter !== undefined ? `${row.scoreAfter} / 100` : '—'}
                       </td>
                       <td className="py-2.5 px-3 text-center">
                         {row.meetsCap === true && <Badge tone="success">Within cap</Badge>}
                         {row.meetsCap === false && <Badge tone="danger">Exceeds cap</Badge>}
-                        {row.meetsCap === undefined && <span className="text-[#5C4556]">—</span>}
+                        {row.meetsCap === undefined && <span className="text-ink-muted">—</span>}
                       </td>
                       <td className="py-2.5 pl-3 text-right">
                         {row.applicable && (

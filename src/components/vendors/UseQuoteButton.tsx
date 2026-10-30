@@ -79,42 +79,42 @@ export function UseQuoteButton({
         title={`Apply quote: ${quote.vendorName}`}
       >
         <div className="space-y-4">
-          <p className="text-sm text-[#5B4A5E]">
+          <p className="text-sm text-ink-muted">
             This will update your budget line for <strong>{need.category}</strong> to{' '}
             <strong>{formatInr(quote.price)}</strong>.
           </p>
 
-          <label className="min-h-[44px] inline-flex items-center gap-2.5 cursor-pointer text-sm font-medium text-[#2B1B2E]">
+          <label className="min-h-[44px] inline-flex items-center gap-2.5 cursor-pointer text-sm font-medium text-ink">
             <input
               type="checkbox"
               checked={confirmed}
               onChange={(e) => setConfirmed(e.target.checked)}
-              className="w-5 h-5 rounded border-[#E6DCD2] text-[#2B1B2E] focus:ring-1 focus:ring-[#2B1B2E]"
+              className="w-5 h-5 rounded border-border text-ink focus:ring-1 focus:ring-ink"
             />
             <span>This is a confirmed written quote (marks price as verified)</span>
           </label>
 
           {!budgetOpsResult.ok ? (
-            <div className="p-3.5 rounded-[12px] bg-[#FBE9EB] border border-[#F4C5CB] text-sm text-[#A12B3A]">
+            <div className="p-3.5 rounded-[12px] bg-danger-bg border border-danger-border text-sm text-danger">
               {budgetOpsResult.error.message}
             </div>
           ) : (
             preview?.ok && (
-              <div className="p-3.5 rounded-[12px] bg-[#F5F2EB] border border-[#E6DCD2] space-y-1.5 text-xs text-[#5B4A5E]">
+              <div className="p-3.5 rounded-[12px] bg-surface-warm border border-border space-y-1.5 text-xs text-ink-muted">
                 <div className="flex justify-between">
                   <span>Current budget total:</span>
-                  <span className="font-semibold text-[#2B1B2E]">
+                  <span className="font-semibold text-ink">
                     {formatInr(preview.value.impact.budgetTotalBefore)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>New budget total:</span>
-                  <span className="font-bold text-[#2B1B2E]">
+                  <span className="font-bold text-ink">
                     {formatInr(preview.value.impact.budgetTotalAfter)}
                   </span>
                 </div>
                 {preview.value.impact.overCap && (
-                  <p className="text-[#A82B35] pt-1 border-t border-[#E6DCD2] font-semibold">
+                  <p className="text-[#A82B35] pt-1 border-t border-border font-semibold">
                     Warning: This quote will push your plan over the budget cap. You will be prompted to rebalance savings.
                   </p>
                 )}

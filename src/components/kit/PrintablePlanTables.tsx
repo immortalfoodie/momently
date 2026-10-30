@@ -13,12 +13,12 @@ export function PrintablePlanTables({ doc }: PrintablePlanTablesProps) {
       <section aria-labelledby="print-budget-heading" className="space-y-3">
         <h2
           id="print-budget-heading"
-          className="text-xl font-serif font-bold text-[#2B1B2E] border-b border-[#E6DCD2] pb-1.5"
+          className="text-xl font-serif font-bold text-ink border-b border-border pb-1.5"
         >
           Budget by category
         </h2>
 
-        <p className="text-sm text-[#2B1B2E]">
+        <p className="text-sm text-ink">
           <strong>Total:</strong> {formatInr(doc.budget.total)}
           {doc.budget.cap !== null
             ? ` • Budget cap: ${formatInr(doc.budget.cap)}`
@@ -29,14 +29,14 @@ export function PrintablePlanTables({ doc }: PrintablePlanTablesProps) {
           tabIndex={0}
           role="region"
           aria-label="Budget summary table"
-          className="overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2"
+          className="overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           <table className="w-full text-left border-collapse text-sm">
             <caption className="sr-only">
               Budget breakdown by category and price source
             </caption>
             <thead>
-              <tr className="border-b border-[#E6DCD2] text-xs font-semibold uppercase tracking-wider text-[#5B4A5E]">
+              <tr className="border-b border-border text-xs font-semibold uppercase tracking-wider text-ink-muted">
                 <th scope="col" className="py-2 pr-3">
                   Category
                 </th>
@@ -51,18 +51,18 @@ export function PrintablePlanTables({ doc }: PrintablePlanTablesProps) {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E6DCD2]">
+            <tbody className="divide-y divide-border">
               {doc.budget.categories.flatMap((cat) =>
                 cat.items.map((entry) => (
                   <tr key={entry.item.id}>
-                    <td className="py-2 pr-3 text-[#5B4A5E]">{cat.label}</td>
-                    <th scope="row" className="py-2 px-3 font-medium text-[#2B1B2E]">
+                    <td className="py-2 pr-3 text-ink-muted">{cat.label}</td>
+                    <th scope="row" className="py-2 px-3 font-medium text-ink">
                       {entry.item.label}
                     </th>
-                    <td className="py-2 px-3 text-[#5B4A5E]">
+                    <td className="py-2 px-3 text-ink-muted">
                       {PROVENANCE_TEXT_MAP[entry.item.provenance]}
                     </td>
-                    <td className="py-2 pl-3 text-right font-semibold text-[#2B1B2E]">
+                    <td className="py-2 pl-3 text-right font-semibold text-ink">
                       {formatInr(entry.total)}
                     </td>
                   </tr>
@@ -77,7 +77,7 @@ export function PrintablePlanTables({ doc }: PrintablePlanTablesProps) {
       <section aria-labelledby="print-schedule-heading" className="space-y-3">
         <h2
           id="print-schedule-heading"
-          className="text-xl font-serif font-bold text-[#2B1B2E] border-b border-[#E6DCD2] pb-1.5"
+          className="text-xl font-serif font-bold text-ink border-b border-border pb-1.5"
         >
           Run of show
         </h2>
@@ -89,7 +89,7 @@ export function PrintablePlanTables({ doc }: PrintablePlanTablesProps) {
                 Chronological schedule of event sessions
               </caption>
               <thead>
-                <tr className="border-b border-[#E6DCD2] text-xs font-semibold uppercase tracking-wider text-[#5B4A5E]">
+                <tr className="border-b border-border text-xs font-semibold uppercase tracking-wider text-ink-muted">
                   <th scope="col" className="py-2 pr-3">
                     Time
                   </th>
@@ -104,20 +104,20 @@ export function PrintablePlanTables({ doc }: PrintablePlanTablesProps) {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E6DCD2]">
+              <tbody className="divide-y divide-border">
                 {doc.schedule.slots.map((s) => (
                   <tr key={s.slot.id}>
-                    <td className="py-2 pr-3 whitespace-nowrap text-[#2B1B2E]">
+                    <td className="py-2 pr-3 whitespace-nowrap text-ink">
                       {formatMinuteOfDay(s.slot.startMinute)} &ndash;{' '}
                       {formatMinuteOfDay(s.endMinute)}
                     </td>
-                    <th scope="row" className="py-2 px-3 font-semibold text-[#2B1B2E]">
+                    <th scope="row" className="py-2 px-3 font-semibold text-ink">
                       {s.slot.title}
                     </th>
-                    <td className="py-2 px-3 text-[#5B4A5E]">
+                    <td className="py-2 px-3 text-ink-muted">
                       {s.slot.durationMinutes} min
                     </td>
-                    <td className="py-2 pl-3 text-[#5B4A5E]">
+                    <td className="py-2 pl-3 text-ink-muted">
                       {s.slot.note ?? ''}
                     </td>
                   </tr>
@@ -126,7 +126,7 @@ export function PrintablePlanTables({ doc }: PrintablePlanTablesProps) {
             </table>
           </div>
         ) : (
-          <p className="text-sm text-[#5B4A5E]">No sessions scheduled.</p>
+          <p className="text-sm text-ink-muted">No sessions scheduled.</p>
         )}
       </section>
     </div>

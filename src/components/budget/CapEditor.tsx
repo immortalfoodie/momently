@@ -88,17 +88,17 @@ export function CapEditor({
             />
           </Field>
 
-          <div className="flex items-start gap-2.5 p-3 rounded-lg bg-[#FAF5F0] border border-[#E6DCD2]">
+          <div className="flex items-start gap-2.5 p-3 rounded-lg bg-surface-warm border border-border">
             <input
               id="cap-hard-toggle"
               type="checkbox"
               checked={isHard}
               onChange={(e) => setIsHard(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-[#E6DCD2] text-[#6B2D5C] focus:ring-[#1D4F91]"
+              className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-focus"
             />
-            <label htmlFor="cap-hard-toggle" className="text-sm font-medium text-[#2B1B2E]">
+            <label htmlFor="cap-hard-toggle" className="text-sm font-medium text-ink">
               Strict hard limit
-              <span className="block text-xs font-normal text-[#5B4A5E] mt-0.5">
+              <span className="block text-xs font-normal text-ink-muted mt-0.5">
                 When checked, Momently disables changes that exceed this cap and requires explicit funding tradeoffs.
               </span>
             </label>
@@ -115,7 +115,7 @@ export function CapEditor({
         </form>
 
         {outcome && (
-          <div className="pt-3 border-t border-[#E6DCD2]">
+          <div className="pt-3 border-t border-border">
             <AssistantOutcomeView
               outcome={outcome}
               eventId={eventId}

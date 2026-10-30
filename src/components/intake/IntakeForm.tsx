@@ -136,7 +136,7 @@ function IntakeFormContent({ initialType }: { initialType: string }) {
       ) : null}
 
       <div>
-        <span className="text-xs font-semibold text-[#5B4A5E] uppercase tracking-wider block mb-2">
+        <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-2">
           Or start with a sample celebration brief:
         </span>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Sample briefs">
@@ -150,8 +150,8 @@ function IntakeFormContent({ initialType }: { initialType: string }) {
                 aria-pressed={isSelected}
                 className={`text-xs px-3 py-1.5 rounded-full border transition-all cursor-pointer font-medium ${
                   isSelected
-                    ? 'bg-[#6B2D5C] text-white border-[#6B2D5C] shadow-xs'
-                    : 'bg-white text-[#2B1B2E] border-[#E6DCD2] hover:bg-[#F4EDE6]'
+                    ? 'bg-primary text-white border-primary shadow-xs'
+                    : 'bg-white text-ink border-border hover:bg-surface-muted'
                 }`}
               >
                 {chip.label}
@@ -180,8 +180,8 @@ function IntakeFormContent({ initialType }: { initialType: string }) {
         />
       </Field>
 
-      <p className="text-xs text-[#5B4A5E] leading-relaxed bg-[#F4EDE6]/60 p-3 rounded-[10px] border border-[#E6DCD2]/60">
-        <strong className="font-semibold text-[#2B1B2E]">Privacy notice:</strong> Plans are stored in this browser.
+      <p className="text-xs text-ink-muted leading-relaxed bg-surface-muted/60 p-3 rounded-[10px] border border-border/60">
+        <strong className="font-semibold text-ink">Privacy notice:</strong> Plans are stored in this browser.
         The text you send is processed by the AI service to generate ideas. Please don&apos;t include guest names or personal details.
       </p>
 

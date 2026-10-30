@@ -22,8 +22,8 @@ export default function ErrorBoundary({ reset }: ErrorProps) {
         title="Something Went Wrong"
         description="An unexpected error occurred while preparing your celebration studio workspace."
       />
-      <div className="bg-white rounded-[16px] border border-[#E6DCD2] p-8 text-center max-w-lg mx-auto shadow-sm">
-        <p className="text-sm text-[#5B4A5E] mb-6">
+      <div className="bg-white rounded-[16px] border border-border p-8 text-center max-w-lg mx-auto shadow-sm">
+        <p className="text-sm text-ink-muted mb-6">
           Please try refreshing this section or reloading the page. Your active plan data remains safe.
         </p>
         <Button variant="primary" onClick={reset}>

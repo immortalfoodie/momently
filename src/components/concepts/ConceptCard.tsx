@@ -23,6 +23,96 @@ export interface ConceptCardProps {
   className?: string;
 }
 
+interface ConceptFooterProps {
+  total: number;
+  cap: number | null;
+  isSelected: boolean;
+  onChoose: () => void;
+}
+
+function ConceptFooter({ total, cap, isSelected, onChoose }: ConceptFooterProps) {
+  const isOver = cap !== null && total > cap;
+  const overBy = cap !== null ? Math.max(0, total - cap) : 0;
+  const spare = cap !== null ? Math.max(0, cap - total) : 0;
+  return (
+    <div className="border-border space-y-3 border-t pt-3">
+      <div className="space-y-1.5">
+        {cap !== null ? (
+          <>
+            <ProgressMeter
+              value={total}
+              max={cap}
+              label={`Estimated total: ${formatInr(total)}`}
+            />
+            <p
+              className={`text-xs font-medium ${isOver ? 'text-danger' : 'text-success'}`}
+            >
+              {isOver
+                ? `Over cap by ${formatInr(overBy)}`
+                : `${formatInr(spare)} to spare`}
+            </p>
+          </>
+        ) : (
+          <p className="text-ink text-xs font-medium">
+            Estimated total: <Money amount={total} /> (No budget cap set)
+          </p>
+        )}
+      </div>
+
+      {isSelected ? (
+        <Button disabled variant="secondary" className="w-full">
+          Selected concept
+        </Button>
+      ) : (
+        <Button variant="primary" className="w-full" onClick={onChoose}>
+          Choose this concept
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function ConceptDetails({ concept }: { concept: Concept }) {
+  return (
+    <>
+      {concept.experienceHighlights.length > 0 && (
+        <div className="space-y-1">
+          <span className="text-ink text-xs font-semibold">Highlights</span>
+          <ul
+            className="text-ink-muted list-disc space-y-0.5 pl-5 text-xs"
+            aria-label="Experience highlights"
+          >
+            {concept.experienceHighlights.map((highlight, index) => (
+              <li key={index}>{highlight}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {concept.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1.5" aria-label="Concept tags">
+          {concept.tags.map((tag) => (
+            <Badge key={tag} tone="neutral" className="text-2xs">
+              {tag}
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      <div className="space-y-1 text-xs">
+        <p className="text-ink-muted">
+          <strong className="text-ink">Trade-off:</strong> {concept.tradeoffs}
+        </p>
+      </div>
+
+      <div className="space-y-0.5 text-xs">
+        <h3 className="text-ink font-semibold">Why it fits you</h3>
+        <p className="text-ink-muted">{concept.whyItFits}</p>
+      </div>
+    </>
+  );
+}
+
 /**
  * ConceptCard displays a comprehensive aesthetic direction for host evaluation.
  *
@@ -30,7 +120,6 @@ export interface ConceptCardProps {
  * Never uses stale persisted estimates: prices live against active plan items and guest counts.
  * Uses semantic heading structure with programmatic focus support for post-selection return.
  */
-// eslint-disable-next-line complexity
 export function ConceptCard({
   concept,
   plan,
@@ -39,21 +128,17 @@ export function ConceptCard({
   headingRef,
   className = '',
 }: ConceptCardProps) {
-  // Memoized on plan.version: reacts immediately to guest count or quality updates
-  const currentTotal = useMemo(() => {
-    return priceConcept(plan, concept, engineContext);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plan.version, concept]);
-
+  // Plans are immutable, so the plan reference changes exactly when guests or quality change.
+  const currentTotal = useMemo(
+    () => priceConcept(plan, concept, engineContext),
+    [plan, concept],
+  );
   const cap = getBudgetCap(plan.constraints);
-  const isOver = cap !== null && currentTotal > cap;
-  const overBy = cap !== null ? Math.max(0, currentTotal - cap) : 0;
-  const spare = cap !== null ? Math.max(0, cap - currentTotal) : 0;
 
   return (
     <Card
-      className={`flex flex-col justify-between p-5 border-[#E6DCD2] bg-white space-y-4 shadow-xs hover:border-[#6B2D5C] transition-colors ${
-        isSelected ? 'ring-2 ring-[#6B2D5C] border-transparent' : ''
+      className={`border-border hover:border-primary flex flex-col justify-between space-y-4 bg-white p-5 shadow-xs transition-colors ${
+        isSelected ? 'ring-primary border-transparent ring-2' : ''
       } ${className}`}
     >
       <div className="space-y-3.5">
@@ -69,78 +154,24 @@ export function ConceptCard({
             id={`concept-title-${concept.id}`}
             tabIndex={-1}
             ref={headingRef}
-            className="text-lg font-bold text-[#2B1B2E] outline-hidden focus:ring-2 focus:ring-[#6B2D5C] rounded"
+            className="text-ink focus:ring-primary rounded text-lg font-bold outline-hidden focus:ring-2"
           >
             {concept.title}
           </h2>
-          <p className="text-xs font-medium italic text-[#6B2D5C]">{concept.tagline}</p>
+          <p className="text-primary text-xs font-medium italic">{concept.tagline}</p>
         </div>
 
-        <p className="text-xs text-[#5C4556] leading-relaxed">{concept.summary}</p>
+        <p className="text-ink-muted text-xs leading-relaxed">{concept.summary}</p>
 
-        {concept.experienceHighlights.length > 0 && (
-          <div className="space-y-1">
-            <span className="text-xs font-semibold text-[#2B1B2E]">Highlights</span>
-            <ul className="list-disc pl-5 text-xs text-[#5C4556] space-y-0.5" aria-label="Experience highlights">
-              {concept.experienceHighlights.map((highlight, index) => (
-                <li key={index}>{highlight}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {concept.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5" aria-label="Concept tags">
-            {concept.tags.map((tag) => (
-              <Badge key={tag} tone="neutral" className="text-2xs">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )}
-
-        <div className="space-y-1 text-xs">
-          <p className="text-[#5C4556]">
-            <strong className="text-[#2B1B2E]">Trade-off:</strong> {concept.tradeoffs}
-          </p>
-        </div>
-
-        <div className="space-y-0.5 text-xs">
-          <h3 className="font-semibold text-[#2B1B2E]">Why it fits you</h3>
-          <p className="text-[#5C4556]">{concept.whyItFits}</p>
-        </div>
+        <ConceptDetails concept={concept} />
       </div>
 
-      <div className="space-y-3 pt-3 border-t border-[#E6DCD2]">
-        <div className="space-y-1.5">
-          {cap !== null ? (
-            <>
-              <ProgressMeter
-                value={currentTotal}
-                max={cap}
-                label={`Estimated total: ${formatInr(currentTotal)}`}
-              />
-              <p className={`text-xs font-medium ${isOver ? 'text-[#A12B3A]' : 'text-[#1F6F54]'}`}>
-                {isOver ? `Over cap by ${formatInr(overBy)}` : `${formatInr(spare)} to spare`}
-              </p>
-            </>
-          ) : (
-            <p className="text-xs font-medium text-[#2B1B2E]">
-              Estimated total: <Money amount={currentTotal} /> (No budget cap set)
-            </p>
-          )}
-        </div>
-
-        {isSelected ? (
-          <Button disabled variant="secondary" className="w-full">
-            Selected concept
-          </Button>
-        ) : (
-          <Button variant="primary" className="w-full" onClick={() => onChoose(concept)}>
-            Choose this concept
-          </Button>
-        )}
-      </div>
+      <ConceptFooter
+        total={currentTotal}
+        cap={cap}
+        isSelected={isSelected}
+        onChoose={() => onChoose(concept)}
+      />
     </Card>
   );
 }

@@ -37,15 +37,15 @@ export function Select({
         aria-describedby={bindings.describedBy}
         aria-invalid={bindings.isInvalid}
         required={bindings.isRequired}
-        className={`w-full min-h-[44px] px-3.5 py-2 pr-10 rounded-[12px] border border-[#E6DCD2] bg-white text-[#2B1B2E] text-base transition-colors hover:border-[#6B2D5C]/40 focus:border-[#6B2D5C] disabled:bg-[#F4EDE6] disabled:cursor-not-allowed appearance-none cursor-pointer ${
-          bindings.hasError ? 'border-[#A12B3A] focus:border-[#A12B3A]' : ''
+        className={`w-full min-h-[44px] px-3.5 py-2 pr-10 rounded-[12px] border border-border bg-white text-ink text-base transition-colors hover:border-primary/40 focus:border-primary disabled:bg-surface-muted disabled:cursor-not-allowed appearance-none cursor-pointer ${
+          bindings.hasError ? 'border-danger focus:border-danger' : ''
         } ${className}`}
         {...props}
       >
         {children}
       </select>
       <div
-        className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#5B4A5E]"
+        className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-ink-muted"
         aria-hidden="true"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

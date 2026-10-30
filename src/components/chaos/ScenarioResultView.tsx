@@ -62,7 +62,7 @@ export function ScenarioResultView({
           <h3 ref={headlineRef} tabIndex={-1} className="outline-hidden font-semibold">
             {result.headline}
           </h3>
-          <p className="text-xs mt-1 text-[#5C4556]">{result.summary}</p>
+          <p className="text-xs mt-1 text-ink-muted">{result.summary}</p>
         </Alert>
       </div>
     );
@@ -70,20 +70,20 @@ export function ScenarioResultView({
 
   return (
     <div className={`space-y-6 ${isStale ? 'opacity-65' : ''} ${className}`}>
-      <Card className="p-6 border-[#E6DCD2] bg-white space-y-4">
+      <Card className="p-6 border-border bg-white space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-1.5 flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <h3
                 ref={headlineRef}
                 tabIndex={-1}
-                className="text-lg font-serif font-bold text-[#2B1B2E] outline-hidden"
+                className="text-lg font-serif font-bold text-ink outline-hidden"
               >
                 {result.headline}
               </h3>
               {isStale && <Badge tone="neutral">Out of date</Badge>}
             </div>
-            <p className="text-xs text-[#5C4556] leading-relaxed">{result.summary}</p>
+            <p className="text-xs text-ink-muted leading-relaxed">{result.summary}</p>
           </div>
 
           {isStale && onResimulate && (
@@ -94,8 +94,8 @@ export function ScenarioResultView({
         </div>
 
         {recommended && (
-          <div className="pt-2 border-t border-[#F4EDE6] flex flex-wrap items-center gap-3">
-            <span className="text-xs font-semibold text-[#5C4556]">Recommended outcome:</span>
+          <div className="pt-2 border-t border-surface-muted flex flex-wrap items-center gap-3">
+            <span className="text-xs font-semibold text-ink-muted">Recommended outcome:</span>
             <ScoreDelta scoreBefore={result.scoreBefore} scoreAfter={recommended.scoreAfter} />
           </div>
         )}
@@ -106,7 +106,7 @@ export function ScenarioResultView({
       </Card>
 
       <div className="space-y-4">
-        <p className="text-sm font-semibold text-[#2B1B2E]">
+        <p className="text-sm font-semibold text-ink">
           Recovery options ({result.options.length})
         </p>
 
@@ -128,10 +128,10 @@ export function ScenarioResultView({
                 }}
               />
 
-              <details className="group border border-[#E6DCD2] rounded-lg bg-white p-3 text-xs">
-                <summary className="cursor-pointer font-semibold text-[#6B2D5C] hover:text-[#55224A] select-none flex items-center justify-between">
+              <details className="group border border-border rounded-lg bg-white p-3 text-xs">
+                <summary className="cursor-pointer font-semibold text-primary hover:text-primary-hover select-none flex items-center justify-between">
                   <span>Compare with current plan</span>
-                  <span className="text-[#5C4556] group-open:rotate-180 transition-transform" aria-hidden="true">
+                  <span className="text-ink-muted group-open:rotate-180 transition-transform" aria-hidden="true">
                     ▾
                   </span>
                 </summary>

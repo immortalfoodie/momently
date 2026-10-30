@@ -43,7 +43,7 @@ export function SuggestedPrompts({ className = '' }: SuggestedPromptsProps) {
           onClick={() => {
             void send(prompt);
           }}
-          className="text-left text-xs font-medium px-3 py-1.5 min-h-[36px] rounded-full border border-[#E2D2DC] bg-white text-[#2B1B2E] hover:bg-[#F4EDE6] hover:border-[#6B2D5C] transition-colors cursor-pointer"
+          className="text-left text-xs font-medium px-3 py-1.5 min-h-[36px] rounded-full border border-[#E2D2DC] bg-white text-ink hover:bg-surface-muted hover:border-primary transition-colors cursor-pointer"
         >
           {prompt}
         </button>

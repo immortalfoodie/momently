@@ -41,19 +41,19 @@ export function LineItemsTable({
   };
 
   return (
-    <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
+    <Card className={`p-5 bg-white border border-border space-y-4 ${className}`}>
       <div
         tabIndex={0}
         role="region"
         aria-label="Budget Line Items"
-        className="overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2"
+        className="overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       >
         <table className="w-full text-left text-sm border-collapse">
-          <caption className="text-left font-serif font-bold text-base text-[#2B1B2E] mb-3">
+          <caption className="text-left font-serif font-bold text-base text-ink mb-3">
             Budget Line Items
           </caption>
           <thead>
-            <tr className="border-b border-[#E6DCD2] text-xs font-semibold uppercase tracking-wider text-[#5B4A5E]">
+            <tr className="border-b border-border text-xs font-semibold uppercase tracking-wider text-ink-muted">
               <th scope="col" className="py-2.5 pr-4">Item</th>
               <th scope="col" className="py-2.5 px-3">Basis</th>
               <th scope="col" className="py-2.5 px-3 text-right">Price</th>
@@ -65,38 +65,38 @@ export function LineItemsTable({
               <th scope="col" className="py-2.5 pl-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#F4EDE6]">
+          <tbody className="divide-y divide-surface-muted">
             {categories.map((cat) => (
               <Fragment key={`group-${cat.category}`}>
-                <tr className="bg-[#FBF7F2] font-semibold text-xs uppercase tracking-wider text-[#6B2D5C]">
+                <tr className="bg-bg font-semibold text-xs uppercase tracking-wider text-primary">
                   <td colSpan={7} className="py-2 px-3">
                     {cat.label} ({cat.items.length})
                   </td>
                 </tr>
                 {cat.items.map(({ item, total }) => (
-                  <tr key={item.id} className="hover:bg-[#FAF5F0] transition-colors">
+                  <tr key={item.id} className="hover:bg-surface-warm transition-colors">
                     <th scope="row" className="py-3 pr-4 font-normal text-left">
-                      <div className="font-semibold text-[#2B1B2E]">{item.label}</div>
+                      <div className="font-semibold text-ink">{item.label}</div>
                       {item.note && (
-                        <div className="text-xs text-[#5B4A5E] mt-0.5">{item.note}</div>
+                        <div className="text-xs text-ink-muted mt-0.5">{item.note}</div>
                       )}
                       {item.locked && (
-                        <span className="inline-flex items-center gap-1 text-xs font-medium text-[#8A5A00] mt-1 bg-[#FFF4DC] px-2 py-0.5 rounded">
+                        <span className="inline-flex items-center gap-1 text-xs font-medium text-warning mt-1 bg-warning-bg px-2 py-0.5 rounded">
                           <Icon name="lock" size={12} aria-hidden="true" />
                           Locked by you: Momently won&apos;t change it
                         </span>
                       )}
                     </th>
-                    <td className="py-3 px-3 text-[#5B4A5E] capitalize whitespace-nowrap">
+                    <td className="py-3 px-3 text-ink-muted capitalize whitespace-nowrap">
                       {item.basis === 'per_guest' ? 'per guest' : 'flat'}
                     </td>
-                    <td className="py-3 px-3 text-right font-medium text-[#2B1B2E] whitespace-nowrap">
+                    <td className="py-3 px-3 text-right font-medium text-ink whitespace-nowrap">
                       {formatInr(item.unitCost)}
                     </td>
-                    <td className="py-3 px-2 text-center text-[#5B4A5E]">
+                    <td className="py-3 px-2 text-center text-ink-muted">
                       {item.quantity}
                     </td>
-                    <td className="py-3 px-3 text-right font-semibold text-[#2B1B2E] whitespace-nowrap">
+                    <td className="py-3 px-3 text-right font-semibold text-ink whitespace-nowrap">
                       {formatInr(total)}
                     </td>
                     <td className="py-3 px-3 whitespace-nowrap">
@@ -116,10 +116,10 @@ export function LineItemsTable({
                           type="button"
                           aria-pressed={item.locked}
                           onClick={() => onToggleLock(item)}
-                          className={`inline-flex items-center gap-1.5 min-h-[36px] px-3 py-1.5 rounded-[8px] text-xs font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2 ${
+                          className={`inline-flex items-center gap-1.5 min-h-[36px] px-3 py-1.5 rounded-[8px] text-xs font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                             item.locked
-                              ? 'bg-[#FFF4DC] text-[#8A5A00] border-[#D4A24C]'
-                              : 'bg-white text-[#5B4A5E] border-[#E6DCD2] hover:bg-[#F4EDE6]'
+                              ? 'bg-warning-bg text-warning border-gold'
+                              : 'bg-white text-ink-muted border-border hover:bg-surface-muted'
                           }`}
                         >
                           <Icon
@@ -137,7 +137,7 @@ export function LineItemsTable({
                           disabled={item.locked}
                           title={item.locked ? "Unlock this item before removing" : undefined}
                           aria-label={item.locked ? `Remove ${item.label} (disabled: unlock first)` : `Remove ${item.label}`}
-                          className={item.locked ? 'opacity-40 cursor-not-allowed' : 'text-[#A12B3A] hover:bg-[#FBE9EB]'}
+                          className={item.locked ? 'opacity-40 cursor-not-allowed' : 'text-danger hover:bg-danger-bg'}
                         >
                           Remove
                         </Button>
@@ -158,12 +158,12 @@ export function LineItemsTable({
         description="Are you sure you want to remove this item from your budget? This will adjust your overall spending projection."
       >
         <div className="py-3">
-          <p className="text-sm text-[#2B1B2E]">
+          <p className="text-sm text-ink">
             Item: <span className="font-semibold">{itemToRemove?.label}</span> (
             {itemToRemove && formatInr(itemTotal(itemToRemove, plan.meta.guestCount))})
           </p>
         </div>
-        <div className="flex justify-end gap-2 pt-3 border-t border-[#E6DCD2]">
+        <div className="flex justify-end gap-2 pt-3 border-t border-border">
           <Button variant="ghost" onClick={() => setItemToRemove(null)}>
             Cancel
           </Button>

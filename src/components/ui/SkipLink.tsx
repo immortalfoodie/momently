@@ -14,7 +14,7 @@ export function SkipLink({ targetId = 'main-content', className = '' }: SkipLink
   return (
     <a
       href={`#${targetId}`}
-      className={`sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-[#6B2D5C] focus:text-white focus:rounded-[8px] focus:font-semibold focus:shadow-lg focus:outline-none focus:ring-4 focus:ring-[#1D4F91] ${className}`}
+      className={`sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-primary focus:text-white focus:rounded-[8px] focus:font-semibold focus:shadow-lg focus:outline-none focus:ring-4 focus:ring-focus ${className}`}
     >
       Skip to main content
     </a>

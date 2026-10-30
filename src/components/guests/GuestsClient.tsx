@@ -56,7 +56,7 @@ export function GuestsClient({ eventId: propEventId }: GuestsClientProps) {
 
       {/* 1. Who's coming */}
       <section aria-labelledby="whos-coming-heading" className="space-y-4">
-        <h2 id="whos-coming-heading" className="text-xl font-serif font-bold text-[#2B1B2E]">
+        <h2 id="whos-coming-heading" className="text-xl font-serif font-bold text-ink">
           Who&apos;s coming
         </h2>
         <PrivacyNote />
@@ -65,7 +65,7 @@ export function GuestsClient({ eventId: propEventId }: GuestsClientProps) {
 
       {/* 2. What your guests need - narrow form block */}
       <section aria-labelledby="guest-needs-heading" className="space-y-4">
-        <h2 id="guest-needs-heading" className="text-xl font-serif font-bold text-[#2B1B2E]">
+        <h2 id="guest-needs-heading" className="text-xl font-serif font-bold text-ink">
           What your guests need
         </h2>
         <div className="max-w-[48rem]">
@@ -75,7 +75,7 @@ export function GuestsClient({ eventId: propEventId }: GuestsClientProps) {
 
       {/* 3. Reminders for you */}
       <section aria-labelledby="reminders-heading" className="space-y-4">
-        <h2 id="reminders-heading" className="text-xl font-serif font-bold text-[#2B1B2E]">
+        <h2 id="reminders-heading" className="text-xl font-serif font-bold text-ink">
           Reminders for you
         </h2>
         <InsightsList plan={plan} eventId={targetEventId} />
@@ -84,7 +84,7 @@ export function GuestsClient({ eventId: propEventId }: GuestsClientProps) {
 
       {/* 4. Traditions and requirements - narrow form block */}
       <section aria-labelledby="traditions-heading" className="space-y-4">
-        <h2 id="traditions-heading" className="text-xl font-serif font-bold text-[#2B1B2E]">
+        <h2 id="traditions-heading" className="text-xl font-serif font-bold text-ink">
           Traditions and requirements
         </h2>
         <div className="max-w-[48rem]">

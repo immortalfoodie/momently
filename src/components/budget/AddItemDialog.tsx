@@ -177,7 +177,7 @@ export function AddItemDialog({
           />
         </Field>
 
-        <div className="flex justify-end gap-2 pt-3 border-t border-[#E6DCD2]">
+        <div className="flex justify-end gap-2 pt-3 border-t border-border">
           <Button variant="ghost" type="button" onClick={onClose}>
             Cancel
           </Button>

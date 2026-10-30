@@ -24,8 +24,8 @@ export interface ProgressMeterProps {
 function getMeterStatus(value: number, max: number, percentage: number) {
   if (value > max) {
     return {
-      barColor: 'bg-[#A12B3A]',
-      statusColor: 'text-[#A12B3A]',
+      barColor: 'bg-danger',
+      statusColor: 'text-danger',
       icon: 'alert' as const,
       text: 'Over budget',
       isStrong: true,
@@ -33,16 +33,16 @@ function getMeterStatus(value: number, max: number, percentage: number) {
   }
   if (percentage >= 90) {
     return {
-      barColor: 'bg-[#8A5A00]',
-      statusColor: 'text-[#8A5A00]',
+      barColor: 'bg-warning',
+      statusColor: 'text-warning',
       icon: 'alert' as const,
       text: 'Near budget cap',
       isStrong: true,
     };
   }
   return {
-    barColor: 'bg-[#1F6F54]',
-    statusColor: 'text-[#1F6F54]',
+    barColor: 'bg-success',
+    statusColor: 'text-success',
     icon: 'check' as const,
     text: 'On track',
     isStrong: false,
@@ -52,8 +52,8 @@ function getMeterStatus(value: number, max: number, percentage: number) {
 function getProgressStatus(value: number, max: number, percentage: number) {
   if (value === 0 || max === 0) {
     return {
-      barColor: 'bg-[#5B4A5E]',
-      statusColor: 'text-[#5B4A5E]',
+      barColor: 'bg-ink-muted',
+      statusColor: 'text-ink-muted',
       icon: null,
       text: 'Not started',
       isStrong: false,
@@ -61,16 +61,16 @@ function getProgressStatus(value: number, max: number, percentage: number) {
   }
   if (value >= max) {
     return {
-      barColor: 'bg-[#1F6F54]',
-      statusColor: 'text-[#1F6F54]',
+      barColor: 'bg-success',
+      statusColor: 'text-success',
       icon: 'check' as const,
       text: 'Complete',
       isStrong: true,
     };
   }
   return {
-    barColor: 'bg-[#6B2D5C]',
-    statusColor: 'text-[#6B2D5C]',
+    barColor: 'bg-primary',
+    statusColor: 'text-primary',
     icon: null,
     text: `${percentage}% done`,
     isStrong: false,
@@ -129,7 +129,7 @@ export function ProgressMeter({
   return (
     <div className={`w-full ${className}`}>
       <div className="flex items-center justify-between gap-2 text-sm font-medium mb-1.5">
-        <span className="text-[#2B1B2E]">{visibleLabel}</span>
+        <span className="text-ink">{visibleLabel}</span>
         <span
           className={`inline-flex items-center gap-1 text-xs ${
             status.isStrong ? 'font-semibold' : 'font-medium'
@@ -147,7 +147,7 @@ export function ProgressMeter({
         aria-valuemax={max}
         aria-valuenow={value}
         aria-valuetext={resolvedAriaValueText}
-        className="w-full h-3 rounded-full bg-[#E6DCD2] overflow-hidden"
+        className="w-full h-3 rounded-full bg-border overflow-hidden"
       >
         <div
           className={`h-full transition-all duration-300 motion-reduce:transition-none rounded-full ${status.barColor}`}

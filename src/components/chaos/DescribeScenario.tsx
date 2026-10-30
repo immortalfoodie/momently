@@ -73,7 +73,7 @@ function OutcomeView({
 }) {
   return (
     <div className="space-y-3" data-testid="describe-outcome">
-      <p className="text-sm text-[#2B1B2E]">
+      <p className="text-sm text-ink">
         <span className="font-semibold">Here&apos;s how I understood it: </span>
         {outcome.understood}
       </p>
@@ -93,13 +93,13 @@ function OutcomeView({
         </div>
       )}
       {outcome.dropped.map((d) => (
-        <p key={d.input.type} className="text-xs text-[#5C4556]">
+        <p key={d.input.type} className="text-xs text-ink-muted">
           Skipped {scenarioChipLabel(d.input)}: {d.reason}
         </p>
       ))}
       {outcome.unsupported && <Alert tone="info">{outcome.unsupported}</Alert>}
       {outcome.degraded && (
-        <p className="text-xs text-[#5C4556]">Live AI was unavailable, so the offline reader handled this.</p>
+        <p className="text-xs text-ink-muted">Live AI was unavailable, so the offline reader handled this.</p>
       )}
     </div>
   );
@@ -154,12 +154,12 @@ export function DescribeScenario({ plan, onRun }: DescribeScenarioProps) {
   };
 
   return (
-    <Card className="p-6 border-[#E6DCD2] bg-white space-y-4">
+    <Card className="p-6 border-border bg-white space-y-4">
       <div className="flex items-start gap-3">
-        <Icon name="sparkle" size={18} className="mt-1 text-[#6B2D5C]" aria-hidden="true" />
+        <Icon name="sparkle" size={18} className="mt-1 text-primary" aria-hidden="true" />
         <div>
-          <h3 className="text-base font-semibold text-[#2B1B2E]">Describe your own disaster</h3>
-          <p className="text-sm text-[#5C4556]">
+          <h3 className="text-base font-semibold text-ink">Describe your own disaster</h3>
+          <p className="text-sm text-ink-muted">
             Say it in your own words, in English or Hinglish. The AI works out which problems to test, and the planner
             calculates the impact.
           </p>
@@ -178,7 +178,7 @@ export function DescribeScenario({ plan, onRun }: DescribeScenarioProps) {
       </Field>
 
       <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Example problems">
-        <span className="text-xs font-semibold text-[#5C4556]">Try an example:</span>
+        <span className="text-xs font-semibold text-ink-muted">Try an example:</span>
         {EXAMPLES.map((example) => (
           <Button key={example} size="sm" variant="secondary" onClick={() => setText(example)}>
             {example}

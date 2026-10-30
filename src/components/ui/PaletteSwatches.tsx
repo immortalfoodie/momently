@@ -25,11 +25,11 @@ export function PaletteSwatches({
       {palette.map((hex, index) => (
         <div key={`${hex}-${index}`} className="flex items-center gap-1.5">
           <div
-            className="w-5 h-5 rounded-full border border-[#2B1B2E]/15 shadow-2xs shrink-0"
+            className="w-5 h-5 rounded-full border border-ink/15 shadow-2xs shrink-0"
             style={{ backgroundColor: hex }}
             aria-hidden="true"
           />
-          <span className={showLabels ? 'text-xs font-mono text-[#5B4A5E]' : 'sr-only'}>
+          <span className={showLabels ? 'text-xs font-mono text-ink-muted' : 'sr-only'}>
             {hex}
           </span>
         </div>

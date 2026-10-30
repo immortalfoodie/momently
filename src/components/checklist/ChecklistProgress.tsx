@@ -22,7 +22,7 @@ export function ChecklistProgress({
   const label = `${metrics.done} of ${metrics.total} tasks done (${metrics.percent}%)`;
 
   return (
-    <Card className={`p-4 bg-white border border-[#E6DCD2] space-y-3 ${className}`}>
+    <Card className={`p-4 bg-white border border-border space-y-3 ${className}`}>
       <ProgressMeter
         variant="progress"
         value={metrics.done}

@@ -11,7 +11,7 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
       <section aria-labelledby="print-checklist-heading" className="space-y-4">
         <h2
           id="print-checklist-heading"
-          className="text-xl font-serif font-bold text-[#2B1B2E] border-b border-[#E6DCD2] pb-1.5"
+          className="text-xl font-serif font-bold text-ink border-b border-border pb-1.5"
         >
           Checklist by timeframe
         </h2>
@@ -19,17 +19,17 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
           <div className="space-y-4">
             {doc.checklist.map((group) => (
               <div key={group.name} className="space-y-2">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-[#5B4A5E]">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-ink-muted">
                   {group.name}
                 </h3>
-                <ul className="space-y-1 text-sm text-[#2B1B2E]">
+                <ul className="space-y-1 text-sm text-ink">
                   {group.tasks.map((task) => (
                     <li key={task.id} className="flex items-start gap-2">
-                      <span className="font-mono text-xs text-[#5B4A5E] uppercase">
+                      <span className="font-mono text-xs text-ink-muted uppercase">
                         [{task.status}]
                       </span>
                       <span className="font-medium">{task.title}</span>
-                      <span className="text-xs text-[#5B4A5E]">
+                      <span className="text-xs text-ink-muted">
                         ({task.priority})
                       </span>
                     </li>
@@ -39,7 +39,7 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-[#5B4A5E]">No checklist tasks.</p>
+          <p className="text-sm text-ink-muted">No checklist tasks.</p>
         )}
       </section>
 
@@ -47,7 +47,7 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
       <section aria-labelledby="print-vendors-heading" className="space-y-3">
         <h2
           id="print-vendors-heading"
-          className="text-xl font-serif font-bold text-[#2B1B2E] border-b border-[#E6DCD2] pb-1.5"
+          className="text-xl font-serif font-bold text-ink border-b border-border pb-1.5"
         >
           Vendor status
         </h2>
@@ -57,7 +57,7 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
               Vendor booking status by category
             </caption>
             <thead>
-              <tr className="border-b border-[#E6DCD2] text-xs font-semibold uppercase tracking-wider text-[#5B4A5E]">
+              <tr className="border-b border-border text-xs font-semibold uppercase tracking-wider text-ink-muted">
                 <th scope="col" className="py-2 pr-4">
                   Category
                 </th>
@@ -66,16 +66,16 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E6DCD2]">
+            <tbody className="divide-y divide-border">
               {doc.vendors.map((v) => (
                 <tr key={v.category}>
                   <th
                     scope="row"
-                    className="py-2 pr-4 font-semibold text-[#2B1B2E] capitalize"
+                    className="py-2 pr-4 font-semibold text-ink capitalize"
                   >
                     {v.category}
                   </th>
-                  <td className="py-2 pl-4 text-[#5B4A5E] capitalize">
+                  <td className="py-2 pl-4 text-ink-muted capitalize">
                     {v.status.replace('_', ' ')}
                   </td>
                 </tr>
@@ -89,7 +89,7 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
       <section aria-labelledby="print-guests-heading" className="space-y-3">
         <h2
           id="print-guests-heading"
-          className="text-xl font-serif font-bold text-[#2B1B2E] border-b border-[#E6DCD2] pb-1.5"
+          className="text-xl font-serif font-bold text-ink border-b border-border pb-1.5"
         >
           Guest counts
         </h2>
@@ -99,7 +99,7 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
               Guest headcount, catering servings and dietary counts
             </caption>
             <thead>
-              <tr className="border-b border-[#E6DCD2] text-xs font-semibold uppercase tracking-wider text-[#5B4A5E]">
+              <tr className="border-b border-border text-xs font-semibold uppercase tracking-wider text-ink-muted">
                 <th scope="col" className="py-2 pr-4">
                   Group
                 </th>
@@ -108,30 +108,30 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E6DCD2]">
+            <tbody className="divide-y divide-border">
               <tr>
-                <th scope="row" className="py-2 pr-4 font-medium text-[#2B1B2E]">
+                <th scope="row" className="py-2 pr-4 font-medium text-ink">
                   Total guests
                 </th>
-                <td className="py-2 pl-4 text-[#2B1B2E]">{doc.guestCounts.total}</td>
+                <td className="py-2 pl-4 text-ink">{doc.guestCounts.total}</td>
               </tr>
               <tr>
-                <th scope="row" className="py-2 pr-4 font-medium text-[#2B1B2E]">
+                <th scope="row" className="py-2 pr-4 font-medium text-ink">
                   Food servings (with 5% buffer)
                 </th>
-                <td className="py-2 pl-4 text-[#2B1B2E]">{doc.guestCounts.servings}</td>
+                <td className="py-2 pl-4 text-ink">{doc.guestCounts.servings}</td>
               </tr>
               <tr>
-                <th scope="row" className="py-2 pr-4 font-medium text-[#2B1B2E]">
+                <th scope="row" className="py-2 pr-4 font-medium text-ink">
                   Banquet tables (8 seats)
                 </th>
-                <td className="py-2 pl-4 text-[#2B1B2E]">{doc.guestCounts.tables}</td>
+                <td className="py-2 pl-4 text-ink">{doc.guestCounts.tables}</td>
               </tr>
               <tr>
-                <th scope="row" className="py-2 pr-4 font-medium text-[#2B1B2E]">
+                <th scope="row" className="py-2 pr-4 font-medium text-ink">
                   Vegetarian / Jain / Vegan / Gluten-free
                 </th>
-                <td className="py-2 pl-4 text-[#2B1B2E]">
+                <td className="py-2 pl-4 text-ink">
                   {doc.guestCounts.vegetarian} / {doc.guestCounts.jain} /{' '}
                   {doc.guestCounts.vegan} / {doc.guestCounts.glutenFree}
                 </td>
@@ -145,12 +145,12 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
       <section aria-labelledby="print-risks-heading" className="space-y-3">
         <h2
           id="print-risks-heading"
-          className="text-xl font-serif font-bold text-[#2B1B2E] border-b border-[#E6DCD2] pb-1.5"
+          className="text-xl font-serif font-bold text-ink border-b border-border pb-1.5"
         >
           Top risks
         </h2>
         {doc.topRisks.length > 0 ? (
-          <ul className="space-y-2 text-sm text-[#2B1B2E]">
+          <ul className="space-y-2 text-sm text-ink">
             {doc.topRisks.map((risk) => (
               <li key={risk.id}>
                 <strong className="capitalize">[{risk.severity}] {risk.title}:</strong>{' '}
@@ -159,7 +159,7 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-[#5B4A5E]">No major risks flagged.</p>
+          <p className="text-sm text-ink-muted">No major risks flagged.</p>
         )}
       </section>
 
@@ -167,18 +167,18 @@ export function PrintablePlanDetails({ doc }: PrintablePlanDetailsProps) {
       <section aria-labelledby="print-assumptions-heading" className="space-y-3">
         <h2
           id="print-assumptions-heading"
-          className="text-xl font-serif font-bold text-[#2B1B2E] border-b border-[#E6DCD2] pb-1.5"
+          className="text-xl font-serif font-bold text-ink border-b border-border pb-1.5"
         >
           Assumptions and disclaimers
         </h2>
-        <ul className="list-disc list-inside space-y-1 text-sm text-[#5B4A5E]">
+        <ul className="list-disc list-inside space-y-1 text-sm text-ink-muted">
           {doc.assumptions.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
-        <div className="pt-2 space-y-1 text-xs text-[#5B4A5E]">
+        <div className="pt-2 space-y-1 text-xs text-ink-muted">
           {doc.disclaimers.map((d) => (
-            <p key={d} className="font-medium text-[#2B1B2E]">
+            <p key={d} className="font-medium text-ink">
               {d}
             </p>
           ))}

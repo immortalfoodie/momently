@@ -105,16 +105,16 @@ export function WhatIAssumedCard({
   }
 
   return (
-    <Card className={`p-4 border-[#E6DCD2] bg-[#FAF5F0] space-y-4 ${className}`}>
+    <Card className={`p-4 border-border bg-surface-warm space-y-4 ${className}`}>
       <div>
-        <h2 className="text-sm font-semibold text-[#2B1B2E]">What I assumed</h2>
-        <p className="text-xs text-[#5C4556]">
+        <h2 className="text-sm font-semibold text-ink">What I assumed</h2>
+        <p className="text-xs text-ink-muted">
           Based on your brief, Momently initialized these baseline parameters.
         </p>
       </div>
 
       {assumptions.length > 0 && (
-        <ul className="list-disc pl-5 text-xs text-[#5C4556] space-y-1">
+        <ul className="list-disc pl-5 text-xs text-ink-muted space-y-1">
           {assumptions.map((assumption, idx) => (
             <li key={idx}>{assumption}</li>
           ))}
@@ -122,12 +122,12 @@ export function WhatIAssumedCard({
       )}
 
       {missingInfo.length > 0 && (
-        <div className="space-y-3 pt-2 border-t border-[#E6DCD2]">
-          <h3 className="text-xs font-semibold text-[#2B1B2E]">Missing Details to Confirm</h3>
+        <div className="space-y-3 pt-2 border-t border-border">
+          <h3 className="text-xs font-semibold text-ink">Missing Details to Confirm</h3>
           <div className="space-y-3">
             {missingInfo.map((item) => (
-              <div key={item.field} className="p-3 bg-white rounded border border-[#E6DCD2] space-y-2">
-                <p className="text-xs font-medium text-[#2B1B2E]">{item.question}</p>
+              <div key={item.field} className="p-3 bg-white rounded border border-border space-y-2">
+                <p className="text-xs font-medium text-ink">{item.question}</p>
                 <div className="flex flex-wrap items-center gap-2">
                   {item.field === 'guestCount' && (
                     <NumberInput
@@ -168,7 +168,7 @@ export function WhatIAssumedCard({
                       type="date"
                       value={dateVal}
                       onChange={(e) => setDateVal(e.target.value)}
-                      className="w-44 text-xs rounded border border-[#E6DCD2] px-2.5 py-1.5 focus:border-[#6B2D5C] focus:ring-1 focus:ring-[#6B2D5C]"
+                      className="w-44 text-xs rounded border border-border px-2.5 py-1.5 focus:border-primary focus:ring-1 focus:ring-primary"
                       aria-label="Confirm celebration date"
                     />
                   )}
@@ -183,8 +183,8 @@ export function WhatIAssumedCard({
       )}
 
       {appliedImpact && (
-        <div className="p-3 bg-white rounded border border-[#C3E6D7] space-y-2">
-          <p className="text-xs font-semibold text-[#1F6F54]">Change applied successfully</p>
+        <div className="p-3 bg-white rounded border border-success-border space-y-2">
+          <p className="text-xs font-semibold text-success">Change applied successfully</p>
           <ImpactSummary impact={appliedImpact} />
         </div>
       )}

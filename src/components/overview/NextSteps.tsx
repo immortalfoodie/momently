@@ -46,11 +46,11 @@ export function NextSteps({ plan, eventId, className = '' }: NextStepsProps) {
     .slice(0, 5);
 
   return (
-    <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#E6DCD2]">
+    <Card className={`p-5 bg-white border border-border space-y-4 ${className}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-border">
         <div>
-          <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">Next Steps</h3>
-          <p className="text-xs text-[#5B4A5E] mt-0.5">Top 5 immediate planning tasks requiring host action.</p>
+          <h3 className="font-serif font-bold text-lg text-ink">Next Steps</h3>
+          <p className="text-xs text-ink-muted mt-0.5">Top 5 immediate planning tasks requiring host action.</p>
         </div>
         <Link href={`/events/${eventId}/checklist`}>
           <Button variant="secondary" size="sm">
@@ -60,12 +60,12 @@ export function NextSteps({ plan, eventId, className = '' }: NextStepsProps) {
       </div>
 
       {openTasks.length === 0 ? (
-        <p className="text-sm text-[#1F6F54] font-medium flex items-center gap-1.5 py-2">
+        <p className="text-sm text-success font-medium flex items-center gap-1.5 py-2">
           <Icon name="check" size={16} aria-hidden="true" />
           All checklist tasks are completed! You are fully on track.
         </p>
       ) : (
-        <ul className="divide-y divide-[#F4EDE6]" aria-label="Upcoming action items">
+        <ul className="divide-y divide-surface-muted" aria-label="Upcoming action items">
           {openTasks.map((task) => {
             const { text, isOverdue } = computeTaskDueDate(task, plan.meta.dateIso);
 
@@ -76,12 +76,12 @@ export function NextSteps({ plan, eventId, className = '' }: NextStepsProps) {
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-sm text-[#2B1B2E]">{task.title}</span>
+                    <span className="font-semibold text-sm text-ink">{task.title}</span>
                     <Badge tone="neutral" className="capitalize text-[10px]">
                       {task.category}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-[#5B4A5E]">
+                  <div className="flex items-center gap-2 text-xs text-ink-muted">
                     <span>Due: {text}</span>
                     {isOverdue && (
                       <Badge tone="danger" className="inline-flex items-center gap-1">

@@ -61,7 +61,7 @@ function getDescribedBy(hintId?: string, errorId?: string): string | undefined {
 function renderFieldHint(hint?: string, hintId?: string, hasError?: boolean) {
   if (!hint || hasError) return null;
   return (
-    <p id={hintId} className="text-xs text-[#5B4A5E]">
+    <p id={hintId} className="text-xs text-ink-muted">
       {hint}
     </p>
   );
@@ -73,7 +73,7 @@ function renderFieldError(error?: string, errorId?: string, alert?: boolean) {
     <p
       id={errorId}
       role={alert ? 'alert' : undefined}
-      className="text-xs font-medium text-[#A12B3A] flex items-center gap-1"
+      className="text-xs font-medium text-danger flex items-center gap-1"
     >
       <span>{error}</span>
     </p>
@@ -121,11 +121,11 @@ export function Field({
       <div className={`flex flex-col gap-1.5 ${className}`}>
         <label
           htmlFor={fieldId}
-          className="text-sm font-semibold text-[#2B1B2E] flex items-center gap-1"
+          className="text-sm font-semibold text-ink flex items-center gap-1"
         >
           <span>{label}</span>
           {required ? (
-            <span className="text-[#A12B3A]" aria-hidden="true">
+            <span className="text-danger" aria-hidden="true">
               *
             </span>
           ) : null}

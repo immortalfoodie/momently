@@ -107,7 +107,7 @@ export function TabList({ 'aria-label': ariaLabel, children, className = '' }: T
       role="tablist"
       aria-label={ariaLabel}
       onKeyDown={handleKeyDown}
-      className={`flex items-center gap-1 border-b border-[#E6DCD2] pb-px overflow-x-auto ${className}`}
+      className={`flex items-center gap-1 border-b border-border pb-px overflow-x-auto ${className}`}
     >
       {children}
     </div>
@@ -141,8 +141,8 @@ export function TabTrigger({ value, children, disabled = false, className = '' }
       onClick={() => context.onSelectTab(value)}
       className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors cursor-pointer select-none whitespace-nowrap -mb-px disabled:opacity-40 disabled:cursor-not-allowed ${
         isSelected
-          ? 'border-[#6B2D5C] text-[#6B2D5C]'
-          : 'border-transparent text-[#5B4A5E] hover:text-[#2B1B2E] hover:border-[#E6DCD2]'
+          ? 'border-primary text-primary'
+          : 'border-transparent text-ink-muted hover:text-ink hover:border-border'
       } ${className}`}
     >
       {children}
@@ -205,18 +205,18 @@ export function LinkTabs({ items, 'aria-label': ariaLabel, className = '' }: Lin
     <div className={`relative ${className}`}>
       {/* Decorative edge fades for horizontal scrolling */}
       <div
-        className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-[#FBF7F2] to-transparent z-10"
+        className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-bg to-transparent z-10"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-[#FBF7F2] to-transparent z-10"
+        className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-bg to-transparent z-10"
         aria-hidden="true"
       />
 
       <nav
         ref={navRef}
         aria-label={ariaLabel}
-        className="border-b border-[#E6DCD2] pb-px overflow-x-auto"
+        className="border-b border-border pb-px overflow-x-auto"
       >
         <ul role="list" className="flex items-center gap-1 -mb-px p-0 m-0 list-none px-2">
           {items.map((item) => (
@@ -226,8 +226,8 @@ export function LinkTabs({ items, 'aria-label': ariaLabel, className = '' }: Lin
                 aria-current={item.isActive ? 'page' : undefined}
                 className={`inline-block px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors select-none whitespace-nowrap no-underline ${
                   item.isActive
-                    ? 'border-[#6B2D5C] text-[#6B2D5C]'
-                    : 'border-transparent text-[#5B4A5E] hover:text-[#2B1B2E] hover:border-[#E6DCD2]'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-ink-muted hover:text-ink hover:border-border'
                 }`}
               >
                 {item.label}

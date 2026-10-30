@@ -26,10 +26,10 @@ export function TaskGroup({
 
   return (
     <section aria-labelledby={headingId} className={`space-y-3 ${className}`}>
-      <div className="flex items-center justify-between border-b border-[#E6DCD2] pb-1.5">
-        <h3 id={headingId} className="font-serif font-bold text-base text-[#2B1B2E]">
+      <div className="flex items-center justify-between border-b border-border pb-1.5">
+        <h3 id={headingId} className="font-serif font-bold text-base text-ink">
           {name}{' '}
-          <span className="text-xs font-sans font-normal text-[#5B4A5E]">
+          <span className="text-xs font-sans font-normal text-ink-muted">
             ({tasks.length})
           </span>
         </h3>

@@ -88,7 +88,7 @@ export default function EventLayout({ children }: EventLayoutProps) {
   return (
     <EventContextProvider value={{ event, plan: event.plan, derived }}>
       <div className="flex flex-col">
-        <Suspense fallback={<div className="lg:hidden h-11 border-b border-[#E6DCD2]" />}>
+        <Suspense fallback={<div className="lg:hidden h-11 border-b border-border" />}>
           <EventSubnav eventId={id} />
         </Suspense>
         <div data-print-hide="true">

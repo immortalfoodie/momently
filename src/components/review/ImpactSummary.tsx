@@ -26,13 +26,13 @@ export function ImpactSummary({ impact, className = '' }: ImpactSummaryProps) {
     <div className={`space-y-3 ${className}`}>
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-1.5 text-sm">
-          <span className="text-[#5C4556]">Budget:</span>
+          <span className="text-ink-muted">Budget:</span>
           <Money amount={budgetTotalBefore} />
           <span aria-hidden="true" className="text-[#8C7A87]">
             →
           </span>
           <span className="sr-only">to</span>
-          <Money amount={budgetTotalAfter} className="font-semibold text-[#2B1B2E]" />
+          <Money amount={budgetTotalAfter} className="font-semibold text-ink" />
         </div>
 
         {budgetCap !== null ? (
@@ -56,13 +56,13 @@ export function ImpactSummary({ impact, className = '' }: ImpactSummaryProps) {
       </div>
 
       {changedItems.length > 0 && (
-        <div className="overflow-x-auto rounded border border-[#E6DCD2]">
+        <div className="overflow-x-auto rounded border border-border">
           <table className="w-full text-left text-xs">
-            <caption className="px-3 py-1.5 text-left text-xs font-medium text-[#5C4556] bg-[#FAF5F0] border-b border-[#E6DCD2]">
+            <caption className="px-3 py-1.5 text-left text-xs font-medium text-ink-muted bg-surface-warm border-b border-border">
               Item budget changes
             </caption>
             <thead>
-              <tr className="border-b border-[#E6DCD2] bg-[#F4EDE6] text-[#2B1B2E]">
+              <tr className="border-b border-border bg-surface-muted text-ink">
                 <th scope="col" className="px-3 py-1.5 font-semibold">
                   Item
                 </th>
@@ -74,16 +74,16 @@ export function ImpactSummary({ impact, className = '' }: ImpactSummaryProps) {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E6DCD2]">
+            <tbody className="divide-y divide-border">
               {changedItems.map((item) => (
-                <tr key={item.label} className="hover:bg-[#FAF5F0]">
-                  <th scope="row" className="px-3 py-1.5 font-normal text-[#2B1B2E]">
+                <tr key={item.label} className="hover:bg-surface-warm">
+                  <th scope="row" className="px-3 py-1.5 font-normal text-ink">
                     {item.label}
                   </th>
-                  <td className="px-3 py-1.5 text-right text-[#5C4556]">
+                  <td className="px-3 py-1.5 text-right text-ink-muted">
                     <Money amount={item.before} />
                   </td>
-                  <td className="px-3 py-1.5 text-right font-medium text-[#2B1B2E]">
+                  <td className="px-3 py-1.5 text-right font-medium text-ink">
                     <Money amount={item.after} />
                   </td>
                 </tr>
@@ -94,7 +94,7 @@ export function ImpactSummary({ impact, className = '' }: ImpactSummaryProps) {
       )}
 
       {notes.length > 0 && (
-        <ul className="list-disc pl-5 text-xs text-[#5C4556] space-y-0.5" aria-label="Notes">
+        <ul className="list-disc pl-5 text-xs text-ink-muted space-y-0.5" aria-label="Notes">
           {notes.map((note, index) => (
             <li key={index}>{note}</li>
           ))}

@@ -65,14 +65,14 @@ function NavList({ items, pathname, collapsed, compact = false, onNavigate }: Na
               title={collapsed ? item.label : undefined}
               className={`flex items-center rounded-[10px] text-sm font-medium transition-colors border-l-4 no-underline ${compact ? 'py-2' : 'py-2.5'} ${collapsed ? 'justify-center px-2' : 'gap-3 px-3'} ${
                 isActive
-                  ? 'border-[#6B2D5C] bg-[#F4EDE6] text-[#6B2D5C] font-semibold'
-                  : 'border-transparent text-[#2B1B2E] hover:bg-[#F4EDE6]/60 hover:text-[#2B1B2E]'
+                  ? 'border-primary bg-surface-muted text-primary font-semibold'
+                  : 'border-transparent text-ink hover:bg-surface-muted/60 hover:text-ink'
               }`}
             >
               <Icon
                 name={item.icon}
                 size={18}
-                className={isActive ? 'text-[#6B2D5C]' : 'text-[#5B4A5E]'}
+                className={isActive ? 'text-primary' : 'text-ink-muted'}
                 aria-hidden="true"
               />
               <span className={collapsed ? 'sr-only' : ''}>{item.label}</span>
@@ -93,7 +93,7 @@ function CollapseToggle({ collapsed, onToggle }: { collapsed: boolean; onToggle:
       aria-controls="workspace-navigation"
       aria-expanded={!collapsed}
       title={collapsed ? 'Expand navigation' : 'Collapse navigation'}
-      className="absolute right-0 top-1/2 z-20 flex h-14 w-5 -translate-y-1/2 items-center justify-center rounded-l-lg border border-r-0 border-[#E6DCD2] bg-white text-[#6B2D5C] shadow-sm transition-colors hover:bg-[#F4EDE6] focus-visible:z-30"
+      className="absolute right-0 top-1/2 z-20 flex h-14 w-5 -translate-y-1/2 items-center justify-center rounded-l-lg border border-r-0 border-border bg-white text-primary shadow-sm transition-colors hover:bg-surface-muted focus-visible:z-30"
     >
       <Icon name="chevron-right" size={15} className={collapsed ? '' : 'rotate-180'} aria-hidden="true" />
     </button>
@@ -112,11 +112,11 @@ function EventNavGroup({ eventId, pathname, collapsed, onNavigate }: EventNavGro
   return (
     <div data-testid="event-nav-group">
       <div className={`mb-2 px-3 ${collapsed ? 'sr-only' : ''}`}>
-        <h2 className="text-xs font-bold uppercase tracking-wider text-[#5B4A5E]">This Event</h2>
+        <h2 className="text-xs font-bold uppercase tracking-wider text-ink-muted">This Event</h2>
         {eventTitle ? (
           <p
             data-testid="sidebar-event-title"
-            className="text-sm font-semibold text-[#2B1B2E] truncate mt-1"
+            className="text-sm font-semibold text-ink truncate mt-1"
             title={eventTitle}
           >
             {eventTitle}
@@ -149,10 +149,10 @@ function SidebarContent({
     <nav
       id={onToggleCollapsed ? 'workspace-navigation' : undefined}
       aria-label="Main"
-      className={`relative flex shrink-0 select-none flex-col border-r border-[#E6DCD2] bg-[#FBF7F2] transition-[width,padding] duration-200 ease-out ${collapsed ? 'w-[76px] gap-6 p-2' : 'w-64 gap-6 p-4'} ${className}`}
+      className={`relative flex shrink-0 select-none flex-col border-r border-border bg-bg transition-[width,padding] duration-200 ease-out ${collapsed ? 'w-[76px] gap-6 p-2' : 'w-64 gap-6 p-4'} ${className}`}
     >
       <div>
-        <h2 className={`mb-2 px-3 text-xs font-bold uppercase tracking-wider text-[#5B4A5E] ${collapsed ? 'sr-only' : ''}`}>
+        <h2 className={`mb-2 px-3 text-xs font-bold uppercase tracking-wider text-ink-muted ${collapsed ? 'sr-only' : ''}`}>
           Workspace
         </h2>
         <NavList items={GLOBAL_NAV_ITEMS} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
@@ -176,14 +176,14 @@ export function Sidebar(props: SidebarProps) {
       fallback={
         <nav
           aria-label="Main"
-          className={`relative flex shrink-0 select-none flex-col border-r border-[#E6DCD2] bg-[#FBF7F2] ${
+          className={`relative flex shrink-0 select-none flex-col border-r border-border bg-bg ${
             props.collapsed ? 'w-[76px] gap-6 p-2' : 'w-64 gap-6 p-4'
           } ${
             props.className ?? ''
           }`}
         >
           <div>
-            <h2 className="text-xs font-bold uppercase tracking-wider text-[#5B4A5E] px-3 mb-2">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-ink-muted px-3 mb-2">
               Workspace
             </h2>
             <ul role="list" className="flex flex-col gap-1 p-0 m-0 list-none">
@@ -191,9 +191,9 @@ export function Sidebar(props: SidebarProps) {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm font-medium text-[#2B1B2E] border-l-4 border-transparent no-underline"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm font-medium text-ink border-l-4 border-transparent no-underline"
                   >
-                    <Icon name={item.icon} size={18} className="text-[#5B4A5E]" aria-hidden="true" />
+                    <Icon name={item.icon} size={18} className="text-ink-muted" aria-hidden="true" />
                     <span>{item.label}</span>
                   </Link>
                 </li>

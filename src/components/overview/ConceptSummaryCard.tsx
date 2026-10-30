@@ -26,9 +26,9 @@ export function ConceptSummaryCard({
 
   if (!concept) {
     return (
-      <Card className={`p-6 bg-white border border-[#E6DCD2] ${className}`}>
+      <Card className={`p-6 bg-white border border-border ${className}`}>
         <EmptyState
-          icon={<Icon name="sparkle" size={28} className="text-[#6B2D5C]" aria-hidden="true" />}
+          icon={<Icon name="sparkle" size={28} className="text-primary" aria-hidden="true" />}
           title="No aesthetic concept selected"
           description="Explore curated themes tailored to your celebration style, palette, and budget."
           action={
@@ -42,41 +42,41 @@ export function ConceptSummaryCard({
   }
 
   return (
-    <Card className={`overflow-hidden bg-white border border-[#E6DCD2] flex flex-col md:flex-row ${className}`}>
-      <div className="w-full md:w-56 shrink-0 relative bg-[#F4EDE6]">
+    <Card className={`overflow-hidden bg-white border border-border flex flex-col md:flex-row ${className}`}>
+      <div className="w-full md:w-56 shrink-0 relative bg-surface-muted">
         <CoverArt seed={concept.title} palette={concept.palette} height={200} className="w-full h-full object-cover" />
       </div>
 
       <div className="p-5 flex-1 flex flex-col justify-between gap-4">
         <div className="space-y-2">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">{concept.title}</h3>
+            <h3 className="font-serif font-bold text-lg text-ink">{concept.title}</h3>
             <Link href={`/events/${eventId}/concepts`}>
               <Button variant="secondary" size="sm">
                 Change concept
               </Button>
             </Link>
           </div>
-          <p className="text-xs font-medium text-[#6B2D5C] italic">{concept.tagline}</p>
-          <p className="text-xs text-[#5B4A5E] leading-relaxed">{concept.summary}</p>
+          <p className="text-xs font-medium text-primary italic">{concept.tagline}</p>
+          <p className="text-xs text-ink-muted leading-relaxed">{concept.summary}</p>
         </div>
 
-        <div className="space-y-2 pt-2 border-t border-[#F4EDE6]">
+        <div className="space-y-2 pt-2 border-t border-surface-muted">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#5B4A5E] uppercase tracking-wider">
+            <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
               Signature Palette
             </span>
             <PaletteSwatches palette={concept.palette} />
           </div>
 
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-[#5B4A5E] uppercase tracking-wider">
+            <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
               Experience Highlights
             </span>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-[#2B1B2E]">
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-ink">
               {concept.experienceHighlights.map((hl, idx) => (
                 <li key={idx} className="flex items-start gap-1.5">
-                  <Icon name="check" size={12} className="text-[#1F6F54] shrink-0 mt-0.5" aria-hidden="true" />
+                  <Icon name="check" size={12} className="text-success shrink-0 mt-0.5" aria-hidden="true" />
                   <span>{hl}</span>
                 </li>
               ))}

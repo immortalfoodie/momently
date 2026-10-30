@@ -145,12 +145,12 @@ export function ConceptsClient() {
       )}
 
       {/* One-line summary banner linking to assumptions card below */}
-      <div className="p-3 bg-[#FAF5F0] border border-[#E6DCD2] rounded-[10px] text-xs text-[#5B4A5E] flex items-center justify-between gap-2">
+      <div className="p-3 bg-surface-warm border border-border rounded-[10px] text-xs text-ink-muted flex items-center justify-between gap-2">
         <span>
           We assumed {plan.meta.guestCount} guests and {cityTierLabel} prices.{' '}
           <a
             href="#what-i-assumed"
-            className="font-semibold text-[#6B2D5C] hover:underline cursor-pointer"
+            className="font-semibold text-primary hover:underline cursor-pointer"
           >
             Review
           </a>
@@ -230,7 +230,7 @@ export function ConceptsClient() {
         title="Refresh Celebration Concepts?"
       >
         <div className="space-y-4">
-          <p className="text-xs text-[#5C4556] leading-relaxed">
+          <p className="text-xs text-ink-muted leading-relaxed">
             Generating a fresh set of celebration concepts will replace current proposals.
             If your active selected concept is not included in the new set, the selection will be reset.
           </p>

@@ -92,17 +92,17 @@ export function YourDataSection() {
     <section aria-labelledby="settings-your-data-heading" className="space-y-3">
       <h2
         id="settings-your-data-heading"
-        className="text-xl font-serif font-bold text-[#2B1B2E]"
+        className="text-xl font-serif font-bold text-ink"
       >
         Your data
       </h2>
 
       <Card className="p-5 space-y-5">
         <div className="space-y-1">
-          <p className="text-base font-semibold text-[#2B1B2E]">
+          <p className="text-base font-semibold text-ink">
             {records.length} {records.length === 1 ? 'event' : 'events'} stored in this browser
           </p>
-          <p className="text-xs text-[#5B4A5E]">
+          <p className="text-xs text-ink-muted">
             Backups include your saved contacts and event history—keep backup files private.
           </p>
         </div>
@@ -110,7 +110,7 @@ export function YourDataSection() {
         {statusMessage && (
           <div
             role="status"
-            className="p-3.5 rounded-[12px] bg-[#E7F4EE] border border-[#C3E6D7] text-sm text-[#1F6F54]"
+            className="p-3.5 rounded-[12px] bg-success-bg border border-success-border text-sm text-success"
           >
             {statusMessage}
           </div>
@@ -119,7 +119,7 @@ export function YourDataSection() {
         {errorMessage && (
           <div
             role="alert"
-            className="p-3.5 rounded-[12px] bg-[#FBE9EB] border border-[#F4C5CB] text-sm text-[#A12B3A]"
+            className="p-3.5 rounded-[12px] bg-danger-bg border border-danger-border text-sm text-danger"
           >
             {errorMessage}
           </div>
@@ -139,7 +139,7 @@ export function YourDataSection() {
           <div className="flex flex-col gap-1">
             <label
               htmlFor="import-backup-file"
-              className="text-xs font-semibold text-[#2B1B2E]"
+              className="text-xs font-semibold text-ink"
             >
               Import data (.json)
             </label>
@@ -148,12 +148,12 @@ export function YourDataSection() {
               type="file"
               accept=".json,application/json"
               onChange={handleImportFile}
-              className="text-sm text-[#2B1B2E] file:mr-3 file:min-h-[36px] file:px-3 file:py-1.5 file:rounded-[8px] file:border file:border-[#E6DCD2] file:bg-white file:text-sm file:font-medium file:text-[#2B1B2E] hover:file:bg-[#F4EDE6] cursor-pointer"
+              className="text-sm text-ink file:mr-3 file:min-h-[36px] file:px-3 file:py-1.5 file:rounded-[8px] file:border file:border-border file:bg-white file:text-sm file:font-medium file:text-ink hover:file:bg-surface-muted cursor-pointer"
             />
           </div>
         </div>
 
-        <div className="pt-4 border-t border-[#E6DCD2]">
+        <div className="pt-4 border-t border-border">
           <Button
             type="button"
             variant="danger"
@@ -172,7 +172,7 @@ export function YourDataSection() {
           title="Delete all local data?"
         >
           <div className="space-y-4">
-            <p className="text-sm text-[#5B4A5E] leading-relaxed">
+            <p className="text-sm text-ink-muted leading-relaxed">
               This permanently removes every event plan, version snapshot and contact stored in this browser. This action can&apos;t be undone—we recommend clicking &ldquo;Export all my data&rdquo; first if you want a backup copy.
             </p>
 

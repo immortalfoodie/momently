@@ -76,7 +76,7 @@ export function KitClient({ eventId: propEventId }: KitClientProps) {
 
       <KitOrderQuantitiesCard plan={plan} onCopy={copyText} />
 
-      <p className="text-xs text-[#5B4A5E] text-center pt-2">
+      <p className="text-xs text-ink-muted text-center pt-2">
         Momently never sends these anywhere. They stay on your device unless you share them.
       </p>
 

@@ -80,7 +80,7 @@ describe('Concepts Page & Components', () => {
 
     // Select "Memory Lane" concept
     const memoryLaneHeading = screen.getByRole('heading', { level: 2, name: 'Memory Lane' });
-    const card = memoryLaneHeading.closest('.border-\\[\\#E6DCD2\\]') as HTMLElement;
+    const card = memoryLaneHeading.closest('.border-border') as HTMLElement;
     expect(card).toBeInTheDocument();
 
     const chooseBtn = within(card).getByRole('button', { name: 'Choose this concept' });

@@ -21,31 +21,31 @@ export function MealPlanTable({ plan, className = '' }: MealPlanTableProps) {
   ];
 
   return (
-    <Card className={`p-4 sm:p-6 bg-white border border-[#E6DCD2] space-y-6 ${className}`}>
+    <Card className={`p-4 sm:p-6 bg-white border border-border space-y-6 ${className}`}>
       {/* Derived metrics strip */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-3.5 rounded-[12px] bg-[#F5F2EB] border border-[#E6DCD2] space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#7A6B7E]">
+        <div className="p-3.5 rounded-[12px] bg-surface-warm border border-border space-y-1">
+          <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
             Food servings
           </span>
-          <p className="text-2xl font-serif font-bold text-[#2B1B2E]">{metrics.servings}</p>
-          <p className="text-xs text-[#5B4A5E]">Includes 5% safety buffer</p>
+          <p className="text-2xl font-serif font-bold text-ink">{metrics.servings}</p>
+          <p className="text-xs text-ink-muted">Includes 5% safety buffer</p>
         </div>
 
-        <div className="p-3.5 rounded-[12px] bg-[#F5F2EB] border border-[#E6DCD2] space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#7A6B7E]">
+        <div className="p-3.5 rounded-[12px] bg-surface-warm border border-border space-y-1">
+          <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
             Banquet tables
           </span>
-          <p className="text-2xl font-serif font-bold text-[#2B1B2E]">{metrics.tables}</p>
-          <p className="text-xs text-[#5B4A5E]">Assumes 8 seats per table</p>
+          <p className="text-2xl font-serif font-bold text-ink">{metrics.tables}</p>
+          <p className="text-xs text-ink-muted">Assumes 8 seats per table</p>
         </div>
 
-        <div className="p-3.5 rounded-[12px] bg-[#F5F2EB] border border-[#E6DCD2] space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#7A6B7E]">
+        <div className="p-3.5 rounded-[12px] bg-surface-warm border border-border space-y-1">
+          <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
             Households
           </span>
-          <p className="text-2xl font-serif font-bold text-[#2B1B2E]">{metrics.households}</p>
-          <p className="text-xs text-[#5B4A5E]">
+          <p className="text-2xl font-serif font-bold text-ink">{metrics.households}</p>
+          <p className="text-xs text-ink-muted">
             Invitations to send (assumes about 3 guests per invitation)
           </p>
         </div>
@@ -57,38 +57,38 @@ export function MealPlanTable({ plan, className = '' }: MealPlanTableProps) {
           tabIndex={0}
           role="region"
           aria-label="Dietary breakdown table"
-          className="overflow-x-auto rounded-[12px] border border-[#E6DCD2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2"
+          className="overflow-x-auto rounded-[12px] border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           <table className="w-full text-left text-sm border-collapse">
             <caption className="sr-only">Dietary breakdown for catering provisions</caption>
             <thead>
-              <tr className="bg-[#F5F2EB] border-b border-[#E6DCD2]">
-                <th scope="col" className="py-2.5 px-4 font-semibold text-[#2B1B2E]">
+              <tr className="bg-surface-warm border-b border-border">
+                <th scope="col" className="py-2.5 px-4 font-semibold text-ink">
                   Dietary preference
                 </th>
-                <th scope="col" className="py-2.5 px-4 font-semibold text-[#2B1B2E] text-right">
+                <th scope="col" className="py-2.5 px-4 font-semibold text-ink text-right">
                   Count
                 </th>
-                <th scope="col" className="py-2.5 px-4 font-semibold text-[#2B1B2E] text-right">
+                <th scope="col" className="py-2.5 px-4 font-semibold text-ink text-right">
                   Share
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E6DCD2]">
+            <tbody className="divide-y divide-border">
               {rows.map((r) => {
                 const pct = totalGuests > 0 ? Math.round((r.count / totalGuests) * 100) : 0;
                 return (
-                  <tr key={r.label} className="hover:bg-[#FAF7F2]">
-                    <td className="py-2.5 px-4 text-[#2B1B2E] font-medium">{r.label}</td>
-                    <td className="py-2.5 px-4 text-[#5B4A5E] text-right">{r.count}</td>
-                    <td className="py-2.5 px-4 text-[#7A6B7E] text-right">{pct}%</td>
+                  <tr key={r.label} className="hover:bg-bg">
+                    <td className="py-2.5 px-4 text-ink font-medium">{r.label}</td>
+                    <td className="py-2.5 px-4 text-ink-muted text-right">{r.count}</td>
+                    <td className="py-2.5 px-4 text-ink-muted text-right">{pct}%</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-[#5B4A5E] italic">Hint: Share these numbers with your caterer.</p>
+        <p className="text-xs text-ink-muted italic">Hint: Share these numbers with your caterer.</p>
       </div>
     </Card>
   );

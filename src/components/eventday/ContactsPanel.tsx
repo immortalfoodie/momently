@@ -31,12 +31,12 @@ function ContactCard({
   onRemove: (contact: Contact) => void;
 }) {
   return (
-    <Card className="p-4 bg-white border border-[#E6DCD2] space-y-3">
+    <Card className="p-4 bg-white border border-border space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h4 className="font-semibold text-base text-[#2B1B2E]">{contact.name}</h4>
-          {contact.role && <p className="text-sm text-[#5B4A5E]">{contact.role}</p>}
-          {contact.note && <p className="text-xs text-[#7A6B7E] mt-1">{contact.note}</p>}
+          <h4 className="font-semibold text-base text-ink">{contact.name}</h4>
+          {contact.role && <p className="text-sm text-ink-muted">{contact.role}</p>}
+          {contact.note && <p className="text-xs text-ink-muted mt-1">{contact.note}</p>}
         </div>
         <div className="flex items-center gap-1 shrink-0">
           <Button variant="ghost" size="sm" onClick={() => onEdit(contact)} className="min-h-[44px]">
@@ -49,11 +49,11 @@ function ContactCard({
       </div>
 
       {contact.phone && (
-        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#E6DCD2]">
+        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
           <a
             href={`tel:${contact.phone}`}
             aria-label={`Call ${contact.name}`}
-            className="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-[12px] bg-[#F5F2EB] text-[#2B1B2E] font-medium text-sm hover:bg-[#EFE9DF] transition-colors"
+            className="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-[12px] bg-surface-warm text-ink font-medium text-sm hover:bg-[#EFE9DF] transition-colors"
           >
             {contact.phone}
           </a>
@@ -91,10 +91,10 @@ function RemoveContactDialog({
       description="Are you sure you want to remove this contact?"
     >
       <div className="space-y-4 py-2">
-        <p className="text-sm text-[#5B4A5E]">
+        <p className="text-sm text-ink-muted">
           Removing &ldquo;{contact?.name}&rdquo; from your browser storage cannot be undone.
         </p>
-        <div className="flex justify-end gap-2 pt-2 border-t border-[#E6DCD2]">
+        <div className="flex justify-end gap-2 pt-2 border-t border-border">
           <Button variant="ghost" onClick={onClose} className="min-h-[44px]">
             Cancel
           </Button>
@@ -165,7 +165,7 @@ export function ContactsPanel({ plan, eventId, className = '' }: ContactsPanelPr
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center justify-between gap-3">
-        <p className="text-xs text-[#7A6B7E]">
+        <p className="text-xs text-ink-muted">
           Contacts stay in this browser. They are never sent to the AI or to any server.
         </p>
         <Button
@@ -182,8 +182,8 @@ export function ContactsPanel({ plan, eventId, className = '' }: ContactsPanelPr
       </div>
 
       {contacts.length === 0 ? (
-        <Card className="p-6 bg-white border border-[#E6DCD2] text-center space-y-3">
-          <p className="text-base font-semibold text-[#2B1B2E]">
+        <Card className="p-6 bg-white border border-border text-center space-y-3">
+          <p className="text-base font-semibold text-ink">
             Add the people you&apos;d call on the day: caterer, photographer, venue manager
           </p>
           <Button variant="primary" onClick={() => { setEditingContact(null); setDialogOpen(true); }} className="min-h-[44px]">
@@ -194,7 +194,7 @@ export function ContactsPanel({ plan, eventId, className = '' }: ContactsPanelPr
         <div className="space-y-6">
           {groups.map((group) => (
             <div key={group.category} className="space-y-2">
-              <h3 className="text-sm font-bold text-[#5B4A5E] uppercase tracking-wider">{group.category}</h3>
+              <h3 className="text-sm font-bold text-ink-muted uppercase tracking-wider">{group.category}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {group.contacts.map((c) => (
                   <ContactCard

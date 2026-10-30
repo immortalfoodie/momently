@@ -28,11 +28,11 @@ export function TopRisks({ plan, eventId, className = '' }: TopRisksProps) {
   const top = report.risks.slice(0, 3);
 
   return (
-    <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#E6DCD2]">
+    <Card className={`p-5 bg-white border border-border space-y-4 ${className}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-border">
         <div>
-          <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">Vulnerability Analysis</h3>
-          <p className="text-xs text-[#5B4A5E] mt-0.5">
+          <h3 className="font-serif font-bold text-lg text-ink">Vulnerability Analysis</h3>
+          <p className="text-xs text-ink-muted mt-0.5">
             Stress test score: <span className="font-semibold">{report.score}/100</span> ({report.band} band)
           </p>
         </div>
@@ -44,7 +44,7 @@ export function TopRisks({ plan, eventId, className = '' }: TopRisksProps) {
       </div>
 
       {top.length === 0 ? (
-        <p className="text-sm text-[#1F6F54] font-medium flex items-center gap-1.5 py-2">
+        <p className="text-sm text-success font-medium flex items-center gap-1.5 py-2">
           <Icon name="check" size={16} aria-hidden="true" />
           No severe risk warnings detected.
         </p>
@@ -53,21 +53,21 @@ export function TopRisks({ plan, eventId, className = '' }: TopRisksProps) {
           {top.map((risk) => (
             <div
               key={risk.id}
-              className="p-3.5 rounded-lg border border-[#E6DCD2] bg-[#FAF5F0] flex flex-col justify-between gap-2.5"
+              className="p-3.5 rounded-lg border border-border bg-surface-warm flex flex-col justify-between gap-2.5"
             >
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
-                  <h4 className="font-semibold text-sm text-[#2B1B2E]">{risk.title}</h4>
+                  <h4 className="font-semibold text-sm text-ink">{risk.title}</h4>
                   <Badge tone={getRiskSeverityTone(risk.severity)}>
                     {risk.severity}
                   </Badge>
                 </div>
-                <p className="text-xs text-[#5B4A5E] leading-relaxed">{risk.explanation}</p>
+                <p className="text-xs text-ink-muted leading-relaxed">{risk.explanation}</p>
               </div>
 
-              <div className="pt-2 border-t border-[#E6DCD2]">
-                <p className="text-xs text-[#1F6F54] leading-relaxed">
-                  <strong className="text-[#2B1B2E]">Mitigation:</strong> {risk.mitigation}
+              <div className="pt-2 border-t border-border">
+                <p className="text-xs text-success leading-relaxed">
+                  <strong className="text-ink">Mitigation:</strong> {risk.mitigation}
                 </p>
               </div>
             </div>

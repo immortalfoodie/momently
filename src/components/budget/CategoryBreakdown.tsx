@@ -17,26 +17,26 @@ export function CategoryBreakdown({ plan, className = '' }: CategoryBreakdownPro
 
   if (categories.length === 0) {
     return (
-      <Card className={`p-5 bg-white border border-[#E6DCD2] ${className}`}>
-        <p className="text-sm text-[#5B4A5E]">No budget items recorded yet.</p>
+      <Card className={`p-5 bg-white border border-border ${className}`}>
+        <p className="text-sm text-ink-muted">No budget items recorded yet.</p>
       </Card>
     );
   }
 
   return (
-    <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-3 ${className}`}>
+    <Card className={`p-5 bg-white border border-border space-y-3 ${className}`}>
       <div
         tabIndex={0}
         role="region"
         aria-label="Category Breakdown"
-        className="overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B2D5C] focus-visible:ring-offset-2"
+        className="overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       >
         <table className="w-full text-left text-sm border-collapse">
-          <caption className="text-left font-serif font-bold text-base text-[#2B1B2E] mb-3">
+          <caption className="text-left font-serif font-bold text-base text-ink mb-3">
             Category Breakdown
           </caption>
           <thead>
-            <tr className="border-b border-[#E6DCD2] text-xs font-semibold uppercase tracking-wider text-[#5B4A5E]">
+            <tr className="border-b border-border text-xs font-semibold uppercase tracking-wider text-ink-muted">
               <th scope="col" className="py-2 pr-4">
                 Category
               </th>
@@ -51,42 +51,42 @@ export function CategoryBreakdown({ plan, className = '' }: CategoryBreakdownPro
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#F4EDE6]">
+          <tbody className="divide-y divide-surface-muted">
             {categories.map((cat) => (
-              <tr key={cat.category} className="hover:bg-[#FAF5F0] transition-colors">
-                <th scope="row" className="py-2.5 pr-4 font-medium text-[#2B1B2E]">
+              <tr key={cat.category} className="hover:bg-surface-warm transition-colors">
+                <th scope="row" className="py-2.5 pr-4 font-medium text-ink">
                   {cat.label}
                 </th>
                 <td className="py-2.5 px-4 align-middle">
                   <div
-                    className="h-2 w-full bg-[#F4EDE6] rounded-full overflow-hidden"
+                    className="h-2 w-full bg-surface-muted rounded-full overflow-hidden"
                     aria-hidden="true"
                   >
                     <div
-                      className="h-full bg-[#6B2D5C] rounded-full transition-all duration-300"
+                      className="h-full bg-primary rounded-full transition-all duration-300"
                       style={{
                         width: `${Math.min(100, Math.max(2, cat.sharePercent))}%`,
                       }}
                     />
                   </div>
                 </td>
-                <td className="py-2.5 px-4 text-right font-medium text-[#2B1B2E]">
+                <td className="py-2.5 px-4 text-right font-medium text-ink">
                   {formatInr(cat.total)}
                 </td>
-                <td className="py-2.5 pl-4 text-right text-xs text-[#5B4A5E]">
+                <td className="py-2.5 pl-4 text-right text-xs text-ink-muted">
                   {cat.sharePercent}%
                 </td>
               </tr>
             ))}
           </tbody>
           <tfoot>
-            <tr className="border-t-2 border-[#E6DCD2] font-semibold text-[#2B1B2E]">
+            <tr className="border-t-2 border-border font-semibold text-ink">
               <th scope="row" className="py-2.5 pr-4">
                 Total Allocated
               </th>
               <td className="py-2.5 px-4" aria-hidden="true" />
               <td className="py-2.5 px-4 text-right">{formatInr(total)}</td>
-              <td className="py-2.5 pl-4 text-right text-xs text-[#5B4A5E]">100%</td>
+              <td className="py-2.5 pl-4 text-right text-xs text-ink-muted">100%</td>
             </tr>
           </tfoot>
         </table>

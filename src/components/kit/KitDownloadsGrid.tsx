@@ -79,7 +79,7 @@ export function KitDownloadsGrid({ plan, eventId }: KitDownloadsGridProps) {
       {errorMsg && (
         <div
           role="alert"
-          className="p-3.5 rounded-[12px] bg-[#FBE9EB] border border-[#F4C5CB] text-sm text-[#A12B3A]"
+          className="p-3.5 rounded-[12px] bg-danger-bg border border-danger-border text-sm text-danger"
         >
           {errorMsg}
         </div>
@@ -89,8 +89,8 @@ export function KitDownloadsGrid({ plan, eventId }: KitDownloadsGridProps) {
         {/* 1. Printable plan */}
         <Card className="p-5 flex flex-col justify-between gap-4">
           <div className="space-y-1.5">
-            <h2 className="text-lg font-serif font-bold text-[#2B1B2E]">Printable plan</h2>
-            <p className="text-sm text-[#5B4A5E]">
+            <h2 className="text-lg font-serif font-bold text-ink">Printable plan</h2>
+            <p className="text-sm text-ink-muted">
               Clean, black-on-white summary of your budget, run of show, checklist and assumptions for printing or saving as PDF.
             </p>
           </div>
@@ -108,10 +108,10 @@ export function KitDownloadsGrid({ plan, eventId }: KitDownloadsGridProps) {
         {/* 2. Budget spreadsheet (CSV) */}
         <Card className="p-5 flex flex-col justify-between gap-4">
           <div className="space-y-1.5">
-            <h2 className="text-lg font-serif font-bold text-[#2B1B2E]">
+            <h2 className="text-lg font-serif font-bold text-ink">
               Budget spreadsheet (CSV)
             </h2>
-            <p className="text-sm text-[#5B4A5E]">
+            <p className="text-sm text-ink-muted">
               All line items with raw INR figures and price sources. Opens in Excel or Google Sheets.
             </p>
           </div>
@@ -131,8 +131,8 @@ export function KitDownloadsGrid({ plan, eventId }: KitDownloadsGridProps) {
         {/* 3. Checklist (CSV) */}
         <Card className="p-5 flex flex-col justify-between gap-4">
           <div className="space-y-1.5">
-            <h2 className="text-lg font-serif font-bold text-[#2B1B2E]">Checklist (CSV)</h2>
-            <p className="text-sm text-[#5B4A5E]">
+            <h2 className="text-lg font-serif font-bold text-ink">Checklist (CSV)</h2>
+            <p className="text-sm text-ink-muted">
               Every task ordered by due date and priority for sharing with family or coordinators.
             </p>
           </div>
@@ -152,14 +152,14 @@ export function KitDownloadsGrid({ plan, eventId }: KitDownloadsGridProps) {
         {/* 4. Calendar file (.ics) */}
         <Card className="p-5 flex flex-col justify-between gap-4">
           <div className="space-y-1.5">
-            <h2 className="text-lg font-serif font-bold text-[#2B1B2E]">Calendar file (.ics)</h2>
-            <p className="text-sm text-[#5B4A5E]">
+            <h2 className="text-lg font-serif font-bold text-ink">Calendar file (.ics)</h2>
+            <p className="text-sm text-ink-muted">
               Import every session from your run of show into Apple Calendar, Google Calendar or Outlook.
             </p>
             {icsReason ? (
-              <p className="text-xs font-medium text-[#8A5A00] pt-1">{icsReason}</p>
+              <p className="text-xs font-medium text-warning pt-1">{icsReason}</p>
             ) : (
-              <p className="text-xs text-[#5B4A5E] pt-1">
+              <p className="text-xs text-ink-muted pt-1">
                 Times appear as local times in your calendar app: they aren&apos;t tied to a time zone.
               </p>
             )}

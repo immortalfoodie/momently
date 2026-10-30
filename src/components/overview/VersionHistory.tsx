@@ -70,12 +70,12 @@ export function VersionHistory({
   };
 
   return (
-    <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#E6DCD2]">
+    <Card className={`p-5 bg-white border border-border space-y-4 ${className}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-border">
         <div>
-          <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">History & Audit Trail</h3>
-          <p className="text-xs text-[#5B4A5E] mt-0.5">
-            Active plan version: <strong className="text-[#2B1B2E]">v{plan.version}</strong> · Immutable append-only record.
+          <h3 className="font-serif font-bold text-lg text-ink">History & Audit Trail</h3>
+          <p className="text-xs text-ink-muted mt-0.5">
+            Active plan version: <strong className="text-ink">v{plan.version}</strong> · Immutable append-only record.
           </p>
         </div>
         {restoredVersionNotice && (
@@ -93,7 +93,7 @@ export function VersionHistory({
 
         {/* Tab 1: Decisions */}
         <TabPanel value="decisions">
-          <ul className="divide-y divide-[#F4EDE6]" aria-label="Past decisions">
+          <ul className="divide-y divide-surface-muted" aria-label="Past decisions">
             {visibleDecisions.map((entry) => {
               const src = getSourceBadge(entry.source);
               return (
@@ -102,10 +102,10 @@ export function VersionHistory({
                     <div className="flex flex-wrap items-center gap-2">
                       <DecisionStatusPill status={entry.status} />
                       <Badge tone={src.tone}>{src.label}</Badge>
-                      <span className="text-xs font-medium text-[#2B1B2E]">{entry.summary}</span>
+                      <span className="text-xs font-medium text-ink">{entry.summary}</span>
                     </div>
                   </div>
-                  <time dateTime={entry.timestamp} className="text-xs text-[#5B4A5E] shrink-0">
+                  <time dateTime={entry.timestamp} className="text-xs text-ink-muted shrink-0">
                     {new Date(entry.timestamp).toLocaleString('en-IN', {
                       dateStyle: 'medium',
                       timeStyle: 'short',
@@ -117,7 +117,7 @@ export function VersionHistory({
           </ul>
 
           {reversedLedger.length > 20 && !showAllDecisions && (
-            <div className="pt-3 text-center border-t border-[#F4EDE6]">
+            <div className="pt-3 text-center border-t border-surface-muted">
               <Button size="sm" variant="ghost" onClick={() => setShowAllDecisions(true)}>
                 Show all {reversedLedger.length} decisions
               </Button>
@@ -129,12 +129,12 @@ export function VersionHistory({
         <TabPanel value="versions">
           {history.length === 0 ? (
             <EmptyState
-              icon={<Icon name="sparkle" size={24} className="text-[#6B2D5C]" aria-hidden="true" />}
+              icon={<Icon name="sparkle" size={24} className="text-primary" aria-hidden="true" />}
               title="No saved versions yet"
               description="Historical snapshots are automatically captured before applying approved proposals."
             />
           ) : (
-            <ul className="divide-y divide-[#F4EDE6]" aria-label="Saved plan version history">
+            <ul className="divide-y divide-surface-muted" aria-label="Saved plan version history">
               {[...history].reverse().map((snap) => (
                 <li
                   key={snap.version}
@@ -142,10 +142,10 @@ export function VersionHistory({
                 >
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-sm text-[#2B1B2E]">Before: {snap.label}</span>
+                      <span className="font-semibold text-sm text-ink">Before: {snap.label}</span>
                       <Badge tone="neutral">v{snap.version}</Badge>
                     </div>
-                    <time dateTime={snap.savedAt} className="text-xs text-[#5B4A5E] block">
+                    <time dateTime={snap.savedAt} className="text-xs text-ink-muted block">
                       Saved {new Date(snap.savedAt).toLocaleString('en-IN', {
                         dateStyle: 'medium',
                         timeStyle: 'short',
@@ -192,13 +192,13 @@ export function VersionHistory({
         title={`Restore Version ${restoringSnapshot?.version}?`}
         description="This creates a new version with these details. Nothing is lost: you can switch back any time."
       >
-        <div className="py-2 text-xs text-[#5B4A5E]">
+        <div className="py-2 text-xs text-ink-muted">
           <p>
             Restoring replaces current settings with the snapshot taken{' '}
             <strong>{restoringSnapshot?.label}</strong>. A new version entry will be created.
           </p>
         </div>
-        <div className="flex justify-end gap-2 pt-3 border-t border-[#E6DCD2]">
+        <div className="flex justify-end gap-2 pt-3 border-t border-border">
           <Button variant="ghost" onClick={() => setRestoringSnapshot(null)}>
             Cancel
           </Button>

@@ -32,32 +32,32 @@ export function AiModeSection() {
     <section aria-labelledby="settings-ai-mode-heading" className="space-y-3">
       <h2
         id="settings-ai-mode-heading"
-        className="text-xl font-serif font-bold text-[#2B1B2E]"
+        className="text-xl font-serif font-bold text-ink"
       >
         AI mode
       </h2>
 
       <Card className="p-5 space-y-4">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-sm font-semibold text-[#2B1B2E]">
+          <span className="text-sm font-semibold text-ink">
             Current mode:
           </span>
           <Badge tone={mode === 'Live AI' ? 'success' : mode === 'Offline' ? 'warning' : 'info'}>
             {mode}
           </Badge>
-          {model && <span className="text-xs text-[#5B4A5E]">Model: {model}</span>}
+          {model && <span className="text-xs text-ink-muted">Model: {model}</span>}
         </div>
 
-        <p className="text-sm text-[#5B4A5E] leading-relaxed">
+        <p className="text-sm text-ink-muted leading-relaxed">
           {MODE_DESCRIPTIONS[mode]}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[#E6DCD2]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-border">
           <div className="space-y-1.5">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#5B4A5E]">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
               What is sent to the AI service
             </h3>
-            <ul className="list-disc list-inside text-sm text-[#2B1B2E] space-y-1">
+            <ul className="list-disc list-inside text-sm text-ink space-y-1">
               <li>
                 The text you type to the assistant and a compact summary of your plan: numbers, categories and preferences.
               </li>
@@ -65,10 +65,10 @@ export function AiModeSection() {
           </div>
 
           <div className="space-y-1.5">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#5B4A5E]">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
               What is never sent
             </h3>
-            <ul className="list-disc list-inside text-sm text-[#2B1B2E] space-y-1">
+            <ul className="list-disc list-inside text-sm text-ink space-y-1">
               <li>
                 Guest names, your contacts, vendor names and quotes.
               </li>

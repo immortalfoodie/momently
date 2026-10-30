@@ -14,10 +14,10 @@ export function HeroBanner() {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="home-hero relative isolate mb-10 overflow-hidden rounded-[24px] bg-[#2B1B2E] text-white shadow-[0_20px_55px_rgba(43,27,46,0.16)]"
+      className="home-hero relative isolate mb-10 overflow-hidden rounded-[24px] bg-ink text-white shadow-[0_20px_55px_rgba(43,27,46,0.16)]"
     >
       <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-32 h-96 w-96 rounded-full border border-white/10" />
-      <div aria-hidden="true" className="pointer-events-none absolute -right-4 -top-16 h-72 w-72 rounded-full border border-[#D4A24C]/20" />
+      <div aria-hidden="true" className="pointer-events-none absolute -right-4 -top-16 h-72 w-72 rounded-full border border-gold/20" />
 
       <div className="home-hero-layout relative grid gap-10 px-6 py-9 sm:px-10 sm:py-12">
         <div className="max-w-2xl">
@@ -42,7 +42,7 @@ export function HeroBanner() {
               href="/new"
               variant="primary"
               size="md"
-              className="border-transparent bg-[#F0C978] font-semibold text-[#2B1B2E] shadow-sm hover:bg-[#F6D995]"
+              className="border-transparent bg-[#F0C978] font-semibold text-ink shadow-sm hover:bg-[#F6D995]"
               icon={<Icon name="plus" size={18} aria-hidden="true" />}
             >
               Start your plan
@@ -66,42 +66,42 @@ export function HeroBanner() {
         </div>
 
         <div className="relative mx-auto w-full max-w-[440px] lg:mx-0 lg:ml-auto">
-          <div className="absolute -inset-3 -rotate-2 rounded-[24px] bg-[#D4A24C]/15" aria-hidden="true" />
-          <div className="relative rounded-[20px] border border-white/70 bg-[#FFFCF8] p-5 text-[#2B1B2E] shadow-[0_18px_45px_rgba(0,0,0,0.24)] sm:p-6">
+          <div className="absolute -inset-3 -rotate-2 rounded-[24px] bg-gold/15" aria-hidden="true" />
+          <div className="relative rounded-[20px] border border-white/70 bg-[#FFFCF8] p-5 text-ink shadow-[0_18px_45px_rgba(0,0,0,0.24)] sm:p-6">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#8A5A00]">Your planning companion</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-warning">Your planning companion</p>
                 <h2 className="mt-1 font-serif text-xl font-bold sm:text-2xl">Every detail, in sync</h2>
               </div>
-              <span className="rounded-full bg-[#E7F4EE] px-2.5 py-1 text-[11px] font-semibold text-[#1F6F54]">All connected</span>
+              <span className="rounded-full bg-success-bg px-2.5 py-1 text-[11px] font-semibold text-success">All connected</span>
             </div>
 
-            <div className="mt-5 rounded-[14px] bg-[#F4EDE6] p-4">
+            <div className="mt-5 rounded-[14px] bg-surface-muted p-4">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-semibold">Budget with a clear cap</span>
-                <Icon name="wallet" size={17} className="text-[#6B2D5C]" aria-hidden="true" />
+                <Icon name="wallet" size={17} className="text-primary" aria-hidden="true" />
               </div>
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
-                <div className="h-full w-[68%] rounded-full bg-[#6B2D5C]" />
+                <div className="h-full w-[68%] rounded-full bg-primary" />
               </div>
-              <p className="mt-2 text-xs text-[#5B4A5E]">Trade-offs stay visible before you commit</p>
+              <p className="mt-2 text-xs text-ink-muted">Trade-offs stay visible before you commit</p>
             </div>
 
             <div className="mt-3 grid grid-cols-2 gap-3">
-              <div className="rounded-[14px] border border-[#E6DCD2] p-3.5">
-                <Icon name="calendar" size={17} className="text-[#6B2D5C]" aria-hidden="true" />
+              <div className="rounded-[14px] border border-border p-3.5">
+                <Icon name="calendar" size={17} className="text-primary" aria-hidden="true" />
                 <p className="mt-2 text-sm font-semibold">A timeline that flows</p>
-                <p className="mt-0.5 text-xs text-[#5B4A5E]">Buffers built in</p>
+                <p className="mt-0.5 text-xs text-ink-muted">Buffers built in</p>
               </div>
-              <div className="rounded-[14px] border border-[#E6DCD2] p-3.5">
-                <Icon name="storm" size={17} className="text-[#6B2D5C]" aria-hidden="true" />
+              <div className="rounded-[14px] border border-border p-3.5">
+                <Icon name="storm" size={17} className="text-primary" aria-hidden="true" />
                 <p className="mt-2 text-sm font-semibold">Ready for real life</p>
-                <p className="mt-0.5 text-xs text-[#5B4A5E]">Backups for what if</p>
+                <p className="mt-0.5 text-xs text-ink-muted">Backups for what if</p>
               </div>
             </div>
 
-            <div className="mt-4 flex items-center gap-2 border-t border-[#E6DCD2] pt-3 text-xs font-medium text-[#5B4A5E]">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#E7F4EE] text-[#1F6F54]">
+            <div className="mt-4 flex items-center gap-2 border-t border-border pt-3 text-xs font-medium text-ink-muted">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-success-bg text-success">
                 <Icon name="check" size={12} aria-hidden="true" />
               </span>
               You review every change before it becomes part of the plan

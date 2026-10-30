@@ -70,10 +70,10 @@ export function DelayPlanner({
   const recommendedIndex = getRecommendedIndex(options);
 
   return (
-    <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
+    <Card className={`p-5 bg-white border border-border space-y-4 ${className}`}>
       <div className="space-y-1">
-        <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">Something running late?</h3>
-        <p className="text-xs text-[#5B4A5E]">
+        <h3 className="font-serif font-bold text-lg text-ink">Something running late?</h3>
+        <p className="text-xs text-ink-muted">
           Momently suggests; you decide. It never contacts vendors or guests: you do that yourself.
         </p>
       </div>
@@ -108,7 +108,7 @@ export function DelayPlanner({
         </Field>
       </div>
 
-      <div className="flex justify-end pt-2 border-t border-[#E6DCD2]">
+      <div className="flex justify-end pt-2 border-t border-border">
         <Button variant="primary" onClick={handleShowOptions}>
           Show my options
         </Button>
@@ -121,8 +121,8 @@ export function DelayPlanner({
       )}
 
       {options && options.length > 0 && (
-        <div className="space-y-4 pt-3 border-t border-[#E6DCD2]">
-          <h4 className="text-sm font-semibold text-[#2B1B2E]">
+        <div className="space-y-4 pt-3 border-t border-border">
+          <h4 className="text-sm font-semibold text-ink">
             Suggested Recovery Strategies ({options.length})
           </h4>
           <div className="space-y-4">

@@ -15,17 +15,17 @@ interface ProvenanceConfig {
 const CONFIG: Record<Provenance, ProvenanceConfig> = {
   user: {
     label: 'Your input',
-    toneClass: 'bg-[#F4EDE6] text-[#6B2D5C] border-[#E2D2DC]',
+    toneClass: 'bg-surface-muted text-primary border-[#E2D2DC]',
     iconName: 'users',
   },
   estimate: {
     label: 'Estimate',
-    toneClass: 'bg-[#FFF4DC] text-[#8A5A00] border-[#FFE2A8]',
+    toneClass: 'bg-warning-bg text-warning border-warning-border',
     iconName: 'sparkle',
   },
   verified: {
     label: 'Verified quote',
-    toneClass: 'bg-[#E7F4EE] text-[#1F6F54] border-[#C3E6D7]',
+    toneClass: 'bg-success-bg text-success border-success-border',
     iconName: 'check',
   },
 };

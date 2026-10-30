@@ -61,7 +61,7 @@ export function TaskRow({
   };
 
   return (
-    <Card className={`p-4 bg-white border border-[#E6DCD2] hover:border-[#6B2D5C]/30 transition-colors ${className}`}>
+    <Card className={`p-4 bg-white border border-border hover:border-primary/30 transition-colors ${className}`}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-start sm:items-center gap-3">
           {/* Status selector */}
@@ -70,7 +70,7 @@ export function TaskRow({
               aria-label={`Status for ${task.title}`}
               value={task.status}
               onChange={(e) => handleStatusChange(e.target.value as Task['status'])}
-              className="text-xs font-semibold px-2.5 py-1.5 rounded-[8px] border border-[#E6DCD2] bg-white text-[#2B1B2E] cursor-pointer hover:border-[#6B2D5C] focus:outline-none"
+              className="text-xs font-semibold px-2.5 py-1.5 rounded-[8px] border border-border bg-white text-ink cursor-pointer hover:border-primary focus:outline-none"
             >
               <option value="todo">To do</option>
               <option value="doing">In progress</option>
@@ -82,13 +82,13 @@ export function TaskRow({
             <div className="flex flex-wrap items-center gap-2">
               {isDone ? (
                 <>
-                  <span className="line-through text-[#5B4A5E] font-medium text-sm">{task.title}</span>
+                  <span className="line-through text-ink-muted font-medium text-sm">{task.title}</span>
                   <Badge tone="success" className="text-[10px]">
                     Done
                   </Badge>
                 </>
               ) : (
-                <span className="font-semibold text-sm text-[#2B1B2E]">{task.title}</span>
+                <span className="font-semibold text-sm text-ink">{task.title}</span>
               )}
               <Badge tone={priorityTone(task.priority)} className="capitalize text-[10px]">
                 {task.priority}
@@ -98,7 +98,7 @@ export function TaskRow({
               </Badge>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 text-xs text-[#5B4A5E]">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-ink-muted">
               <span>{dueText}</span>
               {overdue && (
                 <Badge tone="danger" className="text-[10px]">

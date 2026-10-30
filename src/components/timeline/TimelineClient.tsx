@@ -36,14 +36,14 @@ function TimelineScheduleSections({ plan, eventId }: { plan: EventPlan; eventId:
   return (
     <>
       <section aria-labelledby="delay-heading" data-print-hide className="space-y-2 no-print">
-        <h2 id="delay-heading" className="text-base font-semibold text-[#2B1B2E]">
+        <h2 id="delay-heading" className="text-base font-semibold text-ink">
           Something running late?
         </h2>
         <DelayPlanner plan={plan} eventId={eventId} />
       </section>
 
       <section aria-labelledby="adjust-heading" data-print-hide className="space-y-2 no-print">
-        <h2 id="adjust-heading" className="text-base font-semibold text-[#2B1B2E]">
+        <h2 id="adjust-heading" className="text-base font-semibold text-ink">
           Move or adjust
         </h2>
         <ShiftSchedule plan={plan} eventId={eventId} />
@@ -79,7 +79,7 @@ function RunOfShowSection({
   return (
     <section aria-labelledby="run-of-show-heading" className="space-y-3">
       <div className="flex items-center justify-between no-print" data-print-hide>
-        <h2 id="run-of-show-heading" className="text-base font-semibold text-[#2B1B2E]">
+        <h2 id="run-of-show-heading" className="text-base font-semibold text-ink">
           Run of show
         </h2>
       </div>
@@ -147,7 +147,7 @@ export function TimelineClient({ eventId: propEventId }: TimelineClientProps) {
       </div>
 
       <section aria-labelledby="countdown-heading" data-print-hide className="space-y-2 no-print">
-        <h2 id="countdown-heading" className="text-base font-semibold text-[#2B1B2E]">
+        <h2 id="countdown-heading" className="text-base font-semibold text-ink">
           Countdown
         </h2>
         <PrepCountdown plan={plan} eventId={eventId} />

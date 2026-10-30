@@ -58,14 +58,14 @@ export function InsightsList({ plan, eventId, className = '' }: InsightsListProp
         return (
           <Card
             key={insight.id}
-            className="p-4 sm:p-5 bg-white border border-[#E6DCD2] flex flex-col sm:flex-row sm:items-start justify-between gap-4"
+            className="p-4 sm:p-5 bg-white border border-border flex flex-col sm:flex-row sm:items-start justify-between gap-4"
           >
             <div className="space-y-1.5 flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <Badge tone={tone}>{insight.severity}</Badge>
-                <h3 className="text-base font-semibold text-[#2B1B2E]">{insight.title}</h3>
+                <h3 className="text-base font-semibold text-ink">{insight.title}</h3>
               </div>
-              <p className="text-sm text-[#5B4A5E] leading-relaxed">{insight.detail}</p>
+              <p className="text-sm text-ink-muted leading-relaxed">{insight.detail}</p>
             </div>
 
             {insight.task && (

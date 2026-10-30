@@ -106,12 +106,12 @@ export function KeepScreenOn({ className = '' }: KeepScreenOnProps) {
 
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <label className="min-h-[44px] inline-flex items-center gap-2.5 cursor-pointer text-sm font-medium text-[#2B1B2E]">
+      <label className="min-h-[44px] inline-flex items-center gap-2.5 cursor-pointer text-sm font-medium text-ink">
         <input
           type="checkbox"
           checked={active}
           onChange={handleToggle}
-          className="w-5 h-5 rounded border-[#E6DCD2] text-[#2B1B2E] focus:ring-1 focus:ring-[#2B1B2E]"
+          className="w-5 h-5 rounded border-border text-ink focus:ring-1 focus:ring-ink"
         />
         <span>Keep screen on</span>
       </label>

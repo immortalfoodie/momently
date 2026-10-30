@@ -24,21 +24,21 @@ const STAGE_CONFIG = {
 };
 
 function getMeterColor(total: number, cap: number, percent: number): string {
-  if (total > cap) return 'bg-[#A12B3A]';
-  if (percent >= 90) return 'bg-[#8A5A00]';
-  return 'bg-[#1F6F54]';
+  if (total > cap) return 'bg-danger';
+  if (percent >= 90) return 'bg-warning';
+  return 'bg-success';
 }
 
 function BudgetSummary({ total, cap }: { total: number; cap: number | null }) {
   const percent = cap && cap > 0 ? Math.min(100, Math.round((total / cap) * 100)) : null;
 
   return (
-    <div className="mt-5 pt-3.5 border-t border-[#E6DCD2]/70">
+    <div className="mt-5 pt-3.5 border-t border-border/70">
       <div className="flex items-center justify-between text-xs mb-1.5">
-        <span className="text-[#5B4A5E] font-medium">Estimated budget</span>
-        <span className="font-bold text-[#2B1B2E]">
+        <span className="text-ink-muted font-medium">Estimated budget</span>
+        <span className="font-bold text-ink">
           {formatInr(total)}
-          {cap ? <span className="font-normal text-[#5B4A5E]"> / {formatInr(cap)}</span> : null}
+          {cap ? <span className="font-normal text-ink-muted"> / {formatInr(cap)}</span> : null}
         </span>
       </div>
 
@@ -49,7 +49,7 @@ function BudgetSummary({ total, cap }: { total: number; cap: number | null }) {
           aria-valuemin={0}
           aria-valuemax={cap}
           aria-label="Budget consumption"
-          className="w-full h-2 rounded-full bg-[#F4EDE6] overflow-hidden"
+          className="w-full h-2 rounded-full bg-surface-muted overflow-hidden"
         >
           <div
             style={{ width: `${percent}%` }}
@@ -90,7 +90,7 @@ export function EventCard({
 
   return (
     <article
-      className={`relative bg-white rounded-[16px] border border-[#E6DCD2] p-5 shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between ${className}`}
+      className={`relative bg-white rounded-[16px] border border-border p-5 shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between ${className}`}
     >
       <div>
         <div className="relative mb-4 overflow-hidden rounded-[12px]">
@@ -101,10 +101,10 @@ export function EventCard({
         </div>
 
         <div className="flex items-start justify-between gap-2">
-          <HeadingTag className="font-serif text-lg font-bold text-[#2B1B2E] leading-snug">
+          <HeadingTag className="font-serif text-lg font-bold text-ink leading-snug">
             <Link
               href={`/events/${plan.id}`}
-              className="focus-visible:outline-hidden after:absolute after:inset-0 text-inherit no-underline hover:text-[#6B2D5C]"
+              className="focus-visible:outline-hidden after:absolute after:inset-0 text-inherit no-underline hover:text-primary"
             >
               {plan.meta.title}
             </Link>
@@ -113,7 +113,7 @@ export function EventCard({
           {action ? <div className="relative z-10 shrink-0">{action}</div> : null}
         </div>
 
-        <div className="mt-2.5 flex flex-wrap items-center gap-y-1 gap-x-3 text-xs text-[#5B4A5E]">
+        <div className="mt-2.5 flex flex-wrap items-center gap-y-1 gap-x-3 text-xs text-ink-muted">
           <span className="inline-flex items-center gap-1">
             <Icon name="calendar" size={13} aria-hidden="true" />
             <span>{formatIsoDate(plan.meta.dateIso)}</span>

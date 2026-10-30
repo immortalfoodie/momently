@@ -27,11 +27,11 @@ export function BudgetSummary({
   const isHard = capConstraint?.severity === 'hard';
 
   return (
-    <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
+    <Card className={`p-5 bg-white border border-border space-y-4 ${className}`}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-xl font-serif font-bold text-[#2B1B2E]">
+            <h3 className="text-xl font-serif font-bold text-ink">
               {formatInr(status.total)}
             </h3>
             {status.cap !== null ? (
@@ -44,16 +44,16 @@ export function BudgetSummary({
               </Badge>
             )}
           </div>
-          <p className="text-xs text-[#5B4A5E] mt-0.5">
+          <p className="text-xs text-ink-muted mt-0.5">
             {status.cap !== null ? (
               <>
                 Budget cap: {formatInr(status.cap)} ·{' '}
                 {status.overCap ? (
-                  <span className="text-[#A12B3A] font-semibold">
+                  <span className="text-danger font-semibold">
                     Over by {formatInr(status.total - status.cap)}
                   </span>
                 ) : (
-                  <span className="text-[#1F6F54] font-semibold">
+                  <span className="text-success font-semibold">
                     {formatInr(status.remaining)} remaining
                   </span>
                 )}

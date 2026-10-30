@@ -85,15 +85,15 @@ export function VendorNeedCard({ plan, need, eventId, className = '' }: VendorNe
 
   return (
     <section aria-labelledby={`vendor-need-${need.id}-heading`} className={`space-y-4 ${className}`}>
-      <Card className="p-4 sm:p-6 bg-white border border-[#E6DCD2] space-y-6">
+      <Card className="p-4 sm:p-6 bg-white border border-border space-y-6">
         {/* Header & Status */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#E6DCD2]">
-          <h2 id={`vendor-need-${need.id}-heading`} className="text-xl font-serif font-bold text-[#2B1B2E]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border">
+          <h2 id={`vendor-need-${need.id}-heading`} className="text-xl font-serif font-bold text-ink">
             {categoryTitle}
           </h2>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-[#7A6B7E]">Status:</span>
+            <span className="text-xs font-semibold text-ink-muted">Status:</span>
             <Select
               value={need.status}
               onChange={(e) => handleStatusChange(e.target.value as VendorNeedStatus)}
@@ -112,13 +112,13 @@ export function VendorNeedCard({ plan, need, eventId, className = '' }: VendorNe
         {/* Requirements and Screening Questions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#7A6B7E]">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
               What to compare
             </h3>
             <ul className="space-y-1.5">
               {need.requirements.map((req) => (
-                <li key={req} className="text-sm text-[#2B1B2E] flex items-start gap-2">
-                  <Icon name="check" size={16} className="text-[#1F6F54] shrink-0 mt-0.5" aria-hidden="true" />
+                <li key={req} className="text-sm text-ink flex items-start gap-2">
+                  <Icon name="check" size={16} className="text-success shrink-0 mt-0.5" aria-hidden="true" />
                   <span>{req}</span>
                 </li>
               ))}
@@ -126,13 +126,13 @@ export function VendorNeedCard({ plan, need, eventId, className = '' }: VendorNe
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#7A6B7E]">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
               Ask before you pay
             </h3>
-            <ol className="space-y-1.5 list-decimal list-inside text-sm text-[#5B4A5E]">
+            <ol className="space-y-1.5 list-decimal list-inside text-sm text-ink-muted">
               {need.questionsToAsk.map((q) => (
                 <li key={q} className="leading-relaxed">
-                  <span className="text-[#2B1B2E]">{q}</span>
+                  <span className="text-ink">{q}</span>
                 </li>
               ))}
             </ol>

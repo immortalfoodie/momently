@@ -117,7 +117,7 @@ export function EditDetailsDialog({
               id="edit-details-type"
               value={plan.meta.type}
               disabled
-              className="bg-[#F4EDE6] cursor-not-allowed capitalize text-[#5B4A5E]"
+              className="bg-surface-muted cursor-not-allowed capitalize text-ink-muted"
             />
           </Field>
 
@@ -147,7 +147,7 @@ export function EditDetailsDialog({
                 setDateIso(e.target.value);
                 if (errors.dateIso) setErrors((prev) => ({ ...prev, dateIso: undefined }));
               }}
-              className="w-full min-h-[44px] px-3.5 py-2 rounded-[12px] border border-[#E6DCD2] bg-white text-[#2B1B2E] text-base transition-colors hover:border-[#6B2D5C]/40 focus:border-[#6B2D5C]"
+              className="w-full min-h-[44px] px-3.5 py-2 rounded-[12px] border border-border bg-white text-ink text-base transition-colors hover:border-primary/40 focus:border-primary"
             />
           </Field>
 
@@ -176,7 +176,7 @@ export function EditDetailsDialog({
           </Select>
         </Field>
 
-        <div className="flex justify-end gap-2 pt-3 border-t border-[#E6DCD2]">
+        <div className="flex justify-end gap-2 pt-3 border-t border-border">
           <Button variant="ghost" type="button" onClick={onClose}>
             Cancel
           </Button>

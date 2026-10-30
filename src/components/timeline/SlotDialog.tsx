@@ -107,8 +107,8 @@ function RemoveSlotConfirmDialog({
         {isEssential && (
           <Alert tone="warning">Warning: This is an Essential session. Removing it may impact key celebration moments.</Alert>
         )}
-        <p className="text-sm text-[#5B4A5E]">Removing &ldquo;{title}&rdquo; cannot be undone without restoring a saved version.</p>
-        <div className="flex justify-end gap-2 pt-2 border-t border-[#E6DCD2]">
+        <p className="text-sm text-ink-muted">Removing &ldquo;{title}&rdquo; cannot be undone without restoring a saved version.</p>
+        <div className="flex justify-end gap-2 pt-2 border-t border-border">
           <Button variant="ghost" onClick={onClose}>Cancel</Button>
           <Button variant="danger" onClick={onConfirm}>Confirm Remove</Button>
         </div>
@@ -190,7 +190,7 @@ export function SlotDialog({ open, onClose, slot, eventId }: SlotDialogProps) {
                 type="time"
                 value={timeStr}
                 onChange={(e) => setTimeStr(e.target.value)}
-                className="w-full min-h-[44px] px-3.5 py-2 rounded-[12px] border border-[#E6DCD2] bg-white text-[#2B1B2E] text-base"
+                className="w-full min-h-[44px] px-3.5 py-2 rounded-[12px] border border-border bg-white text-ink text-base"
               />
             </Field>
             <Field label="Duration (mins)" required>
@@ -205,8 +205,8 @@ export function SlotDialog({ open, onClose, slot, eventId }: SlotDialogProps) {
             </Select>
           </Field>
           <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-medium text-[#2B1B2E]">
-              <input type="checkbox" checked={flexible} onChange={(e) => setFlexible(e.target.checked)} className="rounded border-[#E6DCD2]" />
+            <label className="flex items-center gap-2 text-sm font-medium text-ink">
+              <input type="checkbox" checked={flexible} onChange={(e) => setFlexible(e.target.checked)} className="rounded border-border" />
               <span>Can flex (can be shortened or moved during delays)</span>
             </label>
             {flexible && (
@@ -218,7 +218,7 @@ export function SlotDialog({ open, onClose, slot, eventId }: SlotDialogProps) {
           <Field label="Notes (optional)">
             <TextInput value={note} onChange={(e) => setNote(e.target.value)} placeholder="e.g. Photographer needed on stage" />
           </Field>
-          <div className="flex items-center justify-between pt-3 border-t border-[#E6DCD2]">
+          <div className="flex items-center justify-between pt-3 border-t border-border">
             {isEditing ? (
               <Button variant="danger" size="sm" onClick={() => setConfirmRemoveOpen(true)}>Remove</Button>
             ) : <div />}

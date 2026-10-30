@@ -20,28 +20,28 @@ export function Header({ onToggleMobileNav }: HeaderProps) {
   const liveDescription = model ? `Connected to live AI (${model})` : 'Connected to live AI provider';
 
   return (
-    <header className="sticky top-0 z-30 h-[var(--header-h)] bg-white border-b border-[#E6DCD2] px-4 sm:px-6 flex items-center justify-between shadow-2xs">
+    <header className="sticky top-0 z-30 h-[var(--header-h)] bg-white border-b border-border px-4 sm:px-6 flex items-center justify-between shadow-2xs">
       <div className="flex items-center gap-3">
         {onToggleMobileNav ? (
           <button
             type="button"
             onClick={onToggleMobileNav}
             aria-label="Open navigation menu"
-            className="lg:hidden p-2 rounded-[8px] text-[#2B1B2E] hover:bg-[#F4EDE6] cursor-pointer"
+            className="lg:hidden p-2 rounded-[8px] text-ink hover:bg-surface-muted cursor-pointer"
           >
             <Icon name="menu" size={22} aria-hidden="true" />
           </button>
         ) : null}
 
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#6B2D5C] text-[#D4A24C] flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-full bg-primary text-gold flex items-center justify-center shrink-0">
             <Icon name="sparkle" size={18} aria-hidden="true" />
           </div>
           <div>
-            <span className="font-serif text-xl font-bold tracking-tight text-[#2B1B2E]">
+            <span className="font-serif text-xl font-bold tracking-tight text-ink">
               Momently
             </span>
-            <span className="hidden sm:inline-block ml-2 text-xs text-[#5B4A5E] font-medium tracking-wide">
+            <span className="hidden sm:inline-block ml-2 text-xs text-ink-muted font-medium tracking-wide">
               Plan. Celebrate. Cherish.
             </span>
           </div>
@@ -81,7 +81,7 @@ export function Header({ onToggleMobileNav }: HeaderProps) {
         <div
           role="img"
           aria-label="Host Profile"
-          className="w-8 h-8 rounded-full bg-[#F4EDE6] border border-[#E6DCD2] text-[#6B2D5C] flex items-center justify-center text-xs font-bold font-serif"
+          className="w-8 h-8 rounded-full bg-surface-muted border border-border text-primary flex items-center justify-center text-xs font-bold font-serif"
         >
           H
         </div>

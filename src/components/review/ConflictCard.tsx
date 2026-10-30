@@ -71,7 +71,7 @@ export function ConflictCard({
   const isBlocking = conflict.severity === 'blocking';
 
   return (
-    <Card className={`p-4 border-[#E6DCD2] bg-white space-y-3 ${className}`}>
+    <Card className={`p-4 border-border bg-white space-y-3 ${className}`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <Badge
           tone={isBlocking ? 'danger' : 'warning'}
@@ -82,7 +82,7 @@ export function ConflictCard({
         </Badge>
       </div>
 
-      <p className="text-sm text-[#2B1B2E]">{conflict.message}</p>
+      <p className="text-sm text-ink">{conflict.message}</p>
 
       {conflict.options.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 pt-1">

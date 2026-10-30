@@ -29,12 +29,12 @@ function ChatPanelInner({ onClose }: { onClose?: () => void }) {
 
   return (
     <div className="flex flex-col h-full min-h-0 bg-white">
-      <div className="p-3.5 border-b border-[#E6DCD2] flex items-center justify-between gap-2 shrink-0">
+      <div className="p-3.5 border-b border-border flex items-center justify-between gap-2 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="w-6 h-6 rounded-full bg-[#F4EDE6] text-[#6B2D5C] flex items-center justify-center shrink-0">
+          <div className="w-6 h-6 rounded-full bg-surface-muted text-primary flex items-center justify-center shrink-0">
             <Icon name="sparkle" size={14} aria-hidden="true" />
           </div>
-          <h2 className="font-serif text-base font-bold text-[#2B1B2E] truncate">
+          <h2 className="font-serif text-base font-bold text-ink truncate">
             Assistant
           </h2>
           {healthMode === 'live' ? (
@@ -56,7 +56,7 @@ function ChatPanelInner({ onClose }: { onClose?: () => void }) {
               size="sm"
               onClick={() => setConfirmClearOpen(true)}
               aria-label="Clear conversation"
-              className="text-xs text-[#2B1B2E]"
+              className="text-xs text-ink"
             >
               Clear
             </Button>
@@ -69,7 +69,7 @@ function ChatPanelInner({ onClose }: { onClose?: () => void }) {
               onClick={onClose}
               aria-label="Close AI assistant"
               title="Close assistant"
-              className="px-2 text-[#5B4A5E]"
+              className="px-2 text-ink-muted"
               icon={<Icon name="close" size={17} aria-hidden="true" />}
             >
               <span className="sr-only">Close</span>
@@ -81,7 +81,7 @@ function ChatPanelInner({ onClose }: { onClose?: () => void }) {
       <MessageList />
 
       {!welcomeVisible && mode === 'event' && (
-        <div className="px-3.5 py-2 border-t border-[#E6DCD2] bg-[#FAF5F0] shrink-0">
+        <div className="px-3.5 py-2 border-t border-border bg-surface-warm shrink-0">
           <SuggestedPrompts />
         </div>
       )}

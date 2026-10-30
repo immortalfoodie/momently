@@ -35,7 +35,7 @@ function renderMessageContent(text: string) {
         {before}
         <Link
           href={href!}
-          className="text-[#6B2D5C] font-semibold underline hover:text-[#55224A] cursor-pointer"
+          className="text-primary font-semibold underline hover:text-primary-hover cursor-pointer"
         >
           {label}
         </Link>
@@ -58,7 +58,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   if (message.role === 'user') {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[85%] rounded-2xl rounded-br-xs bg-[#6B2D5C] text-white px-3.5 py-2.5 text-sm leading-relaxed shadow-2xs">
+        <div className="max-w-[85%] rounded-2xl rounded-br-xs bg-primary text-white px-3.5 py-2.5 text-sm leading-relaxed shadow-2xs">
           <span className="sr-only">You said: </span>
           <p className="whitespace-pre-wrap break-words">{message.text}</p>
         </div>
@@ -72,11 +72,11 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
   return (
     <div className="flex justify-start">
-      <div className="w-full rounded-2xl rounded-bl-xs border border-[#E6DCD2] bg-white p-3.5 text-sm text-[#2B1B2E] space-y-2.5 shadow-2xs">
+      <div className="w-full rounded-2xl rounded-bl-xs border border-border bg-white p-3.5 text-sm text-ink space-y-2.5 shadow-2xs">
         <span className="sr-only">Momently said: </span>
 
         {showSeparateSummaryText && (
-          <p className="text-sm text-[#2B1B2E] leading-relaxed whitespace-pre-wrap break-words">
+          <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap break-words">
             {renderMessageContent(message.text)}
           </p>
         )}
@@ -96,7 +96,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         )}
 
         {showReloadExpiredNote && (
-          <p className="text-xs italic text-[#5B4A5E] border-t border-[#E6DCD2] pt-2">
+          <p className="text-xs italic text-ink-muted border-t border-border pt-2">
             Suggestions expire when you reload: ask again to see them
           </p>
         )}

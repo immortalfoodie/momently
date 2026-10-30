@@ -25,11 +25,11 @@ export function ForgottenTeaser({
   if (reminders.length === 0) return null;
 
   return (
-    <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#E6DCD2]">
+    <Card className={`p-5 bg-white border border-border space-y-4 ${className}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-border">
         <div>
-          <h3 className="font-serif font-bold text-lg text-[#2B1B2E]">Hidden Gotchas & Overlooked Costs</h3>
-          <p className="text-xs text-[#5B4A5E] mt-0.5">Top reminders commonly missing from initial budgets.</p>
+          <h3 className="font-serif font-bold text-lg text-ink">Hidden Gotchas & Overlooked Costs</h3>
+          <p className="text-xs text-ink-muted mt-0.5">Top reminders commonly missing from initial budgets.</p>
         </div>
         <Link href={`/events/${eventId}/budget`}>
           <Button variant="secondary" size="sm" icon={<Icon name="wallet" size={14} aria-hidden="true" />}>
@@ -42,16 +42,16 @@ export function ForgottenTeaser({
         {reminders.map((rem) => (
           <div
             key={rem.id}
-            className="p-3.5 rounded-lg border border-[#E6DCD2] bg-[#FAF5F0] flex flex-col justify-between gap-2"
+            className="p-3.5 rounded-lg border border-border bg-surface-warm flex flex-col justify-between gap-2"
           >
             <div>
               <div className="flex items-start gap-1.5">
-                <Icon name="alert" size={14} className="text-[#8A5A00] shrink-0 mt-0.5" aria-hidden="true" />
-                <h4 className="font-semibold text-sm text-[#2B1B2E]">{rem.title}</h4>
+                <Icon name="alert" size={14} className="text-warning shrink-0 mt-0.5" aria-hidden="true" />
+                <h4 className="font-semibold text-sm text-ink">{rem.title}</h4>
               </div>
-              <p className="text-xs text-[#5B4A5E] mt-1 pl-5 leading-relaxed">{rem.why}</p>
+              <p className="text-xs text-ink-muted mt-1 pl-5 leading-relaxed">{rem.why}</p>
             </div>
-            <p className="text-xs font-medium text-[#8A5A00] pl-5 italic">Reminder: unpriced</p>
+            <p className="text-xs font-medium text-warning pl-5 italic">Reminder: unpriced</p>
           </div>
         ))}
       </div>

@@ -30,29 +30,29 @@ function HappeningNowCard({
   const endTime = formatMinuteOfDay(slot.startMinute + slot.durationMinutes);
 
   return (
-    <Card className="p-5 bg-white border-2 border-[#2B1B2E] space-y-3">
+    <Card className="p-5 bg-white border-2 border-ink space-y-3">
       <div className="flex items-center justify-between gap-2">
         <Badge tone="success">Happening now</Badge>
-        <span className="text-sm font-semibold text-[#5B4A5E]">
+        <span className="text-sm font-semibold text-ink-muted">
           Ends at {endTime} {minutesLeft !== undefined && `(${minutesLeft}m left)`}
         </span>
       </div>
       <div>
-        <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#2B1B2E]">
+        <h3 className="text-xl sm:text-2xl font-serif font-bold text-ink">
           {slot.title}
         </h3>
-        {slot.note && <p className="text-sm text-[#5B4A5E] mt-1">{slot.note}</p>}
+        {slot.note && <p className="text-sm text-ink-muted mt-1">{slot.note}</p>}
       </div>
       {concurrent.length > 0 && (
-        <div className="pt-2 border-t border-[#E6DCD2] space-y-1">
-          <p className="text-xs font-semibold text-[#7A6B7E] uppercase tracking-wider">
+        <div className="pt-2 border-t border-border space-y-1">
+          <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
             Also happening:
           </p>
           <ul className="space-y-1">
             {concurrent.map((c) => (
-              <li key={c.id} className="text-sm text-[#2B1B2E] flex items-center justify-between">
+              <li key={c.id} className="text-sm text-ink flex items-center justify-between">
                 <span>{c.title}</span>
-                <span className="text-xs text-[#7A6B7E]">
+                <span className="text-xs text-ink-muted">
                   until {formatMinuteOfDay(c.startMinute + c.durationMinutes)}
                 </span>
               </li>
@@ -74,15 +74,15 @@ function UpNextCard({
   const startTime = formatMinuteOfDay(slot.startMinute);
 
   return (
-    <Card className="p-4 bg-[#F5F2EB] border border-[#E6DCD2] space-y-2">
+    <Card className="p-4 bg-surface-warm border border-border space-y-2">
       <div className="flex items-center justify-between gap-2">
         <Badge tone="neutral">Up next</Badge>
-        <span className="text-xs font-semibold text-[#5B4A5E]">
+        <span className="text-xs font-semibold text-ink-muted">
           Starts at {startTime} {minutesUntil !== undefined && `(in ${minutesUntil}m)`}
         </span>
       </div>
-      <h3 className="text-lg font-serif font-bold text-[#2B1B2E]">{slot.title}</h3>
-      {slot.note && <p className="text-xs text-[#5B4A5E]">{slot.note}</p>}
+      <h3 className="text-lg font-serif font-bold text-ink">{slot.title}</h3>
+      {slot.note && <p className="text-xs text-ink-muted">{slot.note}</p>}
     </Card>
   );
 }
@@ -91,12 +91,12 @@ function LaterList({ slots }: { slots: ScheduleSlot[] }) {
   if (slots.length === 0) return null;
   return (
     <div className="space-y-2 pt-2">
-      <p className="text-xs font-semibold text-[#7A6B7E] uppercase tracking-wider">Later today</p>
+      <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider">Later today</p>
       <ul className="space-y-1.5">
         {slots.map((s) => (
-          <li key={s.id} className="p-2.5 rounded-[12px] bg-white border border-[#E6DCD2] flex items-center justify-between text-sm">
-            <span className="font-medium text-[#2B1B2E]">{s.title}</span>
-            <span className="text-xs text-[#7A6B7E]">{formatMinuteOfDay(s.startMinute)}</span>
+          <li key={s.id} className="p-2.5 rounded-[12px] bg-white border border-border flex items-center justify-between text-sm">
+            <span className="font-medium text-ink">{s.title}</span>
+            <span className="text-xs text-ink-muted">{formatMinuteOfDay(s.startMinute)}</span>
           </li>
         ))}
       </ul>
@@ -125,8 +125,8 @@ function useDayStatusAnnouncer(report: DayStatusReport) {
 function PhaseBanner({ report, eventId }: { report: DayStatusReport; eventId: string }) {
   if (report.phase === 'before' && report.next) {
     return (
-      <Card className="p-4 bg-[#F5F2EB] border border-[#E6DCD2]">
-        <p className="text-base font-semibold text-[#2B1B2E]">
+      <Card className="p-4 bg-surface-warm border border-border">
+        <p className="text-base font-semibold text-ink">
           Doors open at {formatMinuteOfDay(report.next.startMinute)}, first session: &ldquo;{report.next.title}&rdquo;
         </p>
       </Card>
@@ -135,8 +135,8 @@ function PhaseBanner({ report, eventId }: { report: DayStatusReport; eventId: st
 
   if (report.phase === 'between' && report.next) {
     return (
-      <Card className="p-4 bg-[#F5F2EB] border border-[#E6DCD2]">
-        <p className="text-base font-semibold text-[#2B1B2E]">
+      <Card className="p-4 bg-surface-warm border border-border">
+        <p className="text-base font-semibold text-ink">
           Nothing is scheduled right now. Next up: &ldquo;{report.next.title}&rdquo; at {formatMinuteOfDay(report.next.startMinute)}
         </p>
       </Card>
@@ -145,15 +145,15 @@ function PhaseBanner({ report, eventId }: { report: DayStatusReport; eventId: st
 
   if (report.phase === 'after') {
     return (
-      <Card className="p-5 bg-white border border-[#E6DCD2] space-y-2 text-center">
-        <p className="text-lg font-serif font-bold text-[#2B1B2E]">
+      <Card className="p-5 bg-white border border-border space-y-2 text-center">
+        <p className="text-lg font-serif font-bold text-ink">
           That&apos;s a wrap. Congratulations!
         </p>
-        <p className="text-xs text-[#5B4A5E]">
+        <p className="text-xs text-ink-muted">
           All timeline activities for the day have completed.
         </p>
         <div className="pt-2">
-          <Link href={`/events/${eventId}`} className="min-h-[44px] inline-flex items-center px-4 py-2 rounded-[12px] bg-[#2B1B2E] text-white font-medium text-sm">
+          <Link href={`/events/${eventId}`} className="min-h-[44px] inline-flex items-center px-4 py-2 rounded-[12px] bg-ink text-white font-medium text-sm">
             Back to overview
           </Link>
         </div>
@@ -175,7 +175,7 @@ export function NowNext({ plan, minute, eventId, className = '' }: NowNextProps)
         title="No timeline activities set"
         description="Your celebration timeline has no sessions yet. Add schedule activities to start live run-of-show tracking."
         action={
-          <Link href={`/events/${eventId}/timeline`} className="min-h-[44px] inline-flex items-center px-4 py-2 rounded-[12px] bg-[#2B1B2E] text-white font-medium text-sm">
+          <Link href={`/events/${eventId}/timeline`} className="min-h-[44px] inline-flex items-center px-4 py-2 rounded-[12px] bg-ink text-white font-medium text-sm">
             Configure timeline
           </Link>
         }

@@ -29,7 +29,7 @@ export function ConflictList({
 
   if (conflicts.length === 0) {
     return (
-      <div className={`p-4 rounded-lg bg-[#E7F4EE] border border-[#C3E6D7] text-xs text-[#1F6F54] ${className}`}>
+      <div className={`p-4 rounded-lg bg-success-bg border border-success-border text-xs text-success ${className}`}>
         No active conflicts detected. Your celebration plan is internally consistent and feasible.
       </div>
     );

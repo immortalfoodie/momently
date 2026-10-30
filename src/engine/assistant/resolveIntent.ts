@@ -1,6 +1,6 @@
 import type { EventPlan } from '@/domain/types';
 import type { EngineContext } from '@/engine/context';
-import type { IntentOutput } from '@/llm/schemas/intent';
+import type { IntentKind, IntentOutput } from '@/llm/schemas/intent';
 import {
   resolveCombineConcepts,
   resolveSelectConcept,
@@ -31,6 +31,38 @@ import {
 } from './resolvers/qualityResolvers';
 import type { AssistantOutcome } from './types';
 
+type ResolverFor<K extends IntentKind> = (
+  plan: EventPlan,
+  intent: Extract<IntentOutput, { kind: K }>,
+  ctx: EngineContext,
+  today: string,
+) => AssistantOutcome;
+
+/**
+ * One resolver per intent kind. The mapped type makes the table exhaustive at compile time:
+ * adding a new intent kind without a resolver is a type error.
+ */
+const RESOLVERS: { [K in IntentKind]: ResolverFor<K> } = {
+  change_guest_count: (plan, intent, ctx) => resolveChangeGuestCount(plan, intent, ctx),
+  change_budget: (plan, intent, ctx) => resolveChangeBudget(plan, intent, ctx),
+  adjust_category: (plan, intent, ctx) => resolveAdjustCategory(plan, intent, ctx),
+  upgrade: (plan, intent, ctx) => resolveUpgrade(plan, intent, ctx),
+  downgrade: (plan, intent, ctx) => resolveDowngrade(plan, intent, ctx),
+  save_money: (plan, intent, ctx) => resolveSaveMoney(plan, intent, ctx),
+  afford_check: (plan, intent, ctx) => resolveAffordCheck(plan, intent, ctx),
+  find_forgotten: (plan) => resolveFindForgotten(plan),
+  make_it_premium: (plan, _intent, ctx) => resolveMakeItPremium(plan, ctx),
+  simulate: (plan, intent, ctx) => resolveSimulate(plan, intent, ctx),
+  select_concept: (plan, intent, ctx) => resolveSelectConcept(plan, intent, ctx),
+  combine_concepts: (plan, intent, ctx) => resolveCombineConcepts(plan, intent, ctx),
+  add_preference: (plan, intent, ctx) => resolveAddPreference(plan, intent, ctx),
+  set_setting: (plan, intent, ctx) => resolveSetSetting(plan, intent, ctx),
+  set_date: (plan, intent, ctx, today) => resolveSetDate(plan, intent, ctx, today),
+  answer: (_plan, intent) => resolveAnswer(intent),
+  clarify: (_plan, intent) => resolveClarify(intent),
+  decline: (_plan, intent) => resolveDecline(intent),
+};
+
 /**
  * Evaluates a validated host intent against an active EventPlan, formulating approvable proposals.
  * WHY: Strict architectural bridge between untrusted LLM extraction and deterministic engine decision-making.
@@ -41,57 +73,17 @@ import type { AssistantOutcome } from './types';
  * @param today - Current reference date in YYYY-MM-DD format for validating date requests.
  * @returns Exhaustively resolved AssistantOutcome (proposal, conflict, info, chaos, clarify, or reply).
  */
-// eslint-disable-next-line complexity
 export function resolveIntent(
   plan: EventPlan,
   intent: IntentOutput,
   ctx: EngineContext,
   today: string,
 ): AssistantOutcome {
-  switch (intent.kind) {
-    case 'change_guest_count':
-      return resolveChangeGuestCount(plan, intent, ctx);
-    case 'change_budget':
-      return resolveChangeBudget(plan, intent, ctx);
-    case 'adjust_category':
-      return resolveAdjustCategory(plan, intent, ctx);
-    case 'upgrade':
-      return resolveUpgrade(plan, intent, ctx);
-    case 'downgrade':
-      return resolveDowngrade(plan, intent, ctx);
-    case 'save_money':
-      return resolveSaveMoney(plan, intent, ctx);
-    case 'afford_check':
-      return resolveAffordCheck(plan, intent, ctx);
-    case 'find_forgotten':
-      return resolveFindForgotten(plan);
-    case 'make_it_premium':
-      return resolveMakeItPremium(plan, ctx);
-    case 'simulate':
-      return resolveSimulate(plan, intent, ctx);
-    case 'select_concept':
-      return resolveSelectConcept(plan, intent, ctx);
-    case 'combine_concepts':
-      return resolveCombineConcepts(plan, intent, ctx);
-    case 'add_preference':
-      return resolveAddPreference(plan, intent, ctx);
-    case 'set_setting':
-      return resolveSetSetting(plan, intent, ctx);
-    case 'set_date':
-      return resolveSetDate(plan, intent, ctx, today);
-    case 'answer':
-      return resolveAnswer(intent);
-    case 'clarify':
-      return resolveClarify(intent);
-    case 'decline':
-      return resolveDecline(intent);
-    default: {
-      const _exhaustive: never = intent;
-      return {
-        kind: 'error',
-        message: `Unhandled intent: ${JSON.stringify(_exhaustive)}`,
-      };
-    }
+  const resolver = RESOLVERS[intent.kind] as
+    | ((p: EventPlan, i: IntentOutput, c: EngineContext, t: string) => AssistantOutcome)
+    | undefined;
+  if (!resolver) {
+    return { kind: 'error', message: `Unhandled intent: ${JSON.stringify(intent)}` };
   }
+  return resolver(plan, intent, ctx, today);
 }
-

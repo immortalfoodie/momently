@@ -18,16 +18,16 @@ export interface StepListProps {
  */
 export function StepList({ steps }: StepListProps) {
   return (
-    <section aria-label="What I'll do" className="rounded-lg border border-[#E6DCD2] bg-[#FAF5F0] p-3">
-      <h3 className="text-xs font-bold uppercase tracking-wider text-[#5B4A5E] mb-2">What I&apos;ll do</h3>
-      <ol className="list-decimal space-y-2 pl-5 text-sm text-[#2B1B2E]">
+    <section aria-label="What I'll do" className="rounded-lg border border-border bg-surface-warm p-3">
+      <h3 className="text-xs font-bold uppercase tracking-wider text-ink-muted mb-2">What I&apos;ll do</h3>
+      <ol className="list-decimal space-y-2 pl-5 text-sm text-ink">
         {steps.map((step, idx) => (
           <li key={`${idx}-${step.label}`}>
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-semibold">{step.label}</span>
               <Badge tone={STATUS_COPY[step.status].tone}>{STATUS_COPY[step.status].label}</Badge>
             </div>
-            <p className="text-xs text-[#5C4556] mt-0.5">{step.detail}</p>
+            <p className="text-xs text-ink-muted mt-0.5">{step.detail}</p>
           </li>
         ))}
       </ol>

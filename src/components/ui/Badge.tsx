@@ -9,12 +9,12 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const TONE_CLASSES: Record<BadgeTone, string> = {
-  neutral: 'bg-[#F4EDE6] text-[#2B1B2E] border-[#E6DCD2]',
-  success: 'bg-[#E7F4EE] text-[#1F6F54] border-[#C3E6D7]',
-  warning: 'bg-[#FFF4DC] text-[#8A5A00] border-[#FFE2A8]',
-  danger: 'bg-[#FBE9EB] text-[#A12B3A] border-[#F4C5CB]',
-  info: 'bg-[#E8F0F8] text-[#2B5C8A] border-[#C3DBEE]',
-  brand: 'bg-[#F4EDE6] text-[#6B2D5C] border-[#E2D2DC]',
+  neutral: 'bg-surface-muted text-ink border-border',
+  success: 'bg-success-bg text-success border-success-border',
+  warning: 'bg-warning-bg text-warning border-warning-border',
+  danger: 'bg-danger-bg text-danger border-danger-border',
+  info: 'bg-info-bg text-info border-info-border',
+  brand: 'bg-surface-muted text-primary border-[#E2D2DC]',
 };
 
 /**

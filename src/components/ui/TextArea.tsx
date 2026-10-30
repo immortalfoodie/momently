@@ -99,14 +99,14 @@ export function TextArea({
           setInternalLength(e.target.value.length);
           onChange?.(e);
         }}
-        className={`w-full px-3.5 py-2.5 rounded-[12px] border border-[#E6DCD2] bg-white text-[#2B1B2E] placeholder-[#5B4A5E]/60 text-base transition-colors hover:border-[#6B2D5C]/40 focus:border-[#6B2D5C] disabled:bg-[#F4EDE6] disabled:cursor-not-allowed resize-y ${
-          bindings.hasError ? 'border-[#A12B3A] focus:border-[#A12B3A]' : ''
+        className={`w-full px-3.5 py-2.5 rounded-[12px] border border-border bg-white text-ink placeholder-ink-muted/60 text-base transition-colors hover:border-primary/40 focus:border-primary disabled:bg-surface-muted disabled:cursor-not-allowed resize-y ${
+          bindings.hasError ? 'border-danger focus:border-danger' : ''
         } ${className}`}
         {...props}
       />
 
       {hasCounter ? (
-        <div className="flex items-center justify-between text-xs text-[#5B4A5E] px-1">
+        <div className="flex items-center justify-between text-xs text-ink-muted px-1">
           {/* Polite live region only announces when threshold is crossed */}
           <span id={counterLiveId} aria-live="polite" className="sr-only">
             {thresholdMessage}

@@ -32,10 +32,10 @@ export function ModeBanner({
 }: ModeBannerProps) {
   if (mode === 'live') {
     return (
-      <Card className={`p-4 bg-[#F5F2EB] border border-[#E6DCD2] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${className}`}>
+      <Card className={`p-4 bg-surface-warm border border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${className}`}>
         <div className="flex items-center gap-2.5">
           <Badge tone="success">Live</Badge>
-          <span className="text-lg font-bold text-[#2B1B2E]">
+          <span className="text-lg font-bold text-ink">
             Live: it&apos;s {formatMinuteOfDay(minute)}
           </span>
         </div>
@@ -49,11 +49,11 @@ export function ModeBanner({
   const dateFormatted = plan.meta.dateIso ? formatIsoDate(plan.meta.dateIso) : '';
 
   return (
-    <Card className={`p-4 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
+    <Card className={`p-4 bg-white border border-border space-y-4 ${className}`}>
       <div className="flex flex-wrap items-center justify-between gap-2.5">
         <div className="flex items-center gap-2.5">
           <Badge tone="warning">Practice mode</Badge>
-          <span className="text-sm font-semibold text-[#5B4A5E]">
+          <span className="text-sm font-semibold text-ink-muted">
             Simulated clock: {formatMinuteOfDay(minute)}
           </span>
         </div>
@@ -65,7 +65,7 @@ export function ModeBanner({
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <label className="flex items-center gap-2 text-sm font-medium text-[#2B1B2E]">
+        <label className="flex items-center gap-2 text-sm font-medium text-ink">
           <span>Pretend it&apos;s</span>
           <input
             type="time"
@@ -75,7 +75,7 @@ export function ModeBanner({
               const m = parseTimeInput(e.target.value);
               if (m !== undefined) onSetPracticeMinute(m);
             }}
-            className="min-h-[44px] px-3 py-1.5 rounded-[12px] border border-[#E6DCD2] bg-white text-base text-[#2B1B2E] font-medium"
+            className="min-h-[44px] px-3 py-1.5 rounded-[12px] border border-border bg-white text-base text-ink font-medium"
           />
         </label>
         <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export function ModeBanner({
         </div>
       </div>
 
-      <p className="text-xs text-[#7A6B7E]">
+      <p className="text-xs text-ink-muted">
         {plan.meta.dateIso
           ? `Live mode starts on the day of your event (${dateFormatted}). Practise your run of show any time.`
           : 'Set your event date on the overview page to unlock live mode on the day. Practise your run of show any time.'}

@@ -141,7 +141,7 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
 
       {/* Region 1: Summary */}
       <section aria-labelledby="heading-budget-summary" className="space-y-3">
-        <h2 id="heading-budget-summary" className="text-lg font-serif font-bold text-[#2B1B2E]">
+        <h2 id="heading-budget-summary" className="text-lg font-serif font-bold text-ink">
           Your budget at a glance
         </h2>
         <BudgetSummary plan={plan} onEditCap={() => setIsCapEditorOpen(true)} />
@@ -155,7 +155,7 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
 
       {/* Region 2: Distributions */}
       <section aria-labelledby="heading-budget-breakdowns" className="space-y-3">
-        <h2 id="heading-budget-breakdowns" className="text-lg font-serif font-bold text-[#2B1B2E]">
+        <h2 id="heading-budget-breakdowns" className="text-lg font-serif font-bold text-ink">
           Where the money goes
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -166,7 +166,7 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
 
       {/* Region 3: Line Items Table */}
       <section aria-labelledby="heading-budget-items" className="space-y-3">
-        <h2 id="heading-budget-items" className="text-lg font-serif font-bold text-[#2B1B2E]">
+        <h2 id="heading-budget-items" className="text-lg font-serif font-bold text-ink">
           All expenses
         </h2>
         <LineItemsTable
@@ -179,7 +179,7 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
 
       {/* Region 4: Guardian Tools */}
       <section aria-labelledby="heading-guardian-tools" className="space-y-3">
-        <h2 id="heading-guardian-tools" className="text-lg font-serif font-bold text-[#2B1B2E]">
+        <h2 id="heading-guardian-tools" className="text-lg font-serif font-bold text-ink">
           Budget Guardian Tools
         </h2>
         <GuardianPanel plan={plan} eventId={eventId} />
@@ -187,7 +187,7 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
 
       {/* Region 5: What-If Guests */}
       <section aria-labelledby="heading-what-if" className="space-y-3">
-        <h2 id="heading-what-if" className="text-lg font-serif font-bold text-[#2B1B2E]">
+        <h2 id="heading-what-if" className="text-lg font-serif font-bold text-ink">
           Living Plan Headcount Simulation
         </h2>
         <WhatIfGuests plan={plan} eventId={eventId} />
@@ -195,7 +195,7 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
 
       {/* Region 6: Forgotten Costs */}
       <section aria-labelledby="heading-forgotten-costs" className="space-y-3">
-        <h2 id="heading-forgotten-costs" className="text-lg font-serif font-bold text-[#2B1B2E]">
+        <h2 id="heading-forgotten-costs" className="text-lg font-serif font-bold text-ink">
           Frequently Overlooked Expenses
         </h2>
         <ForgottenCostsList plan={plan} onAddLineItem={handleOpenAddWithPrefill} />

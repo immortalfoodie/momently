@@ -42,10 +42,10 @@ export function PrepCountdown({
 
   if (diffDays === null) {
     return (
-      <Card className={`p-4 bg-[#FAF7F2] border border-[#E6DCD2] ${className}`}>
+      <Card className={`p-4 bg-bg border border-border ${className}`}>
         <div className="flex items-center gap-3">
-          <Icon name="clock" size={20} className="text-[#5B4A5E] shrink-0" aria-hidden="true" />
-          <div className="text-sm text-[#2B1B2E]">
+          <Icon name="clock" size={20} className="text-ink-muted shrink-0" aria-hidden="true" />
+          <div className="text-sm text-ink">
             <span>No celebration date set yet.&nbsp;</span>
             <Link
               href={`/events/${eventId}#facts`}
@@ -70,19 +70,19 @@ export function PrepCountdown({
   }
 
   return (
-    <Card className={`p-4 bg-white border border-[#E6DCD2] ${className}`}>
+    <Card className={`p-4 bg-white border border-border ${className}`}>
       <div className="flex items-center gap-3">
         <Icon
           name={diffDays >= 0 ? 'clock' : 'check'}
           size={22}
-          className={diffDays >= 0 ? 'text-[#7C2D37]' : 'text-[#1F6F54]'}
+          className={diffDays >= 0 ? 'text-[#7C2D37]' : 'text-success'}
           aria-hidden="true"
         />
         <div>
-          <span className="text-xs uppercase tracking-wider font-semibold text-[#5B4A5E]">
+          <span className="text-xs uppercase tracking-wider font-semibold text-ink-muted">
             Countdown to your day
           </span>
-          <p className="text-lg font-serif font-bold text-[#2B1B2E]">{text}</p>
+          <p className="text-lg font-serif font-bold text-ink">{text}</p>
         </div>
       </div>
     </Card>

@@ -94,11 +94,11 @@ export function EditPriceDialog({
             type="checkbox"
             checked={isVerified}
             onChange={(e) => setIsVerified(e.target.checked)}
-            className="mt-1 h-4 w-4 rounded border-[#E6DCD2] text-[#6B2D5C] focus:ring-[#1D4F91]"
+            className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-focus"
           />
-          <label htmlFor="edit-is-verified" className="text-sm font-medium text-[#2B1B2E]">
+          <label htmlFor="edit-is-verified" className="text-sm font-medium text-ink">
             This is a confirmed quote from the vendor
-            <span className="block text-xs font-normal text-[#5B4A5E]">
+            <span className="block text-xs font-normal text-ink-muted">
               Marks this expense with a green verified badge and locks in real vendor quotes.
             </span>
           </label>
@@ -117,7 +117,7 @@ export function EditPriceDialog({
           />
         </Field>
 
-        <div className="flex justify-end gap-2 pt-3 border-t border-[#E6DCD2]">
+        <div className="flex justify-end gap-2 pt-3 border-t border-border">
           <Button variant="ghost" type="button" onClick={onClose}>
             Cancel
           </Button>

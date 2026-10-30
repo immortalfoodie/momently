@@ -50,9 +50,9 @@ export function DayTasks({ plan, eventId, className = '' }: DayTasksProps) {
 
   if (tasks.length === 0) {
     return (
-      <Card className={`p-6 bg-white border border-[#E6DCD2] text-center space-y-1 ${className}`}>
-        <p className="text-base font-semibold text-[#2B1B2E]">Nothing left on today&apos;s list</p>
-        <p className="text-xs text-[#5B4A5E]">All event day tasks are done.</p>
+      <Card className={`p-6 bg-white border border-border text-center space-y-1 ${className}`}>
+        <p className="text-base font-semibold text-ink">Nothing left on today&apos;s list</p>
+        <p className="text-xs text-ink-muted">All event day tasks are done.</p>
       </Card>
     );
   }
@@ -67,11 +67,11 @@ export function DayTasks({ plan, eventId, className = '' }: DayTasksProps) {
           return (
             <li
               key={task.id}
-              className="p-3.5 sm:p-4 rounded-[16px] bg-white border border-[#E6DCD2] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+              className="p-3.5 sm:p-4 rounded-[16px] bg-white border border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
             >
               <div className="space-y-1 flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-semibold text-base text-[#2B1B2E] break-words">
+                  <span className="font-semibold text-base text-ink break-words">
                     {task.title}
                   </span>
                   <Badge tone={priorityTone(task.priority)}>
@@ -82,7 +82,7 @@ export function DayTasks({ plan, eventId, className = '' }: DayTasksProps) {
                   </Badge>
                 </div>
                 {task.notes && (
-                  <p className="text-xs text-[#5B4A5E] truncate">{task.notes}</p>
+                  <p className="text-xs text-ink-muted truncate">{task.notes}</p>
                 )}
               </div>
 

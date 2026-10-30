@@ -15,15 +15,15 @@ const PROVENANCE_LABELS: Record<Provenance, string> = {
 };
 
 const PROVENANCE_COLORS: Record<Provenance, string> = {
-  user: 'bg-[#6B2D5C]', // Plum
-  estimate: 'bg-[#D4A24C]', // Amber gold
-  verified: 'bg-[#1F6F54]', // Forest green
+  user: 'bg-primary', // Plum
+  estimate: 'bg-gold', // Amber gold
+  verified: 'bg-success', // Forest green
 };
 
 const PROVENANCE_INDICATORS: Record<Provenance, string> = {
-  user: 'text-[#6B2D5C]',
-  estimate: 'text-[#8A5A00]',
-  verified: 'text-[#1F6F54]',
+  user: 'text-primary',
+  estimate: 'text-warning',
+  verified: 'text-success',
 };
 
 /**
@@ -37,19 +37,19 @@ export function ProvenanceBreakdown({
   const { provenance } = buildBudgetView(plan);
 
   return (
-    <Card className={`p-5 bg-white border border-[#E6DCD2] space-y-4 ${className}`}>
+    <Card className={`p-5 bg-white border border-border space-y-4 ${className}`}>
       <div>
-        <h3 className="font-serif font-bold text-base text-[#2B1B2E]">
+        <h3 className="font-serif font-bold text-base text-ink">
           Where your prices come from
         </h3>
-        <p className="text-xs text-[#5B4A5E] mt-0.5">
+        <p className="text-xs text-ink-muted mt-0.5">
           Estimates are placeholders; replace them with real quotes as you receive them.
         </p>
       </div>
 
       {/* Decorative segmented bar */}
       <div
-        className="h-3 w-full bg-[#F4EDE6] rounded-full overflow-hidden flex"
+        className="h-3 w-full bg-surface-muted rounded-full overflow-hidden flex"
         aria-hidden="true"
       >
         {provenance.map((p) => {
@@ -70,14 +70,14 @@ export function ProvenanceBreakdown({
         {provenance.map((p) => (
           <li
             key={p.provenance}
-            className="flex items-center gap-2 p-2 rounded-md bg-[#FAF5F0] border border-[#E6DCD2]"
+            className="flex items-center gap-2 p-2 rounded-md bg-surface-warm border border-border"
           >
             <span
               className={`h-3 w-3 rounded-full shrink-0 ${PROVENANCE_COLORS[p.provenance]}`}
               aria-hidden="true"
             />
             <div className="min-w-0">
-              <span className="font-semibold text-xs text-[#2B1B2E] block truncate">
+              <span className="font-semibold text-xs text-ink block truncate">
                 {PROVENANCE_LABELS[p.provenance]}
               </span>
               <span className={`text-xs font-medium ${PROVENANCE_INDICATORS[p.provenance]}`}>

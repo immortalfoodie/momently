@@ -25,29 +25,29 @@ export interface PrintablePlanProps {
  */
 export function PrintablePlan({ doc }: PrintablePlanProps) {
   return (
-    <article className="bg-white rounded-[16px] border border-[#E6DCD2] p-6 sm:p-8 space-y-8 print:border-0 print:p-0 print:rounded-none">
-      <div className="border-b border-[#E6DCD2] pb-4 space-y-1.5">
-        <h1 className="font-serif text-3xl font-bold text-[#2B1B2E] tracking-tight">
+    <article className="bg-white rounded-[16px] border border-border p-6 sm:p-8 space-y-8 print:border-0 print:p-0 print:rounded-none">
+      <div className="border-b border-border pb-4 space-y-1.5">
+        <h1 className="font-serif text-3xl font-bold text-ink tracking-tight">
           {doc.title}
         </h1>
-        <p className="text-sm text-[#5B4A5E]">{doc.subtitle}</p>
+        <p className="text-sm text-ink-muted">{doc.subtitle}</p>
       </div>
 
       {doc.concept && (
         <section aria-labelledby="print-concept-heading" className="space-y-2">
           <h2
             id="print-concept-heading"
-            className="text-xl font-serif font-bold text-[#2B1B2E] border-b border-[#E6DCD2] pb-1.5"
+            className="text-xl font-serif font-bold text-ink border-b border-border pb-1.5"
           >
             Selected concept
           </h2>
-          <p className="text-base font-semibold text-[#2B1B2E]">
+          <p className="text-base font-semibold text-ink">
             {doc.concept.title} &mdash;{' '}
-            <span className="font-normal text-[#5B4A5E]">
+            <span className="font-normal text-ink-muted">
               {doc.concept.tagline}
             </span>
           </p>
-          <p className="text-sm text-[#5B4A5E]">{doc.concept.summary}</p>
+          <p className="text-sm text-ink-muted">{doc.concept.summary}</p>
         </section>
       )}
 
@@ -55,7 +55,7 @@ export function PrintablePlan({ doc }: PrintablePlanProps) {
 
       <PrintablePlanDetails doc={doc} />
 
-      <footer className="pt-4 border-t border-[#E6DCD2] text-xs text-[#5B4A5E] text-center">
+      <footer className="pt-4 border-t border-border text-xs text-ink-muted text-center">
         Prepared with Momently
       </footer>
     </article>

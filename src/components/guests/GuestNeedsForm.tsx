@@ -124,11 +124,11 @@ export function GuestNeedsForm({ plan, eventId, className = '' }: GuestNeedsForm
   };
 
   return (
-    <Card className={`p-4 sm:p-6 bg-white border border-[#E6DCD2] space-y-6 ${className}`}>
+    <Card className={`p-4 sm:p-6 bg-white border border-border space-y-6 ${className}`}>
       <form onSubmit={handleSave} className="space-y-6">
         {/* Group 1: Food */}
-        <fieldset className="space-y-4 border-b border-[#E6DCD2] pb-6">
-          <legend className="text-base font-semibold text-[#2B1B2E]">Food & Dietary</legend>
+        <fieldset className="space-y-4 border-b border-border pb-6">
+          <legend className="text-base font-semibold text-ink">Food & Dietary</legend>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <Field label="Vegetarian" error={errors.veg}>
               <NumberInput value={veg} onChange={(e) => setVeg(Number(e.target.value))} min={0} max={maxGuests} />
@@ -149,8 +149,8 @@ export function GuestNeedsForm({ plan, eventId, className = '' }: GuestNeedsForm
         </fieldset>
 
         {/* Group 2: Access & Comfort */}
-        <fieldset className="space-y-4 border-b border-[#E6DCD2] pb-6">
-          <legend className="text-base font-semibold text-[#2B1B2E]">Access & Comfort</legend>
+        <fieldset className="space-y-4 border-b border-border pb-6">
+          <legend className="text-base font-semibold text-ink">Access & Comfort</legend>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Field label="Wheelchair users" error={errors.wheelchair}>
               <NumberInput value={wheelchair} onChange={(e) => setWheelchair(Number(e.target.value))} min={0} max={maxGuests} />
@@ -162,12 +162,12 @@ export function GuestNeedsForm({ plan, eventId, className = '' }: GuestNeedsForm
               <NumberInput value={children} onChange={(e) => setChildren(Number(e.target.value))} min={0} max={maxGuests} />
             </Field>
           </div>
-          <label className="min-h-[44px] inline-flex items-center gap-2.5 cursor-pointer text-sm font-medium text-[#2B1B2E]">
+          <label className="min-h-[44px] inline-flex items-center gap-2.5 cursor-pointer text-sm font-medium text-ink">
             <input
               type="checkbox"
               checked={quietSpace}
               onChange={(e) => setQuietSpace(e.target.checked)}
-              className="w-5 h-5 rounded border-[#E6DCD2] text-[#2B1B2E] focus:ring-1 focus:ring-[#2B1B2E]"
+              className="w-5 h-5 rounded border-border text-ink focus:ring-1 focus:ring-ink"
             />
             <span>Quiet retreat space needed (for neurodivergent guests, infants, or quiet breaks)</span>
           </label>
@@ -175,7 +175,7 @@ export function GuestNeedsForm({ plan, eventId, className = '' }: GuestNeedsForm
 
         {/* Group 3: Languages */}
         <fieldset className="space-y-4">
-          <legend className="text-base font-semibold text-[#2B1B2E]">Languages (max 5)</legend>
+          <legend className="text-base font-semibold text-ink">Languages (max 5)</legend>
           <div className="flex flex-col sm:flex-row gap-2 max-w-md">
             <TextInput
               value={newLang}
@@ -200,14 +200,14 @@ export function GuestNeedsForm({ plan, eventId, className = '' }: GuestNeedsForm
                 <span
                   key={lang}
                   role="listitem"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F5F2EB] text-xs font-medium text-[#2B1B2E] border border-[#E6DCD2]"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-warm text-xs font-medium text-ink border border-border"
                 >
                   {lang}
                   <button
                     type="button"
                     onClick={() => handleRemoveLanguage(lang)}
                     aria-label={`Remove ${lang}`}
-                    className="p-1 rounded-full text-[#7A6B7E] hover:text-[#2B1B2E] min-w-[24px] min-h-[24px] flex items-center justify-center"
+                    className="p-1 rounded-full text-ink-muted hover:text-ink min-w-[24px] min-h-[24px] flex items-center justify-center"
                   >
                     <Icon name="close" size={14} aria-hidden="true" />
                   </button>
@@ -227,7 +227,7 @@ export function GuestNeedsForm({ plan, eventId, className = '' }: GuestNeedsForm
             {isSaving ? 'Saving...' : 'Save guest needs'}
           </Button>
           {savedSummary && (
-            <p className="text-sm font-medium text-[#1F6F54]" role="status">
+            <p className="text-sm font-medium text-success" role="status">
               {savedSummary}
             </p>
           )}

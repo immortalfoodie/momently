@@ -19,7 +19,7 @@ const LATE_START_DURATIONS = [30, 60, 90, 120, 180, 240] as const;
 
 function RainParams() {
   return (
-    <div className="p-3.5 rounded-lg bg-[#FAF5F0] border border-[#E6DCD2] text-xs text-[#5C4556]">
+    <div className="p-3.5 rounded-lg bg-surface-warm border border-border text-xs text-ink-muted">
       Simulates sudden rain during celebration hours, evaluating waterproof canopy covers and standby backup venues.
     </div>
   );
@@ -51,9 +51,9 @@ function BudgetCutParams({
           }}
         />
       </Field>
-      <p className="text-xs text-[#5C4556]">
+      <p className="text-xs text-ink-muted">
         Resulting budget cap:{' '}
-        <span className="font-semibold text-[#2B1B2E]">{formatInr(newCap)}</span>{' '}
+        <span className="font-semibold text-ink">{formatInr(newCap)}</span>{' '}
         (reduced from {formatInr(cap)})
       </p>
     </div>
@@ -86,9 +86,9 @@ function GuestSurgeParams({
           }}
         />
       </Field>
-      <p className="text-xs text-[#5C4556]">
+      <p className="text-xs text-ink-muted">
         New total attendance:{' '}
-        <span className="font-semibold text-[#2B1B2E]">{current + extra} guests</span>{' '}
+        <span className="font-semibold text-ink">{current + extra} guests</span>{' '}
         (baseline {current})
       </p>
     </div>

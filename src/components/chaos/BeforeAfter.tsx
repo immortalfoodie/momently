@@ -52,57 +52,57 @@ export function BeforeAfter({ plan, option, className = '' }: BeforeAfterProps) 
   ].slice(0, 5);
 
   return (
-    <div className={`space-y-3 bg-[#FAF5F0] p-4 rounded-xl border border-[#E6DCD2] ${className}`}>
+    <div className={`space-y-3 bg-surface-warm p-4 rounded-xl border border-border ${className}`}>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs border-collapse">
-          <caption className="font-semibold text-xs text-[#2B1B2E] mb-2 text-left">
+          <caption className="font-semibold text-xs text-ink mb-2 text-left">
             Current plan versus after this recovery
           </caption>
           <thead>
-            <tr className="border-b border-[#E6DCD2] text-[#5C4556]">
+            <tr className="border-b border-border text-ink-muted">
               <th scope="col" className="py-1.5 pr-3 font-semibold">Dimension</th>
               <th scope="col" className="py-1.5 px-3 font-semibold">Current plan</th>
               <th scope="col" className="py-1.5 pl-3 font-semibold">After recovery</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E6DCD2]/60 text-[#2B1B2E]">
+          <tbody className="divide-y divide-border/60 text-ink">
             <tr>
-              <th scope="row" className="py-1.5 pr-3 font-medium text-[#5C4556]">Chaos Score</th>
+              <th scope="row" className="py-1.5 pr-3 font-medium text-ink-muted">Chaos Score</th>
               <td className="py-1.5 px-3 tabular-nums">{scoreBefore} / 100</td>
-              <td className="py-1.5 pl-3 tabular-nums font-semibold text-[#6B2D5C]">{scoreAfter} / 100</td>
+              <td className="py-1.5 pl-3 tabular-nums font-semibold text-primary">{scoreAfter} / 100</td>
             </tr>
             <tr>
-              <th scope="row" className="py-1.5 pr-3 font-medium text-[#5C4556]">Budget total</th>
+              <th scope="row" className="py-1.5 pr-3 font-medium text-ink-muted">Budget total</th>
               <td className="py-1.5 px-3 tabular-nums">{formatInr(diff.budgetTotalBefore)}</td>
               <td className="py-1.5 pl-3 tabular-nums font-semibold">{formatInr(diff.budgetTotalAfter)}</td>
             </tr>
             <tr>
-              <th scope="row" className="py-1.5 pr-3 font-medium text-[#5C4556]">Versus the cap</th>
+              <th scope="row" className="py-1.5 pr-3 font-medium text-ink-muted">Versus the cap</th>
               <td className="py-1.5 px-3">{formatVsCap(diff.budgetTotalBefore)}</td>
               <td className="py-1.5 pl-3 font-medium">{formatVsCap(diff.budgetTotalAfter)}</td>
             </tr>
             <tr>
-              <th scope="row" className="py-1.5 pr-3 font-medium text-[#5C4556]">Guest count</th>
+              <th scope="row" className="py-1.5 pr-3 font-medium text-ink-muted">Guest count</th>
               <td className="py-1.5 px-3 tabular-nums">{plan.meta.guestCount} guests</td>
               <td className="py-1.5 pl-3 tabular-nums">{projectedPlan.meta.guestCount} guests</td>
             </tr>
             <tr>
-              <th scope="row" className="py-1.5 pr-3 font-medium text-[#5C4556]">Schedule changes</th>
+              <th scope="row" className="py-1.5 pr-3 font-medium text-ink-muted">Schedule changes</th>
               <td className="py-1.5 px-3">0 changes</td>
               <td className="py-1.5 pl-3 tabular-nums">{diff.scheduleChanges} slot(s) modified</td>
             </tr>
             <tr>
-              <th scope="row" className="py-1.5 pr-3 font-medium text-[#5C4556]">Tasks added</th>
+              <th scope="row" className="py-1.5 pr-3 font-medium text-ink-muted">Tasks added</th>
               <td className="py-1.5 px-3">0 tasks</td>
               <td className="py-1.5 pl-3 tabular-nums">{diff.taskChanges} task(s) added</td>
             </tr>
             <tr>
-              <th scope="row" className="py-1.5 pr-3 font-medium text-[#5C4556]">Line items changed</th>
+              <th scope="row" className="py-1.5 pr-3 font-medium text-ink-muted">Line items changed</th>
               <td className="py-1.5 px-3">0 items</td>
               <td className="py-1.5 pl-3 tabular-nums">{lineItemsChangedCount} item(s)</td>
             </tr>
             <tr>
-              <th scope="row" className="py-1.5 pr-3 font-medium text-[#5C4556]">Concept</th>
+              <th scope="row" className="py-1.5 pr-3 font-medium text-ink-muted">Concept</th>
               <td className="py-1.5 px-3">{diff.concept?.before ?? 'Unchanged'}</td>
               <td className="py-1.5 pl-3">{diff.concept?.after ?? 'Unchanged'}</td>
             </tr>
@@ -111,9 +111,9 @@ export function BeforeAfter({ plan, option, className = '' }: BeforeAfterProps) 
       </div>
 
       {changedItemSummaries.length > 0 && (
-        <div className="pt-2 border-t border-[#E6DCD2]/60 space-y-1">
-          <p className="text-[11px] font-semibold text-[#5C4556]">Key line-item adjustments:</p>
-          <ul className="list-disc pl-4 text-[11px] text-[#5C4556] space-y-0.5">
+        <div className="pt-2 border-t border-border/60 space-y-1">
+          <p className="text-[11px] font-semibold text-ink-muted">Key line-item adjustments:</p>
+          <ul className="list-disc pl-4 text-[11px] text-ink-muted space-y-0.5">
             {changedItemSummaries.map((summary, idx) => (
               <li key={idx}>{summary}</li>
             ))}

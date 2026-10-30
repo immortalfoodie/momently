@@ -26,6 +26,50 @@ export interface PlanFromIntakeResult {
 }
 
 /**
+ * Returns the provided value, or a default while recording why the default was used.
+ * WHY: Every gap in the brief becomes a visible assumption instead of a silent guess.
+ */
+function withDefault<T>(value: T | null, fallback: T, note: string, assumptions: string[]): T {
+  if (value !== null) return value;
+  assumptions.push(note);
+  return fallback;
+}
+
+function resolveDate(dateIso: string | null | undefined, today: string, assumptions: string[]): string | undefined {
+  if (!dateIso) return undefined;
+  if (dateIso < today) {
+    assumptions.push(`Event date ${dateIso} is in the past relative to ${today}, omitted`);
+    return undefined;
+  }
+  return dateIso;
+}
+
+function buildConstraints(intake: IntakeOutput, ctx: EngineContext): Constraint[] {
+  // The budget cap is created first so constraint IDs keep their original order.
+  const cap: Constraint[] =
+    intake.budgetCap === null
+      ? []
+      : [
+          {
+            id: ctx.ids('constraint'),
+            kind: 'budget_cap',
+            severity: intake.budgetIsHard ? 'hard' : 'soft',
+            description: `Budget cap of ₹${intake.budgetCap} (${intake.budgetIsHard ? 'hard limit' : 'flexible target'})`,
+            numericValue: intake.budgetCap,
+          },
+        ];
+  const rest = intake.constraints.map(
+    (c): Constraint => ({
+      id: ctx.ids('constraint'),
+      kind: c.kind,
+      severity: c.severity,
+      description: c.description,
+    }),
+  );
+  return [...cap, ...rest];
+}
+
+/**
  * Builds a foundational EventPlan from structured intake output, recording all assumptions honestly.
  * WHY: Transparently transitions validated LLM briefs into concrete domain entities without silent defaults.
  *
@@ -35,7 +79,6 @@ export interface PlanFromIntakeResult {
  * @param hostBrief - Optional original raw user prompt string to preserve on event meta.
  * @returns Resulting plan, budget fit report, recorded assumptions, and remaining missing info questions.
  */
-// eslint-disable-next-line complexity
 export function buildPlanFromIntake(
   intake: IntakeOutput,
   ctx: EngineContext,
@@ -44,60 +87,23 @@ export function buildPlanFromIntake(
 ): PlanFromIntakeResult {
   const assumptions: string[] = [];
 
-  // Honest defaults for missing fields
-  let guestCount: number;
-  if (intake.guestCount === null) {
-    guestCount = 50;
-    assumptions.push('Guest count not given, assumed 50');
-  } else {
-    guestCount = intake.guestCount;
-  }
+  // Honest defaults for missing fields, each recorded as an assumption
+  const guestCount = withDefault(intake.guestCount, 50, 'Guest count not given, assumed 50', assumptions);
+  const city = withDefault(
+    intake.city,
+    'Not specified',
+    'City not specified, assumed Not specified (tier 2 pricing)',
+    assumptions,
+  );
+  const setting = withDefault(
+    intake.setting,
+    'undecided',
+    'Event setting not specified, assumed undecided',
+    assumptions,
+  );
+  const dateIso = resolveDate(intake.dateIso, today, assumptions);
 
-  let city: string;
-  if (intake.city === null) {
-    city = 'Not specified';
-    assumptions.push('City not specified, assumed Not specified (tier 2 pricing)');
-  } else {
-    city = intake.city;
-  }
-
-  let setting: 'indoor' | 'outdoor' | 'mixed' | 'undecided';
-  if (intake.setting === null) {
-    setting = 'undecided';
-    assumptions.push('Event setting not specified, assumed undecided');
-  } else {
-    setting = intake.setting;
-  }
-
-  let dateIso: string | undefined;
-  if (intake.dateIso) {
-    if (intake.dateIso < today) {
-      assumptions.push(`Event date ${intake.dateIso} is in the past relative to ${today}, omitted`);
-      dateIso = undefined;
-    } else {
-      dateIso = intake.dateIso;
-    }
-  }
-
-  const constraints: Constraint[] = [];
-  if (intake.budgetCap !== null) {
-    constraints.push({
-      id: ctx.ids('constraint'),
-      kind: 'budget_cap',
-      severity: intake.budgetIsHard ? 'hard' : 'soft',
-      description: `Budget cap of ₹${intake.budgetCap} (${intake.budgetIsHard ? 'hard limit' : 'flexible target'})`,
-      numericValue: intake.budgetCap,
-    });
-  }
-
-  for (const c of intake.constraints) {
-    constraints.push({
-      id: ctx.ids('constraint'),
-      kind: c.kind,
-      severity: c.severity,
-      description: c.description,
-    });
-  }
+  const constraints = buildConstraints(intake, ctx);
 
   const mergedGuestNeeds: GuestNeeds = {
     ...DEFAULT_GUEST_NEEDS,
@@ -115,7 +121,6 @@ export function buildPlanFromIntake(
     setting,
     hostBrief: brief,
   };
-
 
   const { plan, fit } = createPlan({
     meta,

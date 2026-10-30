@@ -21,8 +21,8 @@ export default function WorkspaceErrorBoundary({ reset }: WorkspaceErrorProps) {
         title="We hit a snag loading this view"
         description="Your celebration plan is safe in this browser, but this workspace tab couldn't be displayed right now."
       />
-      <Card className="p-6 bg-white border border-[#E6DCD2] text-center space-y-4">
-        <p className="text-sm text-[#5B4A5E]">
+      <Card className="p-6 bg-white border border-border text-center space-y-4">
+        <p className="text-sm text-ink-muted">
           You can try loading this section again or switch to another tab in the sidebar.
         </p>
         <div className="flex justify-center">

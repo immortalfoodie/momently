@@ -40,7 +40,7 @@ function QuoteFormActions({
   onRequestDelete?: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between pt-3 border-t border-[#E6DCD2]">
+    <div className="flex items-center justify-between pt-3 border-t border-border">
       {isEdit && onRequestDelete ? (
         <Button
           type="button"
@@ -126,8 +126,8 @@ function QuoteForm({
       </Field>
 
       {need.questionsToAsk.length > 0 && (
-        <div className="space-y-3 pt-2 border-t border-[#E6DCD2]">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-[#7A6B7E]">
+        <div className="space-y-3 pt-2 border-t border-border">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
             Their answers to your questions (optional)
           </h3>
           {need.questionsToAsk.map((q) => (
@@ -219,7 +219,7 @@ export function QuoteDialog({
           title="Delete quote?"
         >
           <div className="space-y-4">
-            <p className="text-sm text-[#5B4A5E]">
+            <p className="text-sm text-ink-muted">
               Are you sure you want to delete the quote from &ldquo;{initialQuote.vendorName}&rdquo;?
             </p>
             <div className="flex items-center justify-end gap-2">

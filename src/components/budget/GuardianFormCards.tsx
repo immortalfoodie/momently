@@ -98,13 +98,13 @@ export function GuardianFormCards({
       <Card
         className={`p-4 bg-white border transition-colors ${
           activeTool === 'afford'
-            ? 'border-[#6B2D5C] ring-1 ring-[#6B2D5C]'
-            : 'border-[#E6DCD2]'
+            ? 'border-primary ring-1 ring-primary'
+            : 'border-border'
         }`}
       >
         <div className="flex items-center gap-2 mb-2">
-          <Icon name="sparkle" size={16} className="text-[#6B2D5C]" aria-hidden="true" />
-          <h3 className="font-serif font-bold text-sm text-[#2B1B2E]">Can we afford…?</h3>
+          <Icon name="sparkle" size={16} className="text-primary" aria-hidden="true" />
+          <h3 className="font-serif font-bold text-sm text-ink">Can we afford…?</h3>
         </div>
         <form onSubmit={handleAffordSubmit} className="space-y-2.5">
           <Field label="Addition description" id="afford-desc" required>
@@ -154,13 +154,13 @@ export function GuardianFormCards({
       <Card
         className={`p-4 bg-white border transition-colors ${
           activeTool === 'save'
-            ? 'border-[#6B2D5C] ring-1 ring-[#6B2D5C]'
-            : 'border-[#E6DCD2]'
+            ? 'border-primary ring-1 ring-primary'
+            : 'border-border'
         }`}
       >
         <div className="flex items-center gap-2 mb-2">
-          <Icon name="wallet" size={16} className="text-[#1F6F54]" aria-hidden="true" />
-          <h3 className="font-serif font-bold text-sm text-[#2B1B2E]">Where can we save?</h3>
+          <Icon name="wallet" size={16} className="text-success" aria-hidden="true" />
+          <h3 className="font-serif font-bold text-sm text-ink">Where can we save?</h3>
         </div>
         <form onSubmit={handleSaveSubmit} className="space-y-2.5">
           <Field
@@ -189,13 +189,13 @@ export function GuardianFormCards({
       <Card
         className={`p-4 bg-white border transition-colors ${
           activeTool === 'upgrade'
-            ? 'border-[#6B2D5C] ring-1 ring-[#6B2D5C]'
-            : 'border-[#E6DCD2]'
+            ? 'border-primary ring-1 ring-primary'
+            : 'border-border'
         }`}
       >
         <div className="flex items-center gap-2 mb-2">
-          <Icon name="check" size={16} className="text-[#D4A24C]" aria-hidden="true" />
-          <h3 className="font-serif font-bold text-sm text-[#2B1B2E]">Upgrade something</h3>
+          <Icon name="check" size={16} className="text-gold" aria-hidden="true" />
+          <h3 className="font-serif font-bold text-sm text-ink">Upgrade something</h3>
         </div>
         <form onSubmit={handleUpgradeSubmit} className="space-y-2.5">
           <div className="grid grid-cols-2 gap-2">

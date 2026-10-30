@@ -13,6 +13,7 @@
   Ink-Muted on Background              #5B4A5E on #FBF7F2    7.61:1  Pass (AAA)
   Ink-Muted on Surface                 #5B4A5E on #FFFFFF    8.12:1  Pass (AAA)
   Ink-Muted on Surface-Muted           #5B4A5E on #F4EDE6    7.00:1  Pass (AAA)
+  Ink-Muted on Surface-Warm            #5B4A5E on #FAF5F0    7.50:1  Pass (AAA)
   On-Primary on Primary                #FFFFFF on #6B2D5C    9.74:1  Pass (AAA)
   On-Primary on Primary-Hover          #FFFFFF on #55224A   12.25:1  Pass (AAA)
   Gold-Text on Surface                 #8A5A00 on #FFFFFF    5.93:1  Pass (AA)
@@ -31,6 +32,7 @@
   --color-bg: #FBF7F2;
   --color-surface: #FFFFFF;
   --color-surface-muted: #F4EDE6;
+  --color-surface-warm: #FAF5F0;
   --color-border: #E6DCD2;
 
   --color-ink: #2B1B2E;
@@ -44,12 +46,16 @@
 
   --color-success: #1F6F54;
   --color-success-bg: #E7F4EE;
+  --color-success-border: #C3E6D7;
   --color-warning: #8A5A00;
   --color-warning-bg: #FFF4DC;
+  --color-warning-border: #FFE2A8;
   --color-danger: #A12B3A;
   --color-danger-bg: #FBE9EB;
+  --color-danger-border: #F4C5CB;
   --color-info: #2B5C8A;
   --color-info-bg: #E8F0F8;
+  --color-info-border: #C3DBEE;
 
   --color-focus: #1D4F91;
 

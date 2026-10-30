@@ -113,20 +113,20 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
       />
 
       {/* Sticky navigation strip with scroll-margin-top links */}
-      <nav aria-label="Overview sections" className="sticky top-0 z-10 bg-[#FAF5F0]/95 backdrop-blur-xs py-2 border-b border-[#E6DCD2]">
-        <ul className="flex items-center gap-4 text-xs font-semibold text-[#5B4A5E] overflow-x-auto">
-          <li><a href="#facts" className="hover:text-[#6B2D5C] hover:underline whitespace-nowrap">Facts</a></li>
-          <li><a href="#concept" className="hover:text-[#6B2D5C] hover:underline whitespace-nowrap">Concept</a></li>
-          <li><a href="#conflicts" className="hover:text-[#6B2D5C] hover:underline whitespace-nowrap">Conflicts</a></li>
-          <li><a href="#risks" className="hover:text-[#6B2D5C] hover:underline whitespace-nowrap">Risks</a></li>
-          <li><a href="#next-steps" className="hover:text-[#6B2D5C] hover:underline whitespace-nowrap">Next Steps</a></li>
-          <li><a href="#history" className="hover:text-[#6B2D5C] hover:underline whitespace-nowrap">History</a></li>
+      <nav aria-label="Overview sections" className="sticky top-0 z-10 bg-surface-warm/95 backdrop-blur-xs py-2 border-b border-border">
+        <ul className="flex items-center gap-4 text-xs font-semibold text-ink-muted overflow-x-auto">
+          <li><a href="#facts" className="hover:text-primary hover:underline whitespace-nowrap">Facts</a></li>
+          <li><a href="#concept" className="hover:text-primary hover:underline whitespace-nowrap">Concept</a></li>
+          <li><a href="#conflicts" className="hover:text-primary hover:underline whitespace-nowrap">Conflicts</a></li>
+          <li><a href="#risks" className="hover:text-primary hover:underline whitespace-nowrap">Risks</a></li>
+          <li><a href="#next-steps" className="hover:text-primary hover:underline whitespace-nowrap">Next Steps</a></li>
+          <li><a href="#history" className="hover:text-primary hover:underline whitespace-nowrap">History</a></li>
         </ul>
       </nav>
 
       {/* Section 1: Facts */}
       <section id="facts" aria-labelledby="heading-facts" className="space-y-3">
-        <h2 id="heading-facts" className="text-lg font-serif font-bold text-[#2B1B2E] scroll-mt-20">
+        <h2 id="heading-facts" className="text-lg font-serif font-bold text-ink scroll-mt-20">
           Celebration Parameters
         </h2>
         <EventFactsCard plan={plan} onEdit={() => setIsEditOpen(true)} />
@@ -134,7 +134,7 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
 
       {/* Section 2: Concept */}
       <section id="concept" aria-labelledby="heading-concept" className="space-y-3">
-        <h2 id="heading-concept" className="text-lg font-serif font-bold text-[#2B1B2E] scroll-mt-20">
+        <h2 id="heading-concept" className="text-lg font-serif font-bold text-ink scroll-mt-20">
           Aesthetic Concept
         </h2>
         <ConceptSummaryCard plan={plan} eventId={eventId} />
@@ -142,7 +142,7 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
 
       {/* Section 3: Conflicts */}
       <section id="conflicts" aria-labelledby="heading-conflicts" className="space-y-3">
-        <h2 id="heading-conflicts" className="text-lg font-serif font-bold text-[#2B1B2E] scroll-mt-20">
+        <h2 id="heading-conflicts" className="text-lg font-serif font-bold text-ink scroll-mt-20">
           Plan Feasibility & Conflicts
         </h2>
         <ConflictList eventId={eventId} />
@@ -150,7 +150,7 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
 
       {/* Section 4: Risks */}
       <section id="risks" aria-labelledby="heading-risks" className="space-y-3">
-        <h2 id="heading-risks" className="text-lg font-serif font-bold text-[#2B1B2E] scroll-mt-20">
+        <h2 id="heading-risks" className="text-lg font-serif font-bold text-ink scroll-mt-20">
           Things to watch out for
         </h2>
         <TopRisks plan={plan} eventId={eventId} />
@@ -158,7 +158,7 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
 
       {/* Section 5: Next Steps */}
       <section id="next-steps" aria-labelledby="heading-next-steps" className="space-y-3">
-        <h2 id="heading-next-steps" className="text-lg font-serif font-bold text-[#2B1B2E] scroll-mt-20">
+        <h2 id="heading-next-steps" className="text-lg font-serif font-bold text-ink scroll-mt-20">
           Immediate Checklist Items
         </h2>
         <NextSteps plan={plan} eventId={eventId} />
@@ -166,7 +166,7 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
 
       {/* Section 6: Forgotten Costs Teaser */}
       <section id="forgotten" aria-labelledby="heading-forgotten" className="space-y-3">
-        <h2 id="heading-forgotten" className="text-lg font-serif font-bold text-[#2B1B2E] scroll-mt-20">
+        <h2 id="heading-forgotten" className="text-lg font-serif font-bold text-ink scroll-mt-20">
           Budget Reminders
         </h2>
         <ForgottenTeaser plan={plan} eventId={eventId} />
@@ -174,7 +174,7 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
 
       {/* Section 7: Version History */}
       <section id="history" aria-labelledby="heading-history" className="space-y-3">
-        <h2 id="heading-history" className="text-lg font-serif font-bold text-[#2B1B2E] scroll-mt-20">
+        <h2 id="heading-history" className="text-lg font-serif font-bold text-ink scroll-mt-20">
           Audit Trail & Saved Versions
         </h2>
         <VersionHistory plan={plan} eventId={eventId} history={history} />
@@ -199,11 +199,11 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
         {repriceImpact && (
           <div className="pt-2 space-y-4">
             <ImpactSummary impact={repriceImpact} />
-            <div className="flex justify-end pt-2 border-t border-[#E6DCD2]">
+            <div className="flex justify-end pt-2 border-t border-border">
               <button
                 type="button"
                 onClick={() => setRepriceImpact(null)}
-                className="px-4 py-2 bg-[#6B2D5C] text-white rounded-lg text-sm font-semibold hover:bg-[#5B254E]"
+                className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-[#5B254E]"
               >
                 Acknowledge
               </button>

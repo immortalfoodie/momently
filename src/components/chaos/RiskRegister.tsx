@@ -32,11 +32,11 @@ export function RiskRegister({
 }: RiskRegisterProps) {
   if (risks.length === 0) {
     return (
-      <Card className={`p-6 border-[#E6DCD2] bg-[#FAF5F0] text-center space-y-1 ${className}`}>
-        <p className="text-sm font-semibold text-[#1F6F54]">
+      <Card className={`p-6 border-border bg-surface-warm text-center space-y-1 ${className}`}>
+        <p className="text-sm font-semibold text-success">
           No major risks found: nicely done
         </p>
-        <p className="text-xs text-[#5C4556]">
+        <p className="text-xs text-ink-muted">
           Your celebration plan currently has solid buffer, confirmed pricing, and manageable assumptions.
         </p>
       </Card>
@@ -54,21 +54,21 @@ export function RiskRegister({
 
         return (
           <li key={risk.id}>
-            <Card className="p-4 border-[#E6DCD2] bg-white space-y-2.5">
+            <Card className="p-4 border-border bg-white space-y-2.5">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <Badge tone={getSeverityTone(risk.severity)} className="capitalize text-xs">
                       {risk.severity}
                     </Badge>
-                    <h3 className="text-sm font-semibold text-[#2B1B2E]">{risk.title}</h3>
+                    <h3 className="text-sm font-semibold text-ink">{risk.title}</h3>
                     {points !== undefined && (
-                      <span className="text-xs font-semibold text-[#6B2D5C] tabular-nums">
+                      <span className="text-xs font-semibold text-primary tabular-nums">
                         +{points} pts
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-[#5C4556] leading-relaxed">{risk.explanation}</p>
+                  <p className="text-xs text-ink-muted leading-relaxed">{risk.explanation}</p>
                 </div>
 
                 {mappedScenario && onSelectScenario && (
@@ -85,9 +85,9 @@ export function RiskRegister({
               </div>
 
               {risk.mitigation && (
-                <div className="text-xs bg-[#FAF5F0] rounded-lg p-2.5 border border-[#F4EDE6] space-y-0.5">
-                  <span className="font-semibold text-[#2B1B2E]">Mitigation: </span>
-                  <span className="text-[#5C4556]">{risk.mitigation}</span>
+                <div className="text-xs bg-surface-warm rounded-lg p-2.5 border border-surface-muted space-y-0.5">
+                  <span className="font-semibold text-ink">Mitigation: </span>
+                  <span className="text-ink-muted">{risk.mitigation}</span>
                 </div>
               )}
             </Card>

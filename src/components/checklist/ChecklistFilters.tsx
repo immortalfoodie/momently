@@ -41,7 +41,7 @@ export function ChecklistFilters({
   }, [filteredTasks, totalTasks, announce]);
 
   return (
-    <div className={`p-4 bg-white border border-[#E6DCD2] rounded-[16px] space-y-3 ${className}`}>
+    <div className={`p-4 bg-white border border-border rounded-[16px] space-y-3 ${className}`}>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Field label="Category">
           <Select
@@ -85,18 +85,18 @@ export function ChecklistFilters({
         </Field>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[#E6DCD2]">
-        <label className="flex items-center gap-2 text-sm text-[#2B1B2E] font-medium cursor-pointer">
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border">
+        <label className="flex items-center gap-2 text-sm text-ink font-medium cursor-pointer">
           <input
             type="checkbox"
             checked={filters.hideCompleted}
             onChange={(e) => onChange({ ...filters, hideCompleted: e.target.checked })}
-            className="rounded border-[#E6DCD2]"
+            className="rounded border-border"
           />
           <span>Hide completed tasks</span>
         </label>
 
-        <span className="text-xs font-semibold text-[#5B4A5E]">
+        <span className="text-xs font-semibold text-ink-muted">
           Showing {filteredTasks} of {totalTasks} tasks
         </span>
       </div>

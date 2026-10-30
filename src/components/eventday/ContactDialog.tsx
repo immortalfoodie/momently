@@ -140,7 +140,7 @@ export function ContactDialog({
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="e.g. +91 98765 43210"
-            className="w-full min-h-[44px] px-3.5 py-2 rounded-[12px] border border-[#E6DCD2] bg-white text-[#2B1B2E] text-base"
+            className="w-full min-h-[44px] px-3.5 py-2 rounded-[12px] border border-border bg-white text-ink text-base"
           />
         </Field>
 
@@ -153,7 +153,7 @@ export function ContactDialog({
           />
         </Field>
 
-        <div className="flex justify-end gap-2 pt-3 border-t border-[#E6DCD2]">
+        <div className="flex justify-end gap-2 pt-3 border-t border-border">
           <Button variant="ghost" onClick={onClose} className="min-h-[44px]">
             Cancel
           </Button>

@@ -20,7 +20,7 @@ export function AccessCheck({ plan, eventId, className = '' }: AccessCheckProps)
   if (accessConflict) {
     return (
       <div className={`space-y-2 ${className}`}>
-        <h3 className="text-sm font-semibold text-[#8A5A00] uppercase tracking-wider">
+        <h3 className="text-sm font-semibold text-warning uppercase tracking-wider">
           Accessibility action required
         </h3>
         <ConflictCard conflict={accessConflict} eventId={eventId} plan={plan} />
@@ -30,10 +30,10 @@ export function AccessCheck({ plan, eventId, className = '' }: AccessCheckProps)
 
   return (
     <Card
-      className={`p-4 bg-[#E7F4EE] border border-[#C3E6D7] flex items-center gap-3 ${className}`}
+      className={`p-4 bg-success-bg border border-success-border flex items-center gap-3 ${className}`}
     >
-      <Icon name="check" size={20} className="text-[#1F6F54] shrink-0" aria-hidden="true" />
-      <p className="text-sm text-[#1F6F54] font-medium">
+      <Icon name="check" size={20} className="text-success shrink-0" aria-hidden="true" />
+      <p className="text-sm text-success font-medium">
         Venue accessibility confirmed. Step-free access routes and facilities are verified on your checklist.
       </p>
     </Card>

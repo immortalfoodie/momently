@@ -40,12 +40,12 @@ function VendorsSummaryBanner({
   totalVendors: number;
 }) {
   return (
-    <Card className="p-4 sm:p-5 bg-[#F5F2EB] border border-[#E6DCD2] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <Card className="p-4 sm:p-5 bg-surface-warm border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
       <div className="space-y-1">
-        <p className="text-lg font-serif font-bold text-[#2B1B2E]">
+        <p className="text-lg font-serif font-bold text-ink">
           {bookedCount} of {totalVendors} vendors booked
         </p>
-        <p className="text-xs text-[#5B4A5E]">
+        <p className="text-xs text-ink-muted">
           Booking vendors lowers your Chaos Score when the event is within 30 days
         </p>
       </div>

@@ -47,14 +47,14 @@ export function KitBriefsAndInvite({ plan, onCopy }: KitBriefsAndInviteProps) {
       <Card className="p-5 flex flex-col justify-between gap-4">
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <h2 className="text-lg font-serif font-bold text-[#2B1B2E]">Vendor briefs</h2>
-            <p className="text-sm text-[#5B4A5E]">
+            <h2 className="text-lg font-serif font-bold text-ink">Vendor briefs</h2>
+            <p className="text-sm text-ink-muted">
               Ready-to-send inquiry briefs with your date, guest count and questions—without exposing your budget.
             </p>
           </div>
 
           {plan.vendors.length > 0 ? (
-            <ul className="divide-y divide-[#E6DCD2] border-t border-b border-[#E6DCD2]">
+            <ul className="divide-y divide-border border-t border-b border-border">
               {plan.vendors.map((need) => {
                 const label =
                   need.category.charAt(0).toUpperCase() + need.category.slice(1);
@@ -63,7 +63,7 @@ export function KitBriefsAndInvite({ plan, onCopy }: KitBriefsAndInviteProps) {
                     key={need.id}
                     className="py-2.5 flex items-center justify-between gap-2"
                   >
-                    <span className="text-sm font-medium text-[#2B1B2E]">{label}</span>
+                    <span className="text-sm font-medium text-ink">{label}</span>
                     <Button
                       type="button"
                       variant="secondary"
@@ -84,7 +84,7 @@ export function KitBriefsAndInvite({ plan, onCopy }: KitBriefsAndInviteProps) {
               })}
             </ul>
           ) : (
-            <p className="text-sm text-[#5B4A5E]">No vendor categories in this plan.</p>
+            <p className="text-sm text-ink-muted">No vendor categories in this plan.</p>
           )}
         </div>
 
@@ -106,8 +106,8 @@ export function KitBriefsAndInvite({ plan, onCopy }: KitBriefsAndInviteProps) {
       <Card className="p-5 flex flex-col justify-between gap-4">
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <h2 className="text-lg font-serif font-bold text-[#2B1B2E]">Invitation text</h2>
-            <p className="text-sm text-[#5B4A5E]">
+            <h2 className="text-lg font-serif font-bold text-ink">Invitation text</h2>
+            <p className="text-sm text-ink-muted">
               Draft invitation wording formatted from your event details and chosen concept.
             </p>
           </div>
@@ -131,10 +131,10 @@ export function KitBriefsAndInvite({ plan, onCopy }: KitBriefsAndInviteProps) {
             readOnly
             rows={7}
             aria-label="Invitation text preview"
-            className="text-xs bg-[#FAF7F2]"
+            className="text-xs bg-bg"
           />
 
-          <p className="text-xs text-[#5B4A5E]">
+          <p className="text-xs text-ink-muted">
             Replace the [bracketed] parts with your own details.
           </p>
         </div>

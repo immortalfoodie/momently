@@ -31,17 +31,17 @@ export function MakeItYoursCard({ className = '' }: MakeItYoursCardProps) {
   };
 
   return (
-    <Card className={`p-4 border-[#E2D2DC] bg-[#FAF5F0] space-y-3 ${className}`}>
+    <Card className={`p-4 border-[#E2D2DC] bg-surface-warm space-y-3 ${className}`}>
       <div className="flex items-start gap-3">
-        <div className="p-2 rounded-full bg-[#F4EDE6] text-[#6B2D5C] shrink-0">
+        <div className="p-2 rounded-full bg-surface-muted text-primary shrink-0">
           <Icon name="sparkle" size={20} aria-hidden="true" />
         </div>
         <div className="space-y-1">
-          <h2 className="text-sm font-semibold text-[#2B1B2E]">Make it yours</h2>
-          <p className="text-xs text-[#5C4556] leading-relaxed">
+          <h2 className="text-sm font-semibold text-ink">Make it yours</h2>
+          <p className="text-xs text-ink-muted leading-relaxed">
             Want elements from multiple concepts? You can customize and fuse ideas in the assistant:
           </p>
-          <blockquote className="p-2 rounded bg-white border border-[#E6DCD2] text-xs font-mono text-[#6B2D5C]">
+          <blockquote className="p-2 rounded bg-white border border-border text-xs font-mono text-primary">
             &ldquo;{SAMPLE_PROMPT}&rdquo;
           </blockquote>
         </div>

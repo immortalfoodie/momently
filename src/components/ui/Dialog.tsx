@@ -80,16 +80,16 @@ export function Dialog({
           onClose();
         }
       }}
-      className={`fixed inset-0 m-auto max-w-lg w-[calc(100%-2rem)] p-0 bg-transparent backdrop:bg-[#2B1B2E]/60 backdrop:backdrop-blur-xs open:animate-in open:fade-in open:zoom-in-95 ${className}`}
+      className={`fixed inset-0 m-auto max-w-lg w-[calc(100%-2rem)] p-0 bg-transparent backdrop:bg-ink/60 backdrop:backdrop-blur-xs open:animate-in open:fade-in open:zoom-in-95 ${className}`}
     >
-      <div className="bg-white rounded-[20px] border border-[#E6DCD2] shadow-2xl p-6 overflow-hidden">
+      <div className="bg-white rounded-[20px] border border-border shadow-2xl p-6 overflow-hidden">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
-            <h2 id={titleId} className="font-serif text-xl font-bold text-[#2B1B2E]">
+            <h2 id={titleId} className="font-serif text-xl font-bold text-ink">
               {title}
             </h2>
             {description ? (
-              <p id={descriptionId} className="text-sm text-[#5B4A5E] mt-1">
+              <p id={descriptionId} className="text-sm text-ink-muted mt-1">
                 {description}
               </p>
             ) : null}
@@ -98,7 +98,7 @@ export function Dialog({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="p-1.5 rounded-full text-[#5B4A5E] hover:text-[#2B1B2E] hover:bg-[#F4EDE6] cursor-pointer"
+            className="p-1.5 rounded-full text-ink-muted hover:text-ink hover:bg-surface-muted cursor-pointer"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -106,7 +106,7 @@ export function Dialog({
             </svg>
           </button>
         </div>
-        <div className="text-[#2B1B2E]">{children}</div>
+        <div className="text-ink">{children}</div>
       </div>
     </dialog>
   );
@@ -171,16 +171,16 @@ export function Drawer({
           onClose();
         }
       }}
-      className={`fixed p-0 bg-transparent backdrop:bg-[#2B1B2E]/60 backdrop:backdrop-blur-xs ${placementClasses} ${className}`}
+      className={`fixed p-0 bg-transparent backdrop:bg-ink/60 backdrop:backdrop-blur-xs ${placementClasses} ${className}`}
     >
       <div className="bg-white h-full p-6 flex flex-col overflow-y-auto">
-        <div className="flex items-start justify-between gap-4 mb-4 pb-3 border-b border-[#E6DCD2]">
+        <div className="flex items-start justify-between gap-4 mb-4 pb-3 border-b border-border">
           <div>
-            <h2 id={titleId} className="font-serif text-xl font-bold text-[#2B1B2E]">
+            <h2 id={titleId} className="font-serif text-xl font-bold text-ink">
               {title}
             </h2>
             {description ? (
-              <p id={descriptionId} className="text-sm text-[#5B4A5E] mt-1">
+              <p id={descriptionId} className="text-sm text-ink-muted mt-1">
                 {description}
               </p>
             ) : null}
@@ -189,7 +189,7 @@ export function Drawer({
             type="button"
             onClick={onClose}
             aria-label="Close drawer"
-            className="p-1.5 rounded-full text-[#5B4A5E] hover:text-[#2B1B2E] hover:bg-[#F4EDE6] cursor-pointer"
+            className="p-1.5 rounded-full text-ink-muted hover:text-ink hover:bg-surface-muted cursor-pointer"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -197,7 +197,7 @@ export function Drawer({
             </svg>
           </button>
         </div>
-        <div className="flex-1 text-[#2B1B2E]">{children}</div>
+        <div className="flex-1 text-ink">{children}</div>
       </div>
     </dialog>
   );
