@@ -4,7 +4,7 @@ import type { Result } from '@/lib/result';
  * Supported LLM operational task identifiers.
  * WHY: Strict union typing prevents invalid prompt execution and routes typed I/O schemas.
  */
-export type LlmTaskName = 'intake' | 'concepts' | 'intent' | 'narrate';
+export type LlmTaskName = 'intake' | 'concepts' | 'intent' | 'narrate' | 'chaos_describe';
 
 /**
  * Standard error codes returned by the LLM layer.

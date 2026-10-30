@@ -1,5 +1,7 @@
 import type { EventPlan } from '@/domain/types';
 import type {
+  ChaosDescribeRequest,
+  ChaosDescribeResponse,
   ConceptsRequest,
   ConceptsResponse,
   HealthResponse,
@@ -166,4 +168,14 @@ export async function requestConcepts(
 ): Promise<Result<ConceptsResponse, ClientError>> {
   const payload: ConceptsRequest = { plan: slimPlanForRequest(plan) };
   return executeJsonRequest<ConceptsResponse>('/api/concepts', 'POST', payload, options);
+}
+
+/**
+ * Maps a host's free-text disaster description to simulatable Chaos Lab scenarios.
+ */
+export async function describeChaos(
+  request: ChaosDescribeRequest,
+  options?: ApiClientOptions,
+): Promise<Result<ChaosDescribeResponse, ClientError>> {
+  return executeJsonRequest<ChaosDescribeResponse>('/api/chaos/describe', 'POST', request, options);
 }

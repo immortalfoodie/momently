@@ -8,12 +8,15 @@ import {
   intentOutputSchema,
   narrateInputSchema,
   narrateOutputSchema,
+  chaosDescribeInputSchema,
+  chaosDescribeOutputSchema,
 } from './schemas/index';
 import {
   buildIntakePrompt,
   buildConceptsPrompt,
   buildIntentPrompt,
   buildNarratePrompt,
+  buildChaosDescribePrompt,
 } from './prompts/index';
 import type { z } from 'zod';
 
@@ -61,6 +64,14 @@ export const LLM_TASKS = {
     outputSchema: narrateOutputSchema,
     build: buildNarratePrompt,
     temperature: 0.4,
+    maxOutputTokens: 1024,
+    timeoutMs: 10000,
+  },
+  chaos_describe: {
+    inputSchema: chaosDescribeInputSchema,
+    outputSchema: chaosDescribeOutputSchema,
+    build: buildChaosDescribePrompt,
+    temperature: 0.1,
     maxOutputTokens: 1024,
     timeoutMs: 10000,
   },

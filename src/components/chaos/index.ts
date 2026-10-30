@@ -1,5 +1,6 @@
 export * from './BeforeAfter';
 export * from './ChaosScoreCard';
+export * from './DescribeScenario';
 export * from './ExplainButton';
 export * from './RecoveryApplied';
 export * from './RiskRegister';

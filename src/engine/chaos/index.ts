@@ -12,6 +12,7 @@ import { simulateVendorCancels } from './vendorCancels';
 
 export * from './budgetCut';
 export * from './defaults';
+export * from './describe';
 export * from './facts';
 export * from './guestSurge';
 export * from './itemUnavailable';

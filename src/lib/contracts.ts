@@ -4,6 +4,11 @@ import type { AssistantOutcome } from '@/engine/assistant/types';
 import type { FitReport } from '@/engine/planFactory';
 import type { MissingInfoItem } from '@/llm/schemas/intake';
 import { narrateInputSchema, type NarrateInput } from '@/llm/schemas/narrate';
+import {
+  chaosDescribeInputSchema,
+  type ChaosDescribeInput,
+  type ChaosDescribeOutput,
+} from '@/llm/schemas/chaosDescribe';
 import { z } from 'zod';
 
 export const intakeRequestSchema = z.object({
@@ -41,6 +46,17 @@ export interface ConceptsResponse {
 
 export const narrateRequestSchema = narrateInputSchema;
 export type NarrateRequest = NarrateInput;
+
+export const chaosDescribeRequestSchema = chaosDescribeInputSchema;
+export type ChaosDescribeRequest = ChaosDescribeInput;
+
+export interface ChaosDescribeResponse {
+  scenarios: ChaosDescribeOutput['scenarios'];
+  understood: string;
+  unsupported: string | null;
+  mode: 'live' | 'demo';
+  degraded: boolean;
+}
 
 export interface HealthResponse {
   mode: 'live' | 'demo';

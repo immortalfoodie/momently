@@ -6,6 +6,7 @@
 export const MAX_BODY_BYTES_INTAKE = 8_000;
 export const MAX_BODY_BYTES_MESSAGE = 200_000;
 export const MAX_BODY_BYTES_NARRATE = 20_000;
+export const MAX_BODY_BYTES_CHAOS_DESCRIBE = 8_000;
 
 export const DEFAULT_RATE_LIMIT_PER_MINUTE = 30;
 export const MIN_RATE_LIMIT_PER_MINUTE = 1;

@@ -10,3 +10,4 @@ export * from './handlers/health';
 export * from './handlers/intake';
 export * from './handlers/message';
 export * from './handlers/narrate';
+export * from './handlers/chaosDescribe';

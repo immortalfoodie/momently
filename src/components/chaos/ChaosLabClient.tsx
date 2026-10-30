@@ -22,6 +22,7 @@ import { PAGE_COPY } from '@/lib/copy';
 import { engineContext } from '@/store/engineContext';
 import { useEvent, useEventDerived, useStoreReady, type EventDerivedMetrics } from '@/store/selectors';
 import { ChaosScoreCard } from './ChaosScoreCard';
+import { DescribeScenario } from './DescribeScenario';
 import { RecoveryApplied } from './RecoveryApplied';
 import { RiskRegister } from './RiskRegister';
 import { ScenarioPicker } from './ScenarioPicker';
@@ -171,6 +172,15 @@ function ChaosLabContent({ eventId, plan, derived }: ChaosLabContentProps) {
             </Button>
           )}
         </div>
+
+        <DescribeScenario
+          plan={plan}
+          onRun={(described) => {
+            setSelectedType(described.type);
+            setInput(described);
+            runSim(described);
+          }}
+        />
 
         <ScenarioPicker
           plan={plan}
