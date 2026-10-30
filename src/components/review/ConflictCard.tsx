@@ -18,6 +18,7 @@ export interface ConflictCardProps {
   conflict: Conflict;
   eventId?: string;
   plan?: EventPlan;
+  onApprove?: (option: RecoveryOption) => void;
   onAskToRelax?: (conflict: Conflict, resolution: ResolutionOption) => void;
   className?: string;
 }
@@ -34,6 +35,7 @@ export function ConflictCard({
   conflict,
   eventId,
   plan: planProp,
+  onApprove,
   onAskToRelax,
   className = '',
 }: ConflictCardProps) {
@@ -109,7 +111,10 @@ export function ConflictCard({
             option={previewOption}
             eventId={eventId}
             plan={activePlan}
-            onApprove={() => setDialogOpen(false)}
+            onApprove={(opt) => {
+              setDialogOpen(false);
+              onApprove?.(opt);
+            }}
             onDismiss={() => setDialogOpen(false)}
           />
         </Dialog>

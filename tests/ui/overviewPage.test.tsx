@@ -95,22 +95,31 @@ describe('Overview Page & Components', () => {
     expect(await screen.findByText(/Prices Re-estimated for City Rate Tier/i)).toBeInTheDocument();
   });
 
-  it('edits celebration facts: guest count change opens proposal flow', async () => {
+  it('edits celebration facts: guest count change opens proposal flow and closes upon approval', async () => {
     const user = userEvent.setup();
     render(<TestOverviewWrapper eventId={demoEventId} />);
 
     // Click "Edit details"
     await user.click(screen.getByRole('button', { name: /Edit details/i }));
 
-    // Change guest count to 120
+    // Change guest count to 60 (within cap so directly approvable)
     const guestsInput = screen.getByLabelText(/Guest count/i);
     await user.clear(guestsInput);
-    await user.type(guestsInput, '120');
+    await user.type(guestsInput, '60');
 
     await user.click(screen.getByRole('button', { name: /Save Changes/i }));
 
     // Proposal dialog opens
-    expect(await screen.findByText(/Proposed Parameter Adjustment/i)).toBeInTheDocument();
+    expect(await screen.findByRole('dialog', { name: /Proposed Parameter Adjustment/i })).toBeInTheDocument();
+
+    // Click "Approve this change" on an enabled option inside the dialog
+    const approveBtns = screen.getAllByRole('button', { name: 'Approve this change' });
+    const enabledApproveBtn = approveBtns.find((btn) => !btn.hasAttribute('disabled')) ?? approveBtns[0]!;
+    await user.click(enabledApproveBtn);
+
+    // Dialog closes and plan version advances
+    expect(screen.queryByRole('dialog', { name: /Proposed Parameter Adjustment/i })).not.toBeInTheDocument();
+    expect(useEventsStore.getState().events[demoEventId]?.plan.version).toBeGreaterThan(1);
   });
 
   it('switches between Decisions and Saved versions tabs and restores version', async () => {

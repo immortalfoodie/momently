@@ -133,6 +133,7 @@ export function DelayPlanner({
                 eventId={targetEventId}
                 plan={plan}
                 isRecommended={idx === recommendedIndex}
+                onApprove={() => setOptions(null)}
               />
             ))}
           </div>

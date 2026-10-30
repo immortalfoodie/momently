@@ -136,6 +136,8 @@ export function GuardianPanel({
             plan={plan}
             currentVersion={plan.version}
             basedOnVersion={outcomePlanVersion ?? undefined}
+            onApprove={() => setOutcome(null)}
+            onDismiss={() => setOutcome(null)}
           />
         </Card>
       )}

@@ -34,16 +34,18 @@ interface OptionHeaderProps {
   option: RecoveryOption;
   isRecommended: boolean;
   isStale: boolean;
+  isApproved: boolean;
 }
 
-function OptionHeader({ option, isRecommended, isStale }: OptionHeaderProps) {
+function OptionHeader({ option, isRecommended, isStale, isApproved }: OptionHeaderProps) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-2">
       <div className="space-y-1">
         <div className="flex items-center gap-2">
           <h3 className="text-base font-semibold text-ink">{option.label}</h3>
           {isRecommended && <Badge tone="brand">Recommended</Badge>}
-          {isStale && <Badge tone="neutral">Out of date</Badge>}
+          {isApproved && <Badge tone="success">Approved</Badge>}
+          {isStale && !isApproved && <Badge tone="neutral">Out of date</Badge>}
         </div>
         <p className="text-xs text-ink-muted">{option.tradeoff}</p>
       </div>
@@ -97,6 +99,7 @@ export function OptionCard({
 
   const [activeOption, setActiveOption] = useState<RecoveryOption>(initialOption);
   const [selectedStrategyId, setSelectedStrategyId] = useState<string | null>(null);
+  const [isApproved, setIsApproved] = useState(false);
 
   const approveHook = useApproveOption(eventId ?? '');
   const isStale = Boolean(disabled) || approveHook.isStale;
@@ -111,14 +114,22 @@ export function OptionCard({
   };
 
   const handleApprove = () => {
-    if (isStale) return;
+    if (isStale || isApproved) return;
     const approved = eventId ? approveHook.approve(activeOption) : true;
-    if (approved) onApprove?.(activeOption);
+    if (approved) {
+      setIsApproved(true);
+      onApprove?.(activeOption);
+    }
   };
 
   return (
     <Card className={cardClass(isStale, className)}>
-      <OptionHeader option={activeOption} isRecommended={Boolean(isRecommended)} isStale={isStale} />
+      <OptionHeader
+        option={activeOption}
+        isRecommended={Boolean(isRecommended)}
+        isStale={isStale}
+        isApproved={isApproved}
+      />
 
       <ImpactSummary impact={activeOption.impact} />
       <ScoreDelta scoreBefore={activeOption.scoreBefore} scoreAfter={activeOption.scoreAfter} />
@@ -131,11 +142,12 @@ export function OptionCard({
       <ApprovalAlerts
         staleMessage={approveHook.staleMessage}
         hardViolation={approveHook.hardViolation}
+        error={approveHook.error}
         isOver={status.isOver}
       />
 
       <OptionActions
-        canApprove={!isStale && !status.isOver}
+        canApprove={!isStale && !isApproved && !status.isOver}
         isPending={approveHook.isPending}
         onApprove={handleApprove}
         onDismiss={onDismiss}

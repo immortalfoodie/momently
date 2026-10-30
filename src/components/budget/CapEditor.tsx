@@ -121,6 +121,8 @@ export function CapEditor({
               eventId={eventId}
               currentVersion={plan.version}
               basedOnVersion={plan.version}
+              onApprove={handleApproved}
+              onDismiss={onClose}
               onAskToRelax={handleApproved}
               className="pt-2"
             />

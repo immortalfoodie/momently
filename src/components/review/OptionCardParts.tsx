@@ -127,11 +127,12 @@ export function ApprovalList({ items }: { items: string[] }) {
 export interface ApprovalAlertsProps {
   staleMessage: string | null;
   hardViolation: { message: string; overBy?: number } | null;
+  error?: string | null;
   isOver: boolean;
 }
 
 /** Explains why an option cannot be approved: stale, rejected by the engine, or over the cap. */
-export function ApprovalAlerts({ staleMessage, hardViolation, isOver }: ApprovalAlertsProps) {
+export function ApprovalAlerts({ staleMessage, hardViolation, error, isOver }: ApprovalAlertsProps) {
   return (
     <>
       {staleMessage && (
@@ -147,6 +148,11 @@ export function ApprovalAlerts({ staleMessage, hardViolation, isOver }: Approval
               Exceeds hard budget cap by {formatInr(hardViolation.overBy)}.
             </span>
           )}
+        </Alert>
+      )}
+      {error && (
+        <Alert tone="danger" title="Cannot Apply Change">
+          {error}
         </Alert>
       )}
       {isOver && (

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import type { EventPlan } from '@/domain/types';
 import type { AssistantOutcome } from '@/engine/assistant/types';
+import type { RecoveryOption } from '@/engine/chaos/types';
 import type { Conflict, ResolutionOption } from '@/engine/conflicts';
 import { Alert } from '@/components/ui/Alert';
 import { Badge } from '@/components/ui/Badge';
@@ -18,6 +19,8 @@ export interface AssistantOutcomeViewProps {
   currentVersion?: number;
   basedOnVersion?: number;
   narration?: { text: string; highlights?: string[] } | string;
+  onApprove?: (option: RecoveryOption) => void;
+  onDismiss?: () => void;
   onAskToRelax?: (conflict: Conflict, resolution: ResolutionOption) => void;
   className?: string;
 }
@@ -28,6 +31,8 @@ interface OutcomeContext {
   plan?: EventPlan;
   isStale: boolean;
   narrationText?: string;
+  onApprove?: (option: RecoveryOption) => void;
+  onDismiss?: () => void;
   onAskToRelax?: (conflict: Conflict, resolution: ResolutionOption) => void;
 }
 
@@ -47,6 +52,8 @@ function ProposalOutcome({ outcome, ctx }: { outcome: OutcomeOf<'proposal'>; ctx
             plan={ctx.plan}
             isRecommended={opt.id === outcome.recommendedOptionId}
             disabled={ctx.isStale}
+            onApprove={ctx.onApprove}
+            onDismiss={ctx.onDismiss}
           />
         ))}
       </div>
@@ -66,10 +73,25 @@ function ConflictOutcome({ outcome, ctx }: { outcome: OutcomeOf<'conflict'>; ctx
     <div className="space-y-3">
       <p className="text-sm text-ink">{outcome.message}</p>
       {outcome.conflicts.map((c) => (
-        <ConflictCard key={c.id} conflict={c} eventId={ctx.eventId} plan={ctx.plan} onAskToRelax={ctx.onAskToRelax} />
+        <ConflictCard
+          key={c.id}
+          conflict={c}
+          eventId={ctx.eventId}
+          plan={ctx.plan}
+          onApprove={ctx.onApprove}
+          onAskToRelax={ctx.onAskToRelax}
+        />
       ))}
       {outcome.options.map((opt) => (
-        <OptionCard key={opt.id} option={opt} eventId={ctx.eventId} plan={ctx.plan} disabled={ctx.isStale} />
+        <OptionCard
+          key={opt.id}
+          option={opt}
+          eventId={ctx.eventId}
+          plan={ctx.plan}
+          disabled={ctx.isStale}
+          onApprove={ctx.onApprove}
+          onDismiss={ctx.onDismiss}
+        />
       ))}
     </div>
   );
@@ -128,6 +150,8 @@ function ChaosOutcome({ outcome, ctx }: { outcome: OutcomeOf<'chaos'>; ctx: Outc
             plan={ctx.plan}
             isRecommended={opt.id === result.recommendedOptionId}
             disabled={ctx.isStale}
+            onApprove={ctx.onApprove}
+            onDismiss={ctx.onDismiss}
           />
         ))}
       </div>
@@ -188,6 +212,8 @@ export function AssistantOutcomeView({
   currentVersion,
   basedOnVersion,
   narration,
+  onApprove,
+  onDismiss,
   onAskToRelax,
   className,
 }: AssistantOutcomeViewProps) {
@@ -201,6 +227,8 @@ export function AssistantOutcomeView({
     plan: activePlan,
     isStale,
     narrationText: narrationToText(narration),
+    onApprove,
+    onDismiss,
     onAskToRelax,
   };
 

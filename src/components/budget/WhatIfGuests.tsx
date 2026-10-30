@@ -39,6 +39,7 @@ export function WhatIfGuests({
     setPrevPlanGuestCount(plan.meta.guestCount);
     setGuestCount(plan.meta.guestCount);
     setDebouncedCount(plan.meta.guestCount);
+    setOutcome(null);
   }
 
   useEffect(() => {
@@ -215,6 +216,8 @@ export function WhatIfGuests({
             eventId={eventId}
             plan={plan}
             currentVersion={plan.version}
+            onApprove={() => setOutcome(null)}
+            onDismiss={() => setOutcome(null)}
           />
         </div>
       )}

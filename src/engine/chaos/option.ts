@@ -1,5 +1,4 @@
 import type { EventPlan, PlanPatchOp } from '@/domain/types';
-import { getBudgetCap } from '@/engine/budget';
 import type { EngineContext } from '@/engine/context';
 import { suggestSavings } from '@/engine/guardian';
 import { createPatch } from '@/engine/patch';
@@ -66,8 +65,8 @@ export function buildOption(
 
   const patch = createPatch(ops, meta.label, source, ctx.ids, ctx.clock, 'proposed');
 
-  const cap = getBudgetCap(plan.constraints);
-  const meetsCap = cap === null || impact.budgetTotalAfter <= cap;
+  const cap = impact.budgetCap;
+  const meetsCap = !impact.overCap;
 
   let fundingOptions: RecoveryOption['fundingOptions'];
   if (cap !== null && impact.budgetTotalAfter > cap) {

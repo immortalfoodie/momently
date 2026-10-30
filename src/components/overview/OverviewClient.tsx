@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import type { EventSetting, PlanImpact } from '@/domain/types';
 import type { AssistantOutcome } from '@/engine/assistant/types';
-import { resolveIntent } from '@/engine/assistant/resolveIntent';
+import { resolveSteps } from '@/engine/assistant/resolveSteps';
+import type { IntentOutput } from '@/llm/schemas/intent';
 import { ConflictList } from '@/components/review/ConflictList';
 import { PageContainer } from '@/components/ui/PageContainer';
 import { PageHeader } from '@/components/ui/PageHeader';
@@ -74,22 +75,16 @@ export function OverviewClient({ eventId: eventIdProp }: OverviewClientProps = {
 
   const handleTriggerComplexFlow = (changes: { guestCount?: number; setting?: EventSetting }) => {
     const today = new Date().toISOString().split('T')[0] ?? '2026-01-01';
+    const latestPlan = useEventsStore.getState().events[eventId]?.plan ?? plan;
+    const steps: IntentOutput[] = [];
     if (changes.guestCount !== undefined) {
-      const outcome = resolveIntent(
-        plan,
-        { kind: 'change_guest_count', guestCount: changes.guestCount },
-        engineContext,
-        today,
-      );
-      setComplexOutcome(outcome);
-    } else if (changes.setting !== undefined) {
-      const outcome = resolveIntent(
-        plan,
-        { kind: 'set_setting', setting: changes.setting },
-        engineContext,
-        today,
-      );
-      setComplexOutcome(outcome);
+      steps.push({ kind: 'change_guest_count', guestCount: changes.guestCount });
+    }
+    if (changes.setting !== undefined) {
+      steps.push({ kind: 'set_setting', setting: changes.setting });
+    }
+    if (steps.length > 0) {
+      setComplexOutcome(resolveSteps(latestPlan, steps, engineContext, today));
     }
   };
 

@@ -94,6 +94,8 @@ export function ComplexOutcomeDialog({ outcome, eventId, plan, onClose }: Comple
             eventId={eventId}
             plan={plan}
             currentVersion={plan.version}
+            onApprove={() => onClose()}
+            onDismiss={onClose}
           />
         </div>
       )}
