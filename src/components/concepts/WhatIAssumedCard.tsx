@@ -21,6 +21,78 @@ export interface WhatIAssumedCardProps {
   className?: string;
 }
 
+interface FieldValues {
+  guestCountVal: number | '';
+  cityVal: string;
+  budgetVal: number | '';
+  dateVal: string;
+}
+
+interface FieldEdit {
+  ops: PlanPatchOp[];
+  reason: string;
+}
+
+function isPositive(value: number | ''): value is number {
+  return typeof value === 'number' && value > 0;
+}
+
+const FIELD_EDITS: Partial<Record<MissingInfoItem['field'], (v: FieldValues) => FieldEdit | null>> = {
+  guestCount: ({ guestCountVal }) =>
+    isPositive(guestCountVal)
+      ? {
+          ops: [{ type: 'set_meta', changes: { guestCount: guestCountVal } }],
+          reason: `Set guest count to ${guestCountVal}`,
+        }
+      : null,
+  city: ({ cityVal }) => {
+    const city = cityVal.trim();
+    return city.length > 0
+      ? { ops: [{ type: 'set_meta', changes: { city } }], reason: `Set event city to ${city}` }
+      : null;
+  },
+  budget: ({ budgetVal }) =>
+    isPositive(budgetVal)
+      ? {
+          ops: [{ type: 'set_budget_cap', amount: budgetVal }],
+          reason: `Set budget cap to ${formatInr(budgetVal)}`,
+        }
+      : null,
+  date: ({ dateVal }) =>
+    dateVal
+      ? { ops: [{ type: 'set_meta', changes: { dateIso: dateVal } }], reason: `Set event date to ${dateVal}` }
+      : null,
+};
+
+function buildFieldEdit(field: MissingInfoItem['field'], values: FieldValues): FieldEdit | null {
+  const build = FIELD_EDITS[field];
+  return build ? build(values) : null;
+}
+
+function buildCapConflict(field: string, message: string, impact: PlanImpact | undefined): Conflict {
+  const overTotal = impact?.budgetTotalAfter ?? 0;
+  return {
+    id: `edit_conflict_${field}`,
+    kind: 'cap_exceeded',
+    severity: 'blocking',
+    message,
+    options: [
+      {
+        id: `raise_cap_${field}`,
+        label: `Raise budget cap to ${formatInr(overTotal)}`,
+        tradeoff: 'Higher budget cap',
+        ops: [{ type: 'set_budget_cap', amount: overTotal }],
+      },
+      {
+        id: `relax_items_${field}`,
+        label: 'Tell me which to relax',
+        tradeoff: 'Keep current budget cap and adjust line items',
+        ops: [],
+      },
+    ],
+  };
+}
+
 /**
  * Displays initial assumptions and provides quick-edit resolution for missing plan details.
  *
@@ -45,58 +117,19 @@ export function WhatIAssumedCard({
   const [appliedImpact, setAppliedImpact] = useState<PlanImpact | null>(null);
   const [editConflict, setEditConflict] = useState<Conflict | null>(null);
 
-  // eslint-disable-next-line complexity
   const handleApplyField = (field: MissingInfoItem['field']) => {
-    let ops: PlanPatchOp[] = [];
-    let reason = '';
-
-    if (field === 'guestCount' && typeof guestCountVal === 'number' && guestCountVal > 0) {
-      ops = [{ type: 'set_meta', changes: { guestCount: guestCountVal } }];
-      reason = `Set guest count to ${guestCountVal}`;
-    } else if (field === 'city' && cityVal.trim().length > 0) {
-      ops = [{ type: 'set_meta', changes: { city: cityVal.trim() } }];
-      reason = `Set event city to ${cityVal.trim()}`;
-    } else if (field === 'budget' && typeof budgetVal === 'number' && budgetVal > 0) {
-      ops = [{ type: 'set_budget_cap', amount: budgetVal }];
-      reason = `Set budget cap to ${formatInr(budgetVal)}`;
-    } else if (field === 'date' && dateVal) {
-      ops = [{ type: 'set_meta', changes: { dateIso: dateVal } }];
-      reason = `Set event date to ${dateVal}`;
-    }
-
-    if (ops.length === 0) return;
+    const edit = buildFieldEdit(field, { guestCountVal, cityVal, budgetVal, dateVal });
+    if (!edit) return;
 
     setEditConflict(null);
     setAppliedImpact(null);
 
-    const res = applyUserEdit(eventId, ops, reason);
+    const res = applyUserEdit(eventId, edit.ops, edit.reason);
     if (res.ok) {
       setAppliedImpact(res.value);
-    } else {
-      if (res.error.code === 'hard_constraint_violation') {
-        const impact = (res.error as { impact?: PlanImpact }).impact;
-        const overTotal = impact?.budgetTotalAfter ?? 0;
-        setEditConflict({
-          id: `edit_conflict_${field}`,
-          kind: 'cap_exceeded',
-          severity: 'blocking',
-          message: res.error.message,
-          options: [
-            {
-              id: `raise_cap_${field}`,
-              label: `Raise budget cap to ${formatInr(overTotal)}`,
-              tradeoff: 'Higher budget cap',
-              ops: [{ type: 'set_budget_cap', amount: overTotal }],
-            },
-            {
-              id: `relax_items_${field}`,
-              label: 'Tell me which to relax',
-              tradeoff: 'Keep current budget cap and adjust line items',
-              ops: [],
-            },
-          ],
-        });
-      }
+    } else if (res.error.code === 'hard_constraint_violation') {
+      const impact = (res.error as { impact?: PlanImpact }).impact;
+      setEditConflict(buildCapConflict(field, res.error.message, impact));
     }
   };
 

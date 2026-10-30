@@ -9,27 +9,23 @@ import type { RecoveryOption } from '@/engine/chaos/types';
 import { tierForCity } from '@/engine/pricing';
 import { requestConcepts } from '@/lib/apiClient';
 import { useOptionalCurrentEvent } from '@/components/events';
-import { Alert, Button, Dialog, EmptyState, Icon, PageContainer, PageHeader } from '@/components/ui';
+import { Alert, Dialog, PageContainer, PageHeader } from '@/components/ui';
 import { useAnnouncer } from '@/components/ui/LiveRegion';
 import { PAGE_COPY } from '@/lib/copy';
 import { OptionCard } from '@/components/review/OptionCard';
 import { engineContext } from '@/store/engineContext';
 import { useEventsStore } from '@/store/eventsStore';
 import { useEvent } from '@/store/selectors';
-import { CompareTable } from './CompareTable';
-import { ConceptCard } from './ConceptCard';
-import { MakeItYoursCard } from './MakeItYoursCard';
+import {
+  AssumptionBanner,
+  cityTierLabel,
+  ConceptsBody,
+  RefreshConfirmDialog,
+  RefreshIdeasButton,
+} from './ConceptsClientParts';
 import { WhatIAssumedCard } from './WhatIAssumedCard';
 
-/**
- * ConceptsClient coordinates concept studio ideation, comparison, and deterministic switching.
- *
- * ACCESSIBILITY & STATE DECISION (WHY):
- * Restores keyboard focus to chosen concept heading post-approval, announces selection changes
- * to assistive technology, and ensures side-by-side matrices remain completely keyboard navigable.
- */
-// eslint-disable-next-line complexity
-export function ConceptsClient() {
+function useConceptsEvent() {
   const context = useOptionalCurrentEvent();
   const params = useParams();
   const paramId = (params?.id as string) || '';
@@ -38,6 +34,18 @@ export function ConceptsClient() {
   const event = context?.event ?? storeEvent;
   const plan = context?.plan ?? storeEvent?.plan;
   const eventId = plan?.id ?? paramId;
+  return { event, plan, eventId };
+}
+
+/**
+ * ConceptsClient coordinates concept studio ideation, comparison, and deterministic switching.
+ *
+ * ACCESSIBILITY & STATE DECISION (WHY):
+ * Restores keyboard focus to chosen concept heading post-approval, announces selection changes
+ * to assistive technology, and ensures side-by-side matrices remain completely keyboard navigable.
+ */
+export function ConceptsClient() {
+  const { event, plan, eventId } = useConceptsEvent();
 
   const { announce } = useAnnouncer();
   const setConcepts = useEventsStore((s) => s.setConcepts);
@@ -112,23 +120,10 @@ export function ConceptsClient() {
     );
   }
 
-  const concepts = plan.concepts;
-
   const headerActions =
-    concepts.length > 0 ? (
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => setConfirmRefreshOpen(true)}
-        disabled={isGenerating}
-        icon={<Icon name="sparkle" size={14} aria-hidden="true" />}
-      >
-        {isGenerating ? 'Refreshing...' : 'Refresh ideas'}
-      </Button>
+    plan.concepts.length > 0 ? (
+      <RefreshIdeasButton isGenerating={isGenerating} onClick={() => setConfirmRefreshOpen(true)} />
     ) : undefined;
-
-  const cityTier = tierForCity(plan.meta.city);
-  const cityTierLabel = cityTier === 'tier1' ? 'tier-1' : cityTier === 'tier3' ? 'tier-3' : 'tier-2';
 
   return (
     <PageContainer width="full" className="space-y-6">
@@ -145,57 +140,21 @@ export function ConceptsClient() {
       )}
 
       {/* One-line summary banner linking to assumptions card below */}
-      <div className="p-3 bg-surface-warm border border-border rounded-[10px] text-xs text-ink-muted flex items-center justify-between gap-2">
-        <span>
-          We assumed {plan.meta.guestCount} guests and {cityTierLabel} prices.{' '}
-          <a
-            href="#what-i-assumed"
-            className="font-semibold text-primary hover:underline cursor-pointer"
-          >
-            Review
-          </a>
-        </span>
-      </div>
+      <AssumptionBanner
+        guestCount={plan.meta.guestCount}
+        tierLabel={cityTierLabel(tierForCity(plan.meta.city))}
+      />
 
       {/* Concepts Empty State vs Cards Grid (Shown FIRST) */}
-      {concepts.length === 0 ? (
-        <EmptyState
-          icon={<Icon name="bulb" size={28} aria-hidden="true" />}
-          title="No concept directions yet"
-          description="Generate 3 curated aesthetic and experiential directions tailored to your brief, venue, and budget."
-          action={
-            <Button
-              variant="primary"
-              onClick={handleFetchConcepts}
-              disabled={isGenerating}
-              icon={<Icon name="sparkle" size={16} aria-hidden="true" />}
-            >
-              {isGenerating ? 'Generating ideas...' : 'Generate ideas'}
-            </Button>
-          }
-        />
-      ) : (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {concepts.map((concept) => (
-              <ConceptCard
-                key={concept.id}
-                concept={concept}
-                plan={plan}
-                isSelected={plan.selectedConceptId === concept.id}
-                onChoose={handleChooseConcept}
-                headingRef={(el) => {
-                  headingRefs.current[concept.id] = el;
-                }}
-              />
-            ))}
-          </div>
-
-          <CompareTable concepts={concepts} plan={plan} />
-
-          <MakeItYoursCard />
-        </div>
-      )}
+      <ConceptsBody
+        plan={plan}
+        isGenerating={isGenerating}
+        onGenerate={handleFetchConcepts}
+        onChoose={handleChooseConcept}
+        setHeadingRef={(conceptId, el) => {
+          headingRefs.current[conceptId] = el;
+        }}
+      />
 
       {/* Assumptions & Quick-Edits (Moved below concepts) */}
       <div id="what-i-assumed" className="scroll-mt-28">
@@ -224,26 +183,12 @@ export function ConceptsClient() {
       )}
 
       {/* Refresh Ideas Confirmation Dialog */}
-      <Dialog
+      <RefreshConfirmDialog
         open={confirmRefreshOpen}
+        isGenerating={isGenerating}
         onClose={() => setConfirmRefreshOpen(false)}
-        title="Refresh Celebration Concepts?"
-      >
-        <div className="space-y-4">
-          <p className="text-xs text-ink-muted leading-relaxed">
-            Generating a fresh set of celebration concepts will replace current proposals.
-            If your active selected concept is not included in the new set, the selection will be reset.
-          </p>
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <Button variant="ghost" onClick={() => setConfirmRefreshOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="primary" onClick={handleFetchConcepts} disabled={isGenerating}>
-              {isGenerating ? 'Generating...' : 'Yes, refresh ideas'}
-            </Button>
-          </div>
-        </div>
-      </Dialog>
+        onConfirm={handleFetchConcepts}
+      />
     </PageContainer>
   );
 }
