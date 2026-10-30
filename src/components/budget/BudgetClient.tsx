@@ -32,12 +32,7 @@ export interface BudgetClientProps {
   eventId?: string;
 }
 
-/**
- * BudgetClient coordinates all interactive budgeting, guardian tools, and line-item management.
- * WHY: Assembles the entire offline-ready budget dashboard with strict accessibility and single write path.
- */
-// eslint-disable-next-line complexity
-export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
+function useBudgetEvent(eventIdProp: string | undefined) {
   const context = useOptionalCurrentEvent();
   const params = useParams();
   const paramId = (params?.id as string) || '';
@@ -46,7 +41,34 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
   const isReady = useStoreReady();
   const storeEvent = useEvent(eventId);
   const event = context?.event ?? storeEvent;
-  const plan = event?.plan;
+  return { eventId, isReady, event, plan: event?.plan };
+}
+
+function BudgetSkeleton() {
+  return (
+    <PageContainer width="full" className="space-y-6">
+      <PageHeader
+        title={PAGE_COPY.budget.title}
+        description={PAGE_COPY.budget.description}
+      />
+      <div className="space-y-4">
+        <Skeleton className="h-28 w-full rounded-xl" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Skeleton className="h-64 rounded-xl" />
+          <Skeleton className="h-64 rounded-xl" />
+        </div>
+        <Skeleton className="h-80 w-full rounded-xl" />
+      </div>
+    </PageContainer>
+  );
+}
+
+/**
+ * BudgetClient coordinates all interactive budgeting, guardian tools, and line-item management.
+ * WHY: Assembles the entire offline-ready budget dashboard with strict accessibility and single write path.
+ */
+export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
+  const { eventId, isReady, event, plan } = useBudgetEvent(eventIdProp);
 
   const {
     applyEdit,
@@ -62,22 +84,7 @@ export function BudgetClient({ eventId: eventIdProp }: BudgetClientProps = {}) {
   const [isCapEditorOpen, setIsCapEditorOpen] = useState(false);
 
   if (!isReady || !event || !plan) {
-    return (
-      <PageContainer width="full" className="space-y-6">
-        <PageHeader
-          title={PAGE_COPY.budget.title}
-          description={PAGE_COPY.budget.description}
-        />
-        <div className="space-y-4">
-          <Skeleton className="h-28 w-full rounded-xl" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Skeleton className="h-64 rounded-xl" />
-            <Skeleton className="h-64 rounded-xl" />
-          </div>
-          <Skeleton className="h-80 w-full rounded-xl" />
-        </div>
-      </PageContainer>
-    );
+    return <BudgetSkeleton />;
   }
 
   const handleOpenAddWithPrefill = (prefill: { category: BudgetCategory; label: string }) => {
