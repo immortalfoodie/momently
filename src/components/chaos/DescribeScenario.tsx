@@ -177,9 +177,10 @@ export function DescribeScenario({ plan, onRun }: DescribeScenarioProps) {
         />
       </Field>
 
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Example problems">
+      <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Example problems">
+        <span className="text-xs font-semibold text-[#5C4556]">Try an example:</span>
         {EXAMPLES.map((example) => (
-          <Button key={example} size="sm" variant="ghost" onClick={() => setText(example)}>
+          <Button key={example} size="sm" variant="secondary" onClick={() => setText(example)}>
             {example}
           </Button>
         ))}

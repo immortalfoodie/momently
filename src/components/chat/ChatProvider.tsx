@@ -71,8 +71,14 @@ export function ChatProvider({ children, initialEventId }: ChatProviderProps) {
   const tourActive = useTourStore((s) => s.active);
   const tourEventId = useTourStore((s) => s.eventId);
   const events = useEventsStore((s) => s.events);
+  const hydrated = useEventsStore((s) => s.hydrated);
 
-  const eventId = resolveActiveEventId(initialEventId, pathname, tourActive, tourEventId, events);
+  // The prerendered shell cannot know the event route, so it renders intake mode. Resolving the
+  // event only after browser storage hydrates keeps the first client render identical to the
+  // server HTML (no hydration mismatch), then switches to event mode.
+  const eventId = hydrated
+    ? resolveActiveEventId(initialEventId, pathname, tourActive, tourEventId, events)
+    : null;
   const mode: ChatMode = eventId ? 'event' : 'intake';
 
   const eventMessages = useEventsStore((s) =>

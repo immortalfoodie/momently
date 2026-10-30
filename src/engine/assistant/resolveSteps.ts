@@ -45,7 +45,7 @@ function foldOutcome(draft: EventPlan, outcome: AssistantOutcome, opsSoFar: numb
     case 'chaos': {
       const { result } = outcome;
       const best = result.options.find((o) => o.id === result.recommendedOptionId);
-      const advice = best ? ` Best response: ${best.label} (Chaos Score ${best.scoreBefore} to ${best.scoreAfter}).` : '';
+      const advice = best ? ` Best response: ${best.label}${scoreChange(best)}.` : '';
       return {
         summary: {
           status: result.applicable ? 'checked' : 'skipped',
@@ -65,11 +65,21 @@ function foldOutcome(draft: EventPlan, outcome: AssistantOutcome, opsSoFar: numb
   }
 }
 
+function scoreChange(option: RecoveryOption): string {
+  return option.scoreAfter === option.scoreBefore
+    ? ''
+    : ` (Chaos Score ${option.scoreBefore} to ${option.scoreAfter})`;
+}
+
+function plural(count: number, word: string): string {
+  return `${count} ${word}${count === 1 ? '' : 's'}`;
+}
+
 function summariseMessage(steps: AssistantStepSummary[]): string {
   const planned = steps.filter((s) => s.status === 'planned').length;
   const skipped = steps.filter((s) => s.status === 'skipped').length;
-  const skippedNote = skipped > 0 ? ` ${skipped} step${skipped === 1 ? '' : 's'} could not be done; see why below.` : '';
-  return `I worked through your ${steps.length} requests in order and combined ${planned} change${planned === 1 ? '' : 's'} into one proposal.${skippedNote}`;
+  const skippedNote = skipped > 0 ? ` ${plural(skipped, 'step')} could not be done; see why below.` : '';
+  return `I worked through your ${steps.length} requests in order and combined ${plural(planned, 'change')} into one proposal.${skippedNote}`;
 }
 
 /**
@@ -115,12 +125,13 @@ export function resolveSteps(
     return { kind: 'info', message, items: summaries.map((s) => ({ title: s.label, detail: s.detail })), steps: summaries };
   }
 
+  const plannedCount = summaries.filter((s) => s.status === 'planned').length;
   const option = buildOption(
     plan,
     ops,
     {
       id: 'opt_multi_step',
-      label: `Combined plan: ${summaries.filter((s) => s.status === 'planned').length} changes`,
+      label: `Combined plan: ${plural(plannedCount, 'change')}`,
       tradeoff: 'All planned steps applied together, in the order you asked.',
       notes: summaries.filter((s) => s.status === 'planned').map((s) => `${s.label}: ${s.detail}`),
     },

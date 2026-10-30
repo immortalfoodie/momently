@@ -19,6 +19,7 @@ export function buildBudgetFacts(plan: EventPlan): Record<string, FactValue> {
   const provenance = provenanceBreakdown(plan.budgetItems, guests);
 
   const facts: Record<string, FactValue> = {
+    title: plan.meta.title,
     eventType: plan.meta.type,
     guestCount: guests,
     totalCost: status.total,
